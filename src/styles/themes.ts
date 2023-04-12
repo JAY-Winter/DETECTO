@@ -2,12 +2,12 @@ import { Theme } from "@emotion/react";
 
 export const lightTheme: Theme = {
   colors: {
-    primary: 'coral'
+    primary: 'black'
   }
 }
 
 export const darkTheme: Theme = {
   colors: {
-    primary: 'blue'
+    primary: 'white'
   }
 }
