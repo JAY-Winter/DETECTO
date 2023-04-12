@@ -1,13 +1,13 @@
-import { Theme } from "@emotion/react";
+import { Theme } from '@emotion/react';
 
 export const lightTheme: Theme = {
   colors: {
-    primary: 'black'
-  }
-}
+    primary: 'coral',
+  },
+};
 
 export const darkTheme: Theme = {
   colors: {
-    primary: 'white'
-  }
-}
+    primary: 'blue',
+  },
+};
