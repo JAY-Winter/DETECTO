@@ -1,5 +1,5 @@
 {
-  "name": "cosmos",
+  "name": "s08p31d201",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint 'src/**/*.tsx'"
+    "lint": "eslint src/**/*.tsx"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
