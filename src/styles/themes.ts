@@ -7,9 +7,9 @@ const getDesignTokens = (mode: PaletteMode) => ({
       ? {
           // palette values for light mode
           primary: {
-            light: '#5482f4',
-            main: '#0044ee',
-            dark: '#0030a9',
+            light: '#5688c1',
+            main: '#034ea2',
+            dark: '#023773',
             contrastText: '#fff',
           },
           secondary: {
@@ -30,6 +30,16 @@ const getDesignTokens = (mode: PaletteMode) => ({
             dark: '#7d0017',
             contrastText: '#fff',
           },
+          neutral: {
+            main: '#ffffff',
+            section: '#fafafa',
+            card: '#ececec'
+          },
+          text: {
+            primary: '#000000',
+            secondary: '#8D8D8D',
+            disabled: '#aaaaaa',
+          },
           grey: {
             0: '#ffffff',
             10: '#fafafa',
@@ -51,28 +61,19 @@ const getDesignTokens = (mode: PaletteMode) => ({
             800: '#1e1e1e',
             900: '#121212',
           },
-          neutral: {
-            main: '#ffffff',
-            section: '#fafafa',
-          },
-          text: {
-            primary: '#000000',
-            secondary: '#888888',
-            disabled: '#B6B6B6',
-          },
         }
       : {
           // palette values for dark mode
           primary: {
-            light: '#e6ecfd',
-            main: '#8aa9f7',
+            light: '#e6edf6',
+            main: '#8baed4',
             dark: '#3369f1',
             contrastText: '#000000',
           },
           secondary: {
             light: '#fff9e6',
             main: '#ffe28d',
-            dark: '#ffcd39',
+            dark: '#3571b5',
             contrastText: '#000000',
           },
           success: {
@@ -82,10 +83,20 @@ const getDesignTokens = (mode: PaletteMode) => ({
             contrastText: '#000000',
           },
           error: {
-            light: '#f7e6e9',
-            main: '#db8a98',
-            dark: '#c0334d',
+            light: '#e7b0ba',
+            main: '#ca546a',
+            dark: '#b00020',
             contrastText: '#000000',
+          },
+          neutral: {
+            main: '#121212',
+            section: '#1e1e1e',
+            card: '#2c2c2c'
+          },
+          text: {
+            primary: '#fff',
+            secondary: '#888888',
+            disabled: '#636363',
           },
           grey: {
             0: '#ffffff',
@@ -107,15 +118,6 @@ const getDesignTokens = (mode: PaletteMode) => ({
             700: '#2c2c2c',
             800: '#1e1e1e',
             900: '#121212',
-          },
-          neutral: {
-            main: '#121212',
-            section: '#1e1e1e',
-          },
-          text: {
-            primary: '#fff',
-            secondary: '#888888',
-            disabled: '#B6B6B6',
           },
         }),
   },
