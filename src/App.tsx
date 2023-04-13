@@ -3,9 +3,11 @@ import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import React, { useState } from 'react';
 import DashboardPage from './pages/DashboardPage';
 import getDesignTokens from './styles/themes';
-import NavigationBar from '@components/NavigationBar';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import NavigationBar from '@components/navbar/NavigationBar';
+import EquipmentManagePage from './pages/EquipmentManagePage';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -26,9 +28,14 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <button onClick={() => mode === 'dark' ? setMode('light') : setMode('dark')}>AAAAAA</button>
       <StyledDiv css={container}>
-        <NavigationBar mode={mode} />
+        <NavigationBar mode={mode} setMode={setMode} />
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/dashboard" />} />
+          <Route path='/dashboard' element={<DashboardPage />} />
+          <Route path='/manage' element={<EquipmentManagePage />} />
+          <Route path='/summary' />
+        </Routes>
       </StyledDiv>
     </ThemeProvider>
   );
