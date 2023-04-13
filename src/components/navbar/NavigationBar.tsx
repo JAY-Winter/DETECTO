@@ -22,22 +22,24 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
 
+  // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
   const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const itemTopPos = rect.top;
-    console.log(itemTopPos);
+    const rect = e.currentTarget.getBoundingClientRect();  // 클릭된 아이템의 레이아웃 정보를 알아낸다
+    const itemTopPos = rect.top;  // 클릭된 아이템의 최상위 지점의 위치를 알아낸다
   }
 
+  // 로그아웃 핸들러
   const handleClickLogout = () => {
     confirm("로그아웃 하시겠습니까??");
   }
 
+  // url 변경여부 감지 hook
   useEffect(() => {
     setCurrentPathName((oldState) => {
       if (oldState === location.pathname) {
         return oldState;
       } else {
-        console.log('URL이 변경되었습니당:', location.pathname);
+        console.log('URL 변경:', location.pathname);
         return location.pathname;
       }
     })
@@ -45,22 +47,29 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
 
   return (
     <StyledNav>
+      {/* 삼성 로고 */}
       <NavLink to={'/'}>
         <img css={logoContainer} src={mode ==='light' ? SamLogoLight : SamLogoDark} />
       </NavLink>
+
+      {/* 프로필 카드 */}
       <ProfileCardDiv>
         <img css={profileImageStyle} src={Albert} alt="" />
         <p>{"아인슈타인"} Pro</p>
         <p>{"삼성전기 안전관리1팀"}</p>
       </ProfileCardDiv>
+
+      {/* 각종 아이템들 */}
       {/* <StyledIndicatorDibv /> */}
       <div css={itemsContainer}>
+        {/* 네비게이션 아이템들 */}
         <ul css={listContainer}>
           <ListItem icon={<SpaceDashboardOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
           <ListItem icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
           <ListItem icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
         </ul>
         
+        {/* 로그아웃 버튼 */}
         <StyledButton onClick={handleClickLogout}>
           <LogoutOutlinedIcon />
           <p>로그아웃</p>
