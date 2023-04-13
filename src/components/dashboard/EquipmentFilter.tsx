@@ -32,7 +32,7 @@ export default DashboardEquipmentFilter;
 const FilterPaper = styled(Paper)`
   display: flex;
   flex-direction: column;
-  width: 80vw;
+  width: 100%;
   padding: 1rem;
   margin: 0.5rem;
 `;

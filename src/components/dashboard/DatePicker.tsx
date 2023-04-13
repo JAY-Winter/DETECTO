@@ -51,6 +51,7 @@ function DashboardDatePicker() {
             format="YYYY.MM.DD"
             value={date.endDay}
             minDate={date.startDay}
+            maxDate={dayjs()}
             onChange={(newValue: Dayjs | null) => {
               setDate(prev => {
                 return { ...prev, endDay: newValue || dayjs() };
@@ -66,6 +67,7 @@ function DashboardDatePicker() {
             label="날짜 선택"
             format="YYYY.MM.DD"
             value={date.startDay}
+            maxDate={dayjs()}
             onChange={(newValue: Dayjs | null) => {
               setDate({
                 startDay: newValue || dayjs(),
@@ -82,16 +84,16 @@ function DashboardDatePicker() {
 
 export default DashboardDatePicker;
 
-const DatePaper = styled(Paper)({
-  width: '80vw',
-  padding: '1rem',
-  margin: '1rem',
-});
+const DatePaper = styled(Paper)`
+  width: 100%;
+  padding: 1rem;
+  margin: 1rem;
+`;
 
-const TabBox = styled(Box)({
-  width: '100%',
-  marginBottom: '1rem',
-});
+const TabBox = styled(Box)`
+  width: '100%';
+  margin-bottom: '1rem';
+`;
 
 const DatePickerCSS = css`
   margin: 10px;
