@@ -1,13 +1,11 @@
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
 import { createTheme, PaletteMode } from '@mui/material';
-import Button from '@mui/material/Button';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import React, { useState } from 'react';
+import DashboardPage from './pages/DashboardPage';
 import getDesignTokens from './styles/themes';
 
 function App() {
-  const [mode, setMode] = useState<PaletteMode>('dark');
+  const [mode, setMode] = useState<PaletteMode>('light');
 
   const colorMode = React.useMemo(
     () => ({
@@ -27,6 +25,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div>
         App
+        <DashboardPage />
       </div>
     </ThemeProvider>
   );
