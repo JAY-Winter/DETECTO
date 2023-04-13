@@ -36,7 +36,7 @@ const StyledLi = styled.li<{currentPathName: string, pathName: string}>`
     color: ${props => props.theme.palette.primary.main}
   }
   p {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     margin-left: 10px;
   }
 `

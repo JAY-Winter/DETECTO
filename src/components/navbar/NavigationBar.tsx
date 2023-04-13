@@ -1,7 +1,7 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import React, { useRef, useState, useEffect } from 'react'
-import { useNavigate, useLocation, NavLink } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { useLocation, NavLink } from "react-router-dom";
 
 import SamLogoLight from '@/assets/img/samlogoLight.svg'
 import SamLogoDark from '@/assets/img/samlogoDark.svg'
@@ -44,33 +44,40 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
 
   return (
     <StyledNav>
-      <img css={imageContainer} src={mode ==='light' ? SamLogoLight : SamLogoDark} />
+      <NavLink to={'/'}>
+        <img css={imageContainer} src={mode ==='light' ? SamLogoLight : SamLogoDark} />
+      </NavLink>
       <ProfileCardDiv>
         <img css={profileImageStyle} src={Albert} alt="" />
         <p>{"아인슈타인"} Pro</p>
         <p>{"삼성전기 안전관리1팀"}</p>
       </ProfileCardDiv>
       {/* <StyledIndicatorDibv /> */}
-      <ul css={listContainer}>
-        <ListItem icon={<SpaceDashboardOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-        <ListItem icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-        <ListItem icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-      </ul>
-      <button onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}>현재 테마: {mode}</button>
-      <StyledButton onClick={handleClickLogout}>
-        <LogoutOutlinedIcon />
-        <p>로그아웃</p>
-      </StyledButton>
+      <div css={itemsContainer}>
+        <ul css={listContainer}>
+          <ListItem icon={<SpaceDashboardOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          <ListItem icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          <ListItem icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+        </ul>
+        <button onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}>현재 테마: {mode}</button>
+        <StyledButton onClick={handleClickLogout}>
+          <LogoutOutlinedIcon />
+          <p>로그아웃</p>
+        </StyledButton>
+      </div>
     </StyledNav>
   )
 }
 
 const StyledNav = styled.nav`
+  display: flex;
+  flex-direction: column;
   max-width: 350px;
   height: 100vh;
+  min-height: 700px;
   background-color: ${props => props.theme.palette.neutral.section};
   color: ${props => props.theme.palette.text.primary};
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
   padding: 20px;
 `
 
@@ -78,6 +85,7 @@ const imageContainer = css`
   width: 100%;
   margin: 10px 0px 30px 0px;
 `
+
 const ProfileCardDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -111,6 +119,14 @@ const StyledIndicatorDibv = styled.div`
   background-color: ${props => props.theme.palette.primary.main};
 `
 
+const itemsContainer = css`
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`
+
 const listContainer = css`
   padding-left: 20px;
   list-style: none;
@@ -123,8 +139,8 @@ const listContainer = css`
 `
 
 const StyledButton = styled.button`
-  position: absolute;
-  bottom: 20px;
+  /* position: absolute;
+  bottom: 20px; */
   display: flex;
   align-items: center;
   color: ${props => props.theme.palette.text.secondary};
@@ -135,12 +151,10 @@ const StyledButton = styled.button`
     color: red;
   }
   p {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     margin-left: 10px;
   }
   cursor: pointer;
 `
-
-
 
 export default NavigationBar
