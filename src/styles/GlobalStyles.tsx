@@ -13,6 +13,10 @@ const styles = css`
     box-sizing: border-box;
     font-family: 'Pretendard';
   }
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('/src/assets/fonts/PretendardVariable.woff2');
+  }
 `;
 
 export default GlobalStyles;
