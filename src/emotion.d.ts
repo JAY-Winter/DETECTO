@@ -51,6 +51,7 @@ declare module '@emotion/react' {
       neutral: {
         main: string;
         section: string;
+        card: string;
       };
       text: {
         primary: string;

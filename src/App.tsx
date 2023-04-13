@@ -1,13 +1,13 @@
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
 import { createTheme, PaletteMode } from '@mui/material';
-import Button from '@mui/material/Button';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import React, { useState } from 'react';
 import getDesignTokens from './styles/themes';
+import NavigationBar from '@components/NavigationBar';
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 function App() {
-  const [mode, setMode] = useState<PaletteMode>('dark');
+  const [mode, setMode] = useState<PaletteMode>('light');
 
   const colorMode = React.useMemo(
     () => ({
@@ -25,11 +25,21 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div>
-        App
-      </div>
+      <button onClick={() => mode === 'dark' ? setMode('light') : setMode('dark')}>AAAAAA</button>
+      <StyledDiv css={container}>
+        <NavigationBar mode={mode} />
+      </StyledDiv>
     </ThemeProvider>
   );
 }
+
+const StyledDiv = styled.div`
+  display: flex;
+  background-color: ${props => props.theme.palette.neutral.main};
+  transition: all 0.3s ease;
+`
+const container = css`
+  display: flex;
+`
 
 export default App;
