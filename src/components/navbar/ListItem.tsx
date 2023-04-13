@@ -1,6 +1,8 @@
 import styled from '@emotion/styled'
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react'
+import { tabletV } from '@/utils/Mixin';
+import { css } from '@emotion/react';
 
 type ListItemProps = {
   icon: React.ReactNode,
@@ -38,6 +40,19 @@ const StyledLi = styled.li<{currentPathName: string, pathName: string}>`
   p {
     font-size: 1.1rem;
     margin-left: 10px;
+  }
+  ${tabletV} {
+    p {
+      display: none;
+    }
+    height: auto;
+    justify-content: center;
+    background-color: ${props => props.theme.palette.neutral.card};
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    svg {
+    }
   }
 `
 
