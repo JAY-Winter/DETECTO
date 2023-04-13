@@ -1,6 +1,8 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+import { useNavigate, useLocation, NavLink } from "react-router-dom";
+
 import SamLogoLight from '@/assets/img/samlogoLight.svg'
 import SamLogoDark from '@/assets/img/samlogoDark.svg'
 import Albert from '@/assets/img/albert.jpg'
@@ -8,20 +10,37 @@ import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlin
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import ListItem from './ListItem';
 
 type NavigationBarProps = {
-  mode: 'dark' | 'light'
+  mode: 'dark' | 'light',
+  setMode: React.Dispatch<React.SetStateAction<'dark' | 'light'>>;
 }
 
-function NavigationBar({mode}: NavigationBarProps) {
-  const [selectedItem, setSelectedItem] = useState(0);
-  const itemRef = useRef();
+function NavigationBar({mode, setMode}: NavigationBarProps) {
+  const location = useLocation();
+  const [currentPathName, setCurrentPathName] = useState("");
 
-  const handleItemClick = (e: React.MouseEvent<HTMLLIElement>) => {
+  const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const itemTopPos = rect.top;
     console.log(itemTopPos);
   }
+
+  const handleClickLogout = () => {
+    confirm("로그아웃 하시겠습니까??");
+  }
+
+  useEffect(() => {
+    setCurrentPathName((oldState) => {
+      if (oldState === location.pathname) {
+        return oldState;
+      } else {
+        console.log('URL이 변경되었습니당:', location.pathname);
+        return location.pathname;
+      }
+    })
+  }, [location])
 
   return (
     <StyledNav>
@@ -31,22 +50,14 @@ function NavigationBar({mode}: NavigationBarProps) {
         <p>{"아인슈타인"} Pro</p>
         <p>{"삼성전기 안전관리1팀"}</p>
       </ProfileCardDiv>
-      <StyledIndicatorDibv />
+      {/* <StyledIndicatorDibv /> */}
       <ul css={listContainer}>
-        <StyledLi onClick={handleItemClick}>
-          <SpaceDashboardOutlinedIcon />
-          <p>대시보드</p>
-        </StyledLi>
-        <StyledLi onClick={handleItemClick}>
-          <EngineeringOutlinedIcon />
-          <p>보호구 관리</p>
-        </StyledLi>
-        <StyledLi onClick={handleItemClick}>
-          <ArticleOutlinedIcon />
-          <p>리포트</p>
-        </StyledLi>
+        <ListItem icon={<SpaceDashboardOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+        <ListItem icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+        <ListItem icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
       </ul>
-      <StyledButton>
+      <button onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}>현재 테마: {mode}</button>
+      <StyledButton onClick={handleClickLogout}>
         <LogoutOutlinedIcon />
         <p>로그아웃</p>
       </StyledButton>
@@ -55,7 +66,7 @@ function NavigationBar({mode}: NavigationBarProps) {
 }
 
 const StyledNav = styled.nav`
-  width: 350px;
+  max-width: 350px;
   height: 100vh;
   background-color: ${props => props.theme.palette.neutral.section};
   color: ${props => props.theme.palette.text.primary};
@@ -108,22 +119,6 @@ const listContainer = css`
     &:last-child {
       margin-bottom: 0px;
     }
-  }
-`
-
-const StyledLi = styled.li`
-  height: 40px;
-  display: flex;
-  align-items: center;
-  color: ${props => props.theme.palette.text.secondary};
-  cursor: pointer;
-  margin-bottom: 30px;
-  &:hover {
-    color: ${props => props.theme.palette.primary.main}
-  }
-  p {
-    font-size: 1.3rem;
-    margin-left: 10px;
   }
 `
 
