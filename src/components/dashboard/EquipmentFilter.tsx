@@ -1,29 +1,40 @@
-import React from 'react';
+import { useState } from 'react';
 import styled from '@emotion/styled';
-import { Button, Chip, Paper } from '@mui/material';
+import { Button, Paper } from '@mui/material';
 import { RestartAlt } from '@mui/icons-material';
 import SafetyEquipmentChip from './Equipment/SafetyEquipmentChip';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
+import { mobileV } from '@/utils/Mixin';
 
 const eq = ['안전모', '장갑', '앞치마', '보안경', '방진마스크'];
 
 function DashboardEquipmentFilter() {
+  // 모바일 드롭다운 State
+  const [mobileOpen, setMobileOpen] = useState(false);
+  
+  // 장비 칩 map 랜더링 함수 (향후 랜더링 부분 추출 예정)
   const EquipmentChips = eq.map(equipment => {
-    return <SafetyEquipmentChip eqLabel={equipment} />;
+    return <SafetyEquipmentChip eqLabel={equipment} key={equipment} />;
   });
 
   return (
-    <>
-      <FilterPaper>
-        <HeaderDiv>
-          <h3>보호구 선택</h3>
-          <Button>
-            초기화
-            <RestartAlt color="primary" />
-          </Button>
-        </HeaderDiv>
-        <div>{EquipmentChips}</div>
-      </FilterPaper>
-    </>
+    <FilterPaper>
+      {/* 모바일에서 클릭 시 드롭다운 open/close */}
+      <FilterHeaderDiv onClick={() => {setMobileOpen(prev => !prev)}}>
+        <div>
+          <KeyboardArrowDownIcon />
+          보호구 선택
+        </div>
+        <Button onClick={(e) => {e.stopPropagation()}}>
+          <span>초기화</span>
+          <RestartAlt color="primary" />
+        </Button>
+      </FilterHeaderDiv>
+      {/* mobileopen props를 통해 모바일에서 드롭다운 표시 */}
+      {/* 모바일이 아닐 경우 항상 표시 됨 */}
+      <FilterContentDiv mobileopen={mobileOpen}>{EquipmentChips}</FilterContentDiv>
+    </FilterPaper>
   );
 }
 
@@ -37,21 +48,39 @@ const FilterPaper = styled(Paper)`
   margin: 0.5rem;
 `;
 
-const HeaderDiv = styled.div`
+const FilterHeaderDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  margin-bottom: 1rem;
+  div {
+    display: flex;
+    align-items: center;
+    svg {
+      display: none;
+    }
+  }
+  /* 모바일 한정 svg, 초기화 span */
+  ${mobileV} {
+    margin-bottom: 0;
+    div {
+      svg {
+        display: block;
+      }
+    }
+    button {
+      span {
+        display: none;
+      }
+    }
+  }
 `;
 
-const ResetDiv = styled.div`
+const FilterContentDiv = styled.div<{ mobileopen: boolean }>`
   display: flex;
-  align-items: center;
-  padding: 0.5rem;
 
-  &:hover {
-    cursor: pointer;
-    background-color: ${props => props.theme.palette.grey[10]}
+  /* 모바일 한정 컨텐츠 표시 */
+  ${mobileV} {
+    display: ${props => props.mobileopen ? "block" : "none"};
   }
-`
+`;

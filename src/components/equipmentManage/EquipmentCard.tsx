@@ -1,29 +1,21 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardMedia,
-  Switch,
-  Button,
-  Avatar,
-  IconButton,
-} from '@mui/material';
+import { Card, CardMedia, Switch, Button } from '@mui/material';
 import React from 'react';
+
 
 function EquipmentCard() {
   const [disabled, setDisabled] = useState<boolean>(true);
 
   const switchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDisabled(e.currentTarget.checked)
-  }
+    setDisabled(e.currentTarget.checked);
+  };
 
   return (
-    <EqCard onDisabled={disabled}>
+    <EqCard ischecked={disabled.toString()}>
       <CardHeaderDiv>
         <h2>안전모</h2>
-        <Switch checked={disabled} onChange={switchHandler}/>
+        <Switch checked={disabled} onChange={switchHandler} />
       </CardHeaderDiv>
       <CardMedia
         component="img"
@@ -47,16 +39,15 @@ function EquipmentCard() {
 
 export default EquipmentCard;
 
-const EqCard = styled(Card)<{onDisabled: boolean}>`
-  height: 26rem;
-  width: 20rem;
+const EqCard = styled(Card)<{ ischecked: string }>`
+  width: 18rem;
 
   padding: 1rem;
   margin: 1rem;
 
   transition: 0.2s all ease;
 
-  -webkit-filter: grayscale(${props => props.onDisabled ? 0 : 0.8});
+  -webkit-filter: grayscale(${props => (props.ischecked === "true" ? 0 : 0.8)});
 `;
 
 const CardHeaderDiv = styled.div`

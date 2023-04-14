@@ -5,7 +5,7 @@ import DashboardPage from './pages/DashboardPage';
 import getDesignTokens from './styles/themes';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate } from 'react-router-dom';
 import NavigationBar from '@components/navbar/NavigationBar';
 import EquipmentManagePage from './pages/EquipmentManagePage';
 import DummyDashboard from '@components/dummies/DummyDashboard';
@@ -13,7 +13,7 @@ import DummyManage from '@components/dummies/DummyManage';
 import DummySummary from '@components/dummies/DummySummary';
 
 function App() {
-  const [mode, setMode] = useState<PaletteMode>('dark');
+  const [mode, setMode] = useState<PaletteMode>('light');
 
   const colorMode = React.useMemo(
     () => ({
@@ -34,7 +34,7 @@ function App() {
     } else if (mode === 'dark') {
       document.body.style.backgroundColor = '#121212';
     }
-  }, [mode])
+  }, [mode]);
 
   const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
@@ -42,12 +42,14 @@ function App() {
     <ThemeProvider theme={theme}>
       <StyledDiv css={container}>
         <NavigationBar mode={mode} setMode={setMode} />
-        <Routes>
-          <Route path="/" element={<Navigate replace to="/dashboard" />} />
-          <Route path='/dashboard' element={<DashboardPage />} />
-          <Route path='/manage' element={<EquipmentManagePage />} />
-          <Route path='/summary' />
-        </Routes>
+        <RouterContainerDiv>
+          <Routes>
+            <Route path="/" element={<Navigate replace to="/dashboard" />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/manage" element={<EquipmentManagePage />} />
+            <Route path="/summary" />
+          </Routes>
+        </RouterContainerDiv>
       </StyledDiv>
     </ThemeProvider>
   );
@@ -58,10 +60,16 @@ const StyledDiv = styled.div`
   background-color: ${props => props.theme.palette.neutral.main};
   transition: background-color 0.3s ease;
   height: 100vh;
+`;
+
+const RouterContainerDiv = styled.div`
+  width: 100%;
+  display: flex;
   overflow-y: auto;
-`
+`;
+
 const container = css`
   display: flex;
-`
+`;
 
 export default App;
