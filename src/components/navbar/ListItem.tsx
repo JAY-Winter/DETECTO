@@ -45,24 +45,12 @@ const StyledLi = styled.li<{currentPathName: string, pathName: string}>`
   margin-bottom: 30px;
   @media(hover: hover) {
     &:hover {
-      color: ${props => props.currentPathName === props.pathName ? props.theme.palette.text.primary : props.theme.palette.primary.main};
+      color: ${props => props.theme.palette.primary.main};
     }
   }
   p {
     font-size: 1.1rem;
     margin-left: 10px;
-  }
-  ${tabletV} {
-    p {
-      display: none;
-    }
-    height: auto;
-    justify-content: center;
-    color: ${props => props.currentPathName === props.pathName ? props.theme.palette.text.primary : props.theme.palette.text.secondary};
-    background-color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.neutral.section};
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
   }
 `
 

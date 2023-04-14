@@ -10,8 +10,11 @@ import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlin
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import MenuIcon from '@mui/icons-material/Menu';
 import ListItem from './ListItem';
-import { mobileV, tabletV } from '@/utils/Mixin';
+import { Switch } from '@mui/material';
 
 type NavigationBarProps = {
   mode: 'dark' | 'light',
@@ -22,6 +25,10 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
 
+  const handleClickMenu = () => {
+    console.log("메뉴 버튼 눌림");
+  }
+
   // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
   const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();  // 클릭된 아이템의 레이아웃 정보를 알아낸다
@@ -31,6 +38,16 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
   // 로그아웃 핸들러
   const handleClickLogout = () => {
     confirm("로그아웃 하시겠습니까??");
+  }
+
+  const handleToggleTheme = () => {
+    setMode((oldState) => {
+      if (oldState === 'light') {
+        return 'dark';
+      } else {
+        return 'light';
+      }
+    })
   }
 
   // url 변경여부 감지 hook
@@ -48,9 +65,16 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
   return (
     <StyledNav>
       {/* 삼성 로고 */}
-      <NavLink to={'/'}>
-        <img css={logoContainer} src={mode ==='light' ? SamLogoLight : SamLogoDark} />
-      </NavLink>
+      <StyledHeaderDiv>
+        <button onClick={handleClickMenu}>
+          <MenuIcon />
+        </button>
+        <NavLink to={'/'}>
+          <div>
+            <img css={logoContainer} src={mode ==='light' ? SamLogoLight : SamLogoDark} />
+          </div>
+        </NavLink>
+      </StyledHeaderDiv>
 
       {/* 프로필 카드 */}
       <ProfileCardDiv>
@@ -69,11 +93,19 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
           <ListItem icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
         </ul>
         
-        {/* 로그아웃 버튼 */}
-        <StyledButton onClick={handleClickLogout}>
-          <LogoutOutlinedIcon />
-          <p>로그아웃</p>
-        </StyledButton>
+        <div css={footerContainer}>
+          {/* 로그아웃 버튼 */}
+          <StyledButton onClick={handleClickLogout}>
+            <LogoutOutlinedIcon />
+            <p>로그아웃</p>
+          </StyledButton>
+          {/* 테마 토글 버튼 */}
+          <div css={switchContainer}>
+            <LightModeIcon />
+            <Switch color="default" checked={mode === 'dark' ? true : false} onChange={handleToggleTheme}/>
+            <DarkModeIcon />
+          </div>
+        </div>
       </div>
     </StyledNav>
   )
@@ -82,28 +114,38 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
 const StyledNav = styled.nav`
   display: flex;
   flex-direction: column;
-  max-width: 350px;
-  min-width: 350px;
+  max-width: 300px;
+  min-width: 300px;
   height: 100vh;
   min-height: 700px;
   background-color: ${props => props.theme.palette.neutral.section};
   color: ${props => props.theme.palette.text.primary};
   transition: background-color 0.3s ease;
   padding: 20px;
-  ${tabletV} {
-    max-width: 85px;
-    min-width: 85px;
-    padding: 20px;
-    min-height: 350px;
+`
+
+const StyledHeaderDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0px;
+  svg {
+    color: ${props => props.theme.palette.text.primary};
+    font-size: 2rem;
+  }
+  button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
   }
 `
 
 const logoContainer = css`
   width: 100%;
-  margin: 10px 0px 30px 0px;
-  ${tabletV} {
-    display: none;
-  }
+  height: 2.5rem;
+  padding: 0px 10px;
+  /* margin-left: 10px; */
+  /* margin: 10px 0px 30px 0px; */
 `
 
 const ProfileCardDiv = styled.div`
@@ -120,9 +162,6 @@ const ProfileCardDiv = styled.div`
       font-weight: bold;
       margin: 10px 0px;
     }
-  }
-  ${tabletV} {
-    display: none;
   }
 `
 
@@ -148,9 +187,6 @@ const itemsContainer = css`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  ${tabletV} {
-    align-items: center;
-  }
 `
 
 const listContainer = css`
@@ -163,10 +199,12 @@ const listContainer = css`
       margin-bottom: 0px;
     }
   }
-  ${tabletV} {
-    margin-top: 0px;
-    padding-left: 0px;
-  }
+`
+
+const footerContainer = css`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `
 
 const StyledButton = styled.button`
@@ -186,15 +224,11 @@ const StyledButton = styled.button`
     margin-left: 10px;
   }
   cursor: pointer;
-  ${tabletV} {
-    p {
-      display: none;
-    }
-    margin-left: 0px;
-    background-color: ${props => props.theme.palette.neutral.card};
-    padding: 15px;
-    border-radius: 10px;
-  }
+`
+
+const switchContainer = css`
+  display: flex;
+  align-items: center;
 `
 
 export default NavigationBar
