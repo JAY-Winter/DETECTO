@@ -43,8 +43,10 @@ const StyledLi = styled.li<{currentPathName: string, pathName: string}>`
   font-weight: ${props => props.currentPathName === props.pathName ? "bold" : "normal"};
   cursor: pointer;
   margin-bottom: 30px;
-  &:hover {
-    color: ${props => props.theme.palette.primary.main}
+  @media(hover: hover) {
+    &:hover {
+      color: ${props => props.currentPathName === props.pathName ? props.theme.palette.text.primary : props.theme.palette.primary.main};
+    }
   }
   p {
     font-size: 1.1rem;
@@ -56,7 +58,8 @@ const StyledLi = styled.li<{currentPathName: string, pathName: string}>`
     }
     height: auto;
     justify-content: center;
-    background-color: ${props => props.theme.palette.neutral.card};
+    color: ${props => props.currentPathName === props.pathName ? props.theme.palette.text.primary : props.theme.palette.text.secondary};
+    background-color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.neutral.section};
     padding: 15px;
     border-radius: 10px;
     margin-bottom: 20px;
