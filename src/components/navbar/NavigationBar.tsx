@@ -11,6 +11,7 @@ import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import ListItem from './ListItem';
+import { mobileV, tabletV } from '@/utils/Mixin';
 
 type NavigationBarProps = {
   mode: 'dark' | 'light',
@@ -21,22 +22,24 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
 
+  // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
   const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const itemTopPos = rect.top;
-    console.log(itemTopPos);
+    const rect = e.currentTarget.getBoundingClientRect();  // 클릭된 아이템의 레이아웃 정보를 알아낸다
+    const itemTopPos = rect.top;  // 클릭된 아이템의 최상위 지점의 위치를 알아낸다
   }
 
+  // 로그아웃 핸들러
   const handleClickLogout = () => {
     confirm("로그아웃 하시겠습니까??");
   }
 
+  // url 변경여부 감지 hook
   useEffect(() => {
     setCurrentPathName((oldState) => {
       if (oldState === location.pathname) {
         return oldState;
       } else {
-        console.log('URL이 변경되었습니당:', location.pathname);
+        console.log('URL 변경:', location.pathname);
         return location.pathname;
       }
     })
@@ -44,22 +47,29 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
 
   return (
     <StyledNav>
+      {/* 삼성 로고 */}
       <NavLink to={'/'}>
-        <img css={imageContainer} src={mode ==='light' ? SamLogoLight : SamLogoDark} />
+        <img css={logoContainer} src={mode ==='light' ? SamLogoLight : SamLogoDark} />
       </NavLink>
+
+      {/* 프로필 카드 */}
       <ProfileCardDiv>
         <img css={profileImageStyle} src={Albert} alt="" />
         <p>{"아인슈타인"} Pro</p>
         <p>{"삼성전기 안전관리1팀"}</p>
       </ProfileCardDiv>
+
+      {/* 각종 아이템들 */}
       {/* <StyledIndicatorDibv /> */}
       <div css={itemsContainer}>
+        {/* 네비게이션 아이템들 */}
         <ul css={listContainer}>
           <ListItem icon={<SpaceDashboardOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
           <ListItem icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
           <ListItem icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
         </ul>
-        <button onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}>현재 테마: {mode}</button>
+        
+        {/* 로그아웃 버튼 */}
         <StyledButton onClick={handleClickLogout}>
           <LogoutOutlinedIcon />
           <p>로그아웃</p>
@@ -73,17 +83,27 @@ const StyledNav = styled.nav`
   display: flex;
   flex-direction: column;
   max-width: 350px;
+  min-width: 350px;
   height: 100vh;
   min-height: 700px;
   background-color: ${props => props.theme.palette.neutral.section};
   color: ${props => props.theme.palette.text.primary};
   transition: background-color 0.3s ease;
   padding: 20px;
+  ${tabletV} {
+    max-width: 85px;
+    min-width: 85px;
+    padding: 20px;
+    min-height: 350px;
+  }
 `
 
-const imageContainer = css`
+const logoContainer = css`
   width: 100%;
   margin: 10px 0px 30px 0px;
+  ${tabletV} {
+    display: none;
+  }
 `
 
 const ProfileCardDiv = styled.div`
@@ -100,6 +120,9 @@ const ProfileCardDiv = styled.div`
       font-weight: bold;
       margin: 10px 0px;
     }
+  }
+  ${tabletV} {
+    display: none;
   }
 `
 
@@ -125,16 +148,24 @@ const itemsContainer = css`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  ${tabletV} {
+    align-items: center;
+  }
 `
 
 const listContainer = css`
   padding-left: 20px;
   list-style: none;
   margin-top: 50px;
+  /* width: 100%; */
   li {
     &:last-child {
       margin-bottom: 0px;
     }
+  }
+  ${tabletV} {
+    margin-top: 0px;
+    padding-left: 0px;
   }
 `
 
@@ -155,6 +186,15 @@ const StyledButton = styled.button`
     margin-left: 10px;
   }
   cursor: pointer;
+  ${tabletV} {
+    p {
+      display: none;
+    }
+    margin-left: 0px;
+    background-color: ${props => props.theme.palette.neutral.card};
+    padding: 15px;
+    border-radius: 10px;
+  }
 `
 
 export default NavigationBar

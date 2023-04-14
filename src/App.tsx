@@ -8,9 +8,12 @@ import styled from '@emotion/styled';
 import { Route, Routes, Navigate } from "react-router-dom";
 import NavigationBar from '@components/navbar/NavigationBar';
 import EquipmentManagePage from './pages/EquipmentManagePage';
+import DummyDashboard from '@components/dummies/DummyDashboard';
+import DummyManage from '@components/dummies/DummyManage';
+import DummySummary from '@components/dummies/DummySummary';
 
 function App() {
-  const [mode, setMode] = useState<PaletteMode>('light');
+  const [mode, setMode] = useState<PaletteMode>('dark');
 
   const colorMode = React.useMemo(
     () => ({
