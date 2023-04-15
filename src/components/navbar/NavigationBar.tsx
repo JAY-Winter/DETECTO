@@ -15,19 +15,18 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import MenuIcon from '@mui/icons-material/Menu';
 import ListItem from './ListItem';
 import { Switch } from '@mui/material';
+import { tabletV } from '@/utils/Mixin';
 
 type NavigationBarProps = {
   mode: 'dark' | 'light',
-  setMode: React.Dispatch<React.SetStateAction<'dark' | 'light'>>;
+  setMode: React.Dispatch<React.SetStateAction<'dark' | 'light'>>,
 }
 
 function NavigationBar({mode, setMode}: NavigationBarProps) {
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
 
-  const handleClickMenu = () => {
-    console.log("메뉴 버튼 눌림");
-  }
+  const handleClickMenu = () => {}
 
   // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
   const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
@@ -64,17 +63,11 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
 
   return (
     <StyledNav>
+      {/* Header */}
       {/* 삼성 로고 */}
-      <StyledHeaderDiv>
-        <button onClick={handleClickMenu}>
-          <MenuIcon />
-        </button>
-        <NavLink to={'/'}>
-          <div>
-            <img css={logoContainer} src={mode ==='light' ? SamLogoLight : SamLogoDark} />
-          </div>
-        </NavLink>
-      </StyledHeaderDiv>
+      <NavLink to={'/'}>
+        <img css={logoContainer} src={mode ==='light' ? SamLogoLight : SamLogoDark} />
+      </NavLink>
 
       {/* 프로필 카드 */}
       <ProfileCardDiv>
@@ -83,14 +76,14 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
         <p>{"삼성전기 안전관리1팀"}</p>
       </ProfileCardDiv>
 
-      {/* 각종 아이템들 */}
+      {/* Body & Footer */}
       {/* <StyledIndicatorDibv /> */}
-      <div css={itemsContainer}>
+      <div css={bodyContainer}>
         {/* 네비게이션 아이템들 */}
         <ul css={listContainer}>
-          <ListItem icon={<SpaceDashboardOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-          <ListItem icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-          <ListItem icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          <ListItem renderMode='full' icon={<SpaceDashboardOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          <ListItem renderMode='full' icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          <ListItem renderMode='full' icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
         </ul>
         
         <div css={footerContainer}>
@@ -112,16 +105,21 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
 }
 
 const StyledNav = styled.nav`
+  position: fixed;
+  top: 0px;
+  left: 0px;
   display: flex;
   flex-direction: column;
-  max-width: 300px;
-  min-width: 300px;
+  width: 300px;
   height: 100vh;
   min-height: 700px;
   background-color: ${props => props.theme.palette.neutral.section};
   color: ${props => props.theme.palette.text.primary};
   transition: background-color 0.3s ease;
   padding: 20px;
+  ${tabletV} {
+    display: none;
+  }
 `
 
 const StyledHeaderDiv = styled.div`
@@ -142,10 +140,10 @@ const StyledHeaderDiv = styled.div`
 
 const logoContainer = css`
   width: 100%;
-  height: 2.5rem;
-  padding: 0px 10px;
+  /* height: 2rem; */
+  /* padding: 0px 10px; */
   /* margin-left: 10px; */
-  /* margin: 10px 0px 30px 0px; */
+  margin: 10px 0px 30px 0px;
 `
 
 const ProfileCardDiv = styled.div`
@@ -181,7 +179,7 @@ const StyledIndicatorDibv = styled.div`
   background-color: ${props => props.theme.palette.primary.main};
 `
 
-const itemsContainer = css`
+const bodyContainer = css`
   width: 100%;
   flex-grow: 1;
   display: flex;
@@ -195,6 +193,7 @@ const listContainer = css`
   margin-top: 50px;
   /* width: 100%; */
   li {
+    margin-bottom: 30px;
     &:last-child {
       margin-bottom: 0px;
     }
@@ -208,8 +207,6 @@ const footerContainer = css`
 `
 
 const StyledButton = styled.button`
-  /* position: absolute;
-  bottom: 20px; */
   display: flex;
   align-items: center;
   color: ${props => props.theme.palette.text.secondary};

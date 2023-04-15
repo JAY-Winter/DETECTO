@@ -10,39 +10,50 @@ import React, { useState, useEffect } from 'react'
 import { tabletV } from '@/utils/Mixin';
 
 type ListItemProps = {
+  renderMode: 'full' | 'mini',
   icon: React.ReactNode,
-  label: string,
+  label?: string,
   pathName: string,  // 이동할 경로
   currentPathName: string,  // 현재 머무르고 있는 경로
   clickHandler: (e: React.MouseEvent<HTMLLIElement>) => void
 }
 
-function ListItem({icon, label, pathName, currentPathName, clickHandler}: ListItemProps) {
+function ListItem({renderMode, icon, label, pathName, currentPathName, clickHandler}: ListItemProps) {
   const navigate = useNavigate();
 
   const handleClickItem = (e: React.MouseEvent<HTMLLIElement>) => {
     clickHandler(e);  // 부모로부터 입력받은 핸들러 실행
     navigate(pathName);  // 이동할 경로를 향해 라우팅한다
   }
-  return (
-    <StyledLi currentPathName={currentPathName} pathName={pathName} onClick={(e) => handleClickItem(e)}>
-      {/* MUI 아이콘 */}
-      {icon}
+  if (renderMode === 'full') {
+    return (
+      <StyledFullLi currentPathName={currentPathName} pathName={pathName} onClick={(e) => handleClickItem(e)}>
+        {/* MUI 아이콘 */}
+        {icon}
 
-      {/* 레이블 */}
-      <p>{label}</p>
-    </StyledLi>
-  )
+        {/* 레이블 */}
+        <p>{label}</p>
+      </StyledFullLi>
+    )
+  } else if (renderMode === 'mini') {
+    return (
+      <StyledMiniLi currentPathName={currentPathName} pathName={pathName} onClick={(e) => handleClickItem(e)}>
+        {/* MUI 아이콘 */}
+        {icon}
+      </StyledMiniLi>
+    )
+  } else {
+    return <li></li>
+  }
 }
 
-const StyledLi = styled.li<{currentPathName: string, pathName: string}>`
-  height: 40px;
+const StyledFullLi = styled.li<{currentPathName: string, pathName: string}>`
+  /* height: 40px; */
   display: flex;
   align-items: center;
   color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.text.secondary};
   font-weight: ${props => props.currentPathName === props.pathName ? "bold" : "normal"};
   cursor: pointer;
-  margin-bottom: 30px;
   @media(hover: hover) {
     &:hover {
       color: ${props => props.theme.palette.primary.main};
@@ -51,6 +62,16 @@ const StyledLi = styled.li<{currentPathName: string, pathName: string}>`
   p {
     font-size: 1.1rem;
     margin-left: 10px;
+  }
+`
+
+const StyledMiniLi = styled.li<{currentPathName: string, pathName: string}>`
+  background-color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.neutral.card};
+  color: ${props => props.currentPathName === props.pathName ? props.theme.palette.neutral.main : props.theme.palette.text.secondary};
+  @media(hover: hover) {
+    &:hover {
+      color: ${props => props.currentPathName === props.pathName ? props.theme.palette.neutral.main : props.theme.palette.primary.main};
+    }
   }
 `
 
