@@ -12,6 +12,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ListItem from '@components/navbar/ListItem';
 import { useLocation } from 'react-router-dom';
 import { css } from '@emotion/react';
+import ModalPortal from '@components/common/ModalPortal';
+import LeftModal from '@components/common/LeftModal';
+import NavigationBar from './NavigationBar';
 
 
 type NavigationBarTabletProps = {
@@ -22,9 +25,12 @@ type NavigationBarTabletProps = {
 function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
+  const [isShowLeftModal, setIsShowLeftModal] = useState(false);
 
   const handleClickMenu = () => {
     // portal로 네비게이션 바 띄우기
+    setIsShowLeftModal(!isShowLeftModal);
+    console.log(isShowLeftModal);
   }
   
   // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
@@ -54,44 +60,50 @@ function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
       if (oldState === location.pathname) {
         return oldState;
       } else {
-        console.log('URL 변경:', location.pathname);
         return location.pathname;
       }
     })
   }, [location])
 
   return (
-    <StyledNav>
-      {/* Header */}
-      <MenuButton>
-        <MenuIcon />
-      </MenuButton>
+    <div>
+      <ModalPortal>
+        <LeftModal isShowLeftModal={isShowLeftModal} onClose={() => setIsShowLeftModal(false)}>
+          <NavigationBar mode={mode} setMode={setMode} isModal={true} />
+        </LeftModal>
+      </ModalPortal>
+      <StyledNav>
+        {/* Header */}
+        <MenuButton onClick={handleClickMenu}>
+          <MenuIcon />
+        </MenuButton>
 
-      {/* Body & Footer */}
-      <div css={bodyContainer}>
-        {/* 네비게이션 아이템들 */}
-        <ul css={listContainer}>
-          <ListItem renderMode='mini' icon={<SpaceDashboardOutlinedIcon fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-          <ListItem renderMode='mini' icon={<EngineeringOutlinedIcon  fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-          <ListItem renderMode='mini' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-        </ul>
-        
-        <div css={footerContainer}>
-          {/* 테마 토글 버튼 */}
-          <ThemeToggleButton mode={mode} onClick={() => handleToggleTheme()}>
-            {mode === 'light' ? 
-              <LightModeIcon /> :
-              <DarkModeIcon />
-            }
-          </ThemeToggleButton>
+        {/* Body & Footer */}
+        <div css={bodyContainer}>
+          {/* 네비게이션 아이템들 */}
+          <ul css={listContainer}>
+            <ListItem renderMode='mini' icon={<SpaceDashboardOutlinedIcon fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+            <ListItem renderMode='mini' icon={<EngineeringOutlinedIcon  fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+            <ListItem renderMode='mini' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          </ul>
+          
+          <div css={footerContainer}>
+            {/* 테마 토글 버튼 */}
+            <ThemeToggleButton mode={mode} onClick={() => handleToggleTheme()}>
+              {mode === 'light' ? 
+                <LightModeIcon /> :
+                <DarkModeIcon />
+              }
+            </ThemeToggleButton>
 
-          {/* 로그아웃 버튼 */}
-          <LogoutButton onClick={() => handleClickLogout()}>
-            <LogoutOutlinedIcon />
-          </LogoutButton>
+            {/* 로그아웃 버튼 */}
+            <LogoutButton onClick={() => handleClickLogout()}>
+              <LogoutOutlinedIcon />
+            </LogoutButton>
+          </div>
         </div>
-      </div>
-    </StyledNav>
+      </StyledNav>
+    </div>
   )
 }
 
@@ -170,8 +182,10 @@ const LogoutButton = styled.button`
   cursor: pointer;
   color: ${props => props.theme.palette.text.secondary};
   background-color: ${props => props.theme.palette.neutral.card};
-  &:hover {
-    color: red;
+  @media(hover: hover) {
+    &:hover {
+      color: red;
+    }
   }
 `
 

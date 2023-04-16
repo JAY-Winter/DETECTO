@@ -12,7 +12,7 @@ import DummyDashboard from '@components/dummies/DummyDashboard';
 import DummyManage from '@components/dummies/DummyManage';
 import DummySummary from '@components/dummies/DummySummary';
 import { mobileV, tabletV } from './utils/Mixin';
-import NavigationBarTablet from '@components/navbar_tablet/NavigationBarTablet';
+import NavigationBarTablet from '@components/navbar/NavigationBarTablet';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -48,9 +48,13 @@ function App() {
         <RouterContainerDiv>
           <Routes>
             <Route path="/" element={<Navigate replace to="/dashboard" />} />
+            <Route path="/dashboard" element={<DummyDashboard />} />
+            <Route path="/manage" element={<EquipmentManagePage />} />
+            <Route path="/summary" element={<DummySummary />}/>
+            {/* <Route path="/" element={<Navigate replace to="/dashboard" />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
-            <Route path="/summary" />
+            <Route path="/summary" /> */}
           </Routes>
         </RouterContainerDiv>
       </StyledDiv>
@@ -72,6 +76,9 @@ const RouterContainerDiv = styled.div`
   overflow-y: auto;
   ${tabletV} {
     margin-left: 70px;
+  }
+  ${mobileV} {
+    margin-left: 0px;
   }
 `;
 

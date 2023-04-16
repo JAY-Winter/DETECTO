@@ -12,7 +12,6 @@ import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import MenuIcon from '@mui/icons-material/Menu';
 import ListItem from './ListItem';
 import { Switch } from '@mui/material';
 import { tabletV } from '@/utils/Mixin';
@@ -20,13 +19,12 @@ import { tabletV } from '@/utils/Mixin';
 type NavigationBarProps = {
   mode: 'dark' | 'light',
   setMode: React.Dispatch<React.SetStateAction<'dark' | 'light'>>,
+  isModal?: boolean
 }
 
-function NavigationBar({mode, setMode}: NavigationBarProps) {
+function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
-
-  const handleClickMenu = () => {}
 
   // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
   const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
@@ -55,14 +53,13 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
       if (oldState === location.pathname) {
         return oldState;
       } else {
-        console.log('URL 변경:', location.pathname);
         return location.pathname;
       }
     })
   }, [location])
 
   return (
-    <StyledNav>
+    <StyledNav isModal={isModal}>
       {/* Header */}
       {/* 삼성 로고 */}
       <NavLink to={'/'}>
@@ -104,7 +101,7 @@ function NavigationBar({mode, setMode}: NavigationBarProps) {
   )
 }
 
-const StyledNav = styled.nav`
+const StyledNav = styled.nav<{isModal: boolean}>`
   position: fixed;
   top: 0px;
   left: 0px;
@@ -118,7 +115,7 @@ const StyledNav = styled.nav`
   transition: background-color 0.3s ease;
   padding: 20px;
   ${tabletV} {
-    display: none;
+    display: ${props => props.isModal ? 'flex' : 'none'};
   }
 `
 
@@ -191,7 +188,6 @@ const listContainer = css`
   padding-left: 20px;
   list-style: none;
   margin-top: 50px;
-  /* width: 100%; */
   li {
     margin-bottom: 30px;
     &:last-child {

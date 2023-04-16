@@ -6,6 +6,7 @@ function GlobalStyles() {
 }
 
 const styles = css`
+  @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard-dynamic-subset.css");
   * {
     margin: 0;
     padding: 0;
@@ -13,10 +14,10 @@ const styles = css`
     box-sizing: border-box;
     font-family: 'Pretendard';
   }
-  @font-face {
+  /* @font-face {
     font-family: 'Pretendard';
     src: url('/src/assets/fonts/PretendardVariable.woff2');
-  }
+  } */
 `;
 
 export default GlobalStyles;
