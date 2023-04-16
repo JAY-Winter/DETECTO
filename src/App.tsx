@@ -11,6 +11,8 @@ import EquipmentManagePage from './pages/EquipmentManagePage';
 import DummyDashboard from '@components/dummies/DummyDashboard';
 import DummyManage from '@components/dummies/DummyManage';
 import DummySummary from '@components/dummies/DummySummary';
+import { mobileV, tabletV } from './utils/Mixin';
+import NavigationBarTablet from '@components/navbar/NavigationBarTablet';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -27,6 +29,8 @@ function App() {
     []
   );
 
+  const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+
   // 테마 따라 body 태그의 백그라운드 색상 결정
   useEffect(() => {
     if (mode === 'light') {
@@ -36,12 +40,11 @@ function App() {
     }
   }, [mode]);
 
-  const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
-
   return (
     <ThemeProvider theme={theme}>
       <StyledDiv css={container}>
         <NavigationBar mode={mode} setMode={setMode} />
+        <NavigationBarTablet mode={mode} setMode={setMode} />
         <RouterContainerDiv>
           <Routes>
             <Route path="/" element={<Navigate replace to="/dashboard" />} />
@@ -64,8 +67,15 @@ const StyledDiv = styled.div`
 
 const RouterContainerDiv = styled.div`
   width: 100%;
+  margin-left: 300px;
   display: flex;
   overflow-y: auto;
+  ${tabletV} {
+    margin-left: 70px;
+  }
+  ${mobileV} {
+    margin-left: 0px;
+  }
 `;
 
 const container = css`
