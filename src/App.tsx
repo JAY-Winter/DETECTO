@@ -48,13 +48,9 @@ function App() {
         <RouterContainerDiv>
           <Routes>
             <Route path="/" element={<Navigate replace to="/dashboard" />} />
-            <Route path="/dashboard" element={<DummyDashboard />} />
-            <Route path="/manage" element={<EquipmentManagePage />} />
-            <Route path="/summary" element={<DummySummary />}/>
-            {/* <Route path="/" element={<Navigate replace to="/dashboard" />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
-            <Route path="/summary" /> */}
+            <Route path="/summary" />
           </Routes>
         </RouterContainerDiv>
       </StyledDiv>
