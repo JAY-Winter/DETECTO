@@ -27,6 +27,10 @@ function DashboardDatePicker() {
     setTabValue(newValue);
   };
 
+  const resetFilterDay = () => {
+    setDate({startDay: dayjs(), endDay: dayjs()})
+  }
+
   return (
     <DatePaper>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
@@ -42,6 +46,7 @@ function DashboardDatePicker() {
         <Button
           onClick={e => {
             e.stopPropagation();
+            resetFilterDay()
           }}
         >
           <span>현재 날짜</span>

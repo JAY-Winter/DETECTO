@@ -1,14 +1,8 @@
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
 
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
 import {
-  Box,
-  Button,
-  Collapse,
   IconButton,
-  Card,
   Paper,
   Table,
   TableBody,
@@ -18,209 +12,174 @@ import {
   TableFooter,
   TablePagination,
 } from '@mui/material';
-import {
-  KeyboardArrowDown,
-  KeyboardArrowUp,
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-  FirstPage,
-  LastPage,
-} from '@mui/icons-material';
-import Albert from '@/assets/img/albert.jpg';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { mobileV } from '@/utils/Mixin';
 import IssueCard from './Issue/IssueCard';
+import TablePaginationActions from './Issue/TablePaginationActions';
+import Row, { TteamMember, TtableData } from './Issue/TableRow';
 
-interface TablePaginationActionsProps {
-  count: number;
-  page: number;
-  rowsPerPage: number;
-  onPageChange: (
-    event: React.MouseEvent<HTMLButtonElement>,
-    newPage: number
-  ) => void;
-}
+const team1: TteamMember[] = [
+  {
+    memberId: 1,
+    memberImg: '',
+    memberName: '성광현',
+    memberTeam: '삼성전기 1팀',
+  },
+  {
+    memberId: 2,
+    memberImg: '',
+    memberName: '윤소현',
+    memberTeam: '삼성전기 1팀',
+  },
+];
 
-function TablePaginationActions(props: TablePaginationActionsProps) {
-  const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
+const team2: TteamMember[] = [
+  {
+    memberId: 3,
+    memberImg: '',
+    memberName: '정재현',
+    memberTeam: '삼성전기 2팀',
+  },
+  {
+    memberId: 4,
+    memberImg: '',
+    memberName: '이석원',
+    memberTeam: '삼성전기 2팀',
+  },
+];
 
-  const handleFirstPageButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onPageChange(event, 0);
-  };
+const team3: TteamMember[] = [
+  {
+    memberId: 5,
+    memberImg: '',
+    memberName: '이용훈',
+    memberTeam: '삼성전기 3팀',
+  },
+  {
+    memberId: 6,
+    memberImg: '',
+    memberName: '배상준',
+    memberTeam: '삼성전기 3팀',
+  },
+];
 
-  const handleBackButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onPageChange(event, page - 1);
-  };
+const team4: TteamMember[] = [
+  {
+    memberId: 7,
+    memberImg: '',
+    memberName: '아인슈타인',
+    memberTeam: '삼성전기 4팀',
+  },
+  {
+    memberId: 8,
+    memberImg: '',
+    memberName: '테슬라',
+    memberTeam: '삼성전기 4팀',
+  },
+];
 
-  const handleNextButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onPageChange(event, page + 1);
-  };
-
-  const handleLastPageButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  };
-
-  return (
-    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-      <IconButton
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
-        {theme.direction === 'rtl' ? <LastPage /> : <FirstPage />}
-      </IconButton>
-      <IconButton
-        onClick={handleBackButtonClick}
-        disabled={page === 0}
-        aria-label="previous page"
-      >
-        {theme.direction === 'rtl' ? (
-          <KeyboardArrowRight />
-        ) : (
-          <KeyboardArrowLeft />
-        )}
-      </IconButton>
-      <IconButton
-        onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
-      >
-        {theme.direction === 'rtl' ? (
-          <KeyboardArrowLeft />
-        ) : (
-          <KeyboardArrowRight />
-        )}
-      </IconButton>
-      <IconButton
-        onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
-      >
-        {theme.direction === 'rtl' ? <FirstPage /> : <LastPage />}
-      </IconButton>
-    </Box>
-  );
-}
-
-function createData(date: string, issue: string, work: string, team: number) {
-  return {
-    date,
-    issue,
-    work,
-    team,
-    history: [],
-  };
-}
-
-function Row(props: { row: ReturnType<typeof createData> }) {
-  const { row } = props;
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <IssueTableRow
-        sx={{ '& > *': { borderBottom: 'unset' } }}
-        onClick={() => setOpen(!open)}
-      >
-        <TableCell component="th" scope="row">
-          {row.date}
-        </TableCell>
-        <TableCell align="left">{row.issue}</TableCell>
-        <TableCell align="left">{row.work}</TableCell>
-        <TableCell align="left">{row.team}</TableCell>
-        <PendingTableCell align="center">
-          {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-        </PendingTableCell>
-      </IssueTableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box
-              sx={{
-                margin: 1,
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <div
-                style={{
-                  width: '50%',
-                  height: '300px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
-                <h2>위반 사진</h2>
-                <img
-                  css={IssueImageStyle}
-                  src="https://image.ytn.co.kr/general/jpg/2018/0725/201807250840324192_t.jpg"
-                  alt=""
-                />
-              </div>
-              <div
-                style={{
-                  width: '50%',
-                  height: '300px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
-                <h2>위반 사원</h2>
-                <ProfileCard>
-                  <img css={profileImageStyle} src={Albert} alt="" />
-                  <p>{'아인슈타인'} Pro</p>
-                  <p>{'삼성전기 안전관리1팀'}</p>
-                  <IconButton className="leftArrow">
-                    <KeyboardArrowLeft />
-                  </IconButton>
-                  <IconButton className="rightArrow">
-                    <KeyboardArrowRight />
-                  </IconButton>
-                </ProfileCard>
-                <Button
-                  variant="contained"
-                  sx={{ width: '100%', maxWidth: '350px' }}
-                >
-                  위반사원 수정
-                </Button>
-              </div>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
-  );
-}
-
-const rows = [
-  createData('2022-04-14 12:00', '안전모, 장갑', '현장작업', 1),
-  createData('2022-04-14 14:00', '장갑', '현장작업', 1),
-  createData('2022-04-14 18:30', '안전모', '현장작업', 2),
-  createData('2022-04-14 19:23', '앞치마', '현장작업', 2),
-  createData('2022-04-14 20:12', '보안경', '현장작업', 3),
-  createData('2022-04-14 20:13', '보안경', '현장작업', 3),
-  createData('2022-04-14 20:14', '보안경', '현장작업', 2),
-  createData('2022-04-14 20:15', '보안경', '현장작업', 1),
-  createData('2022-04-14 20:16', '보안경', '현장작업', 2),
-  createData('2022-04-14 20:17', '보안경', '현장작업', 3),
-  createData('2022-04-14 20:18', '보안경', '현장작업', 4),
-  createData('2022-04-14 20:19', '보안경', '현장작업', 4),
-  createData('2022-04-14 20:20', '보안경', '현장작업', 4),
-].sort();
+const dummyData: TtableData[] = [
+  {
+    date: '2023-04-10 11:00',
+    issue: ['안전모'],
+    work: '어떤작업',
+    team: 1,
+    violate_img:
+      'https://www.enewstoday.co.kr/news/photo/202204/1566109_621853_1110.jpg',
+    teamList: team1,
+  },
+  {
+    date: '2023-04-10 11:30',
+    issue: ['안전모', '앞치마'],
+    work: '어떤작업',
+    team: 1,
+    violate_img:
+      'https://www.enewstoday.co.kr/news/photo/202204/1566109_621853_1110.jpg',
+    teamList: team1,
+  },
+  {
+    date: '2023-04-10 13:58',
+    issue: ['보안경'],
+    work: '어떤작업',
+    team: 1,
+    violate_img:
+      'https://www.safety.or.kr/resources/safety/img/business/top/st2.jpg',
+    teamList: team1,
+  },
+  {
+    date: '2023-04-10 14:10',
+    issue: ['안전모'],
+    work: '어떤작업',
+    team: 2,
+    violate_img:
+      'https://www.safety.or.kr/resources/safety/img/business/top/st2.jpg',
+    teamList: team2,
+  },
+  {
+    date: '2023-04-10 20:13',
+    issue: ['안전모', '장갑'],
+    work: '어떤작업',
+    team: 2,
+    violate_img: 'https://www.m-i.kr/news/photo/202109/859719_629831_4819.jpg',
+    teamList: team2,
+  },
+  {
+    date: '2023-04-10 23:10',
+    issue: ['보안경'],
+    work: '어떤작업',
+    team: 3,
+    violate_img: 'https://www.m-i.kr/news/photo/202109/859719_629831_4819.jpg',
+    teamList: team3,
+  },
+  {
+    date: '2023-04-10 23:20',
+    issue: ['보안경'],
+    work: '어떤작업',
+    team: 3,
+    violate_img: 'https://www.m-i.kr/news/photo/202109/859719_629831_4819.jpg',
+    teamList: team3,
+  },
+  {
+    date: '2023-04-11 05:59',
+    issue: ['앞치마'],
+    work: '어떤작업',
+    team: 3,
+    violate_img:
+      'https://www.hyundai.co.kr/image/upload/asset_library/MDA00000000000028577/4eabac6ba112474586415825282bff2f.jpg',
+    teamList: team3,
+  },
+  {
+    date: '2023-04-11 09:00',
+    issue: ['팔토시', '앞치마'],
+    work: '어떤작업',
+    team: 4,
+    violate_img:
+      'https://www.hyundai.co.kr/image/upload/asset_library/MDA00000000000028577/4eabac6ba112474586415825282bff2f.jpg',
+    teamList: team4,
+  },
+  {
+    date: '2023-04-11 10:30',
+    issue: ['팔토시', '안전모'],
+    work: '어떤작업',
+    team: 4,
+    violate_img:
+      'https://cdn.kmecnews.co.kr/news/photo/202102/9041_4805_3325.jpg',
+    teamList: team4,
+  },
+  {
+    date: '2023-04-11 11:20',
+    issue: ['방진마스크', '보안경'],
+    work: '어떤작업',
+    team: 4,
+    violate_img:
+      'https://cdn.kmecnews.co.kr/news/photo/202102/9041_4805_3325.jpg',
+    teamList: team4,
+  },
+];
 
 function DashboardSafetyIssue() {
+  const [data, setData] = useState<TtableData[]>(dummyData);
+
   const [order, setOrder] = useState(false);
 
   const [page, setPage] = useState(0);
@@ -228,7 +187,7 @@ function DashboardSafetyIssue() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - dummyData.length) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -244,6 +203,22 @@ function DashboardSafetyIssue() {
     setPage(0);
   };
 
+  const ordering = () => {
+    setData(prev => {
+      if (order) {
+        prev.sort((a, b) => {
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        });
+      } else {
+        prev.sort((a, b) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+      }
+      return prev;
+    });
+    setPage(0)
+  };
+
   return (
     <>
       <IssueTableContainer>
@@ -255,6 +230,7 @@ function DashboardSafetyIssue() {
                 <IconButton
                   onClick={() => {
                     setOrder(prev => !prev);
+                    ordering();
                   }}
                 >
                   {order ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -270,16 +246,7 @@ function DashboardSafetyIssue() {
                   {order ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                 </IconButton>
               </TableCell>
-              <TableCell align="left">
-                작업 사항
-                <IconButton
-                  onClick={() => {
-                    setOrder(prev => !prev);
-                  }}
-                >
-                  {order ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                </IconButton>
-              </TableCell>
+              <TableCell align="left">작업 사항</TableCell>
               <TableCell align="left">
                 작업 조
                 <IconButton
@@ -295,8 +262,8 @@ function DashboardSafetyIssue() {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : rows
+              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : data
             ).map(row => (
               <Row key={row.date} row={row} />
             ))}
@@ -311,7 +278,7 @@ function DashboardSafetyIssue() {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                 colSpan={5}
-                count={rows.length}
+                count={data.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{
@@ -329,12 +296,6 @@ function DashboardSafetyIssue() {
         </Table>
       </IssueTableContainer>
       <IssueCardContainer>
-
-        <IssueCard />
-        <IssueCard />
-        <IssueCard />
-        <IssueCard />
-        <IssueCard />
         <IssueCard />
       </IssueCardContainer>
     </>
@@ -364,60 +325,4 @@ const IssueCardContainer = styled.div`
 
 const PendingTableCell = styled(TableCell)`
   width: 1rem;
-`;
-
-const IssueTableRow = styled(TableRow)`
-  @media (hover: hover) {
-    &:hover {
-      background-color: ${props => props.theme.palette.neutral.card};
-    }
-  }
-`;
-
-const IssueImageStyle = css`
-  width: 100%;
-  height: calc(100% - 34px);
-  object-fit: cover;
-  border-radius: 10px;
-`;
-
-const ProfileCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  max-width: 350px;
-  background-color: ${props => props.theme.palette.neutral.card};
-  padding: 20px;
-  p {
-    &:first-of-type {
-      font-size: 1.3rem;
-      font-weight: bold;
-      margin: 10px 0px;
-    }
-  }
-
-  .leftArrow {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translate(0, -50%);
-  }
-
-  .rightArrow {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translate(0, -50%);
-  }
-`;
-
-const profileImageStyle = css`
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 50%;
-  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.15);
 `;

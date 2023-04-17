@@ -7,33 +7,58 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import { mobileV } from '@/utils/Mixin';
 
+import { DashboardEqAtom } from '@/store/DashboardFilter';
+import { useRecoilState, useRecoilValue } from 'recoil';
+
+import { EquipmentsAtom } from '@/store/EquipmentStore';
+
 const eq = ['안전모', '장갑', '앞치마', '보안경', '방진마스크'];
 
 function DashboardEquipmentFilter() {
+  const equipments = useRecoilValue(EquipmentsAtom);
+
+
+  const [filterEq, setFilterEq] = useRecoilState(DashboardEqAtom);
+
   // 모바일 드롭다운 State
   const [mobileOpen, setMobileOpen] = useState(false);
-  
+
   // 장비 칩 map 랜더링 함수 (향후 랜더링 부분 추출 예정)
-  const EquipmentChips = eq.map(equipment => {
-    return <SafetyEquipmentChip eqLabel={equipment} key={equipment} />;
+  const EquipmentChips = equipments.map(equipment => {
+    return <SafetyEquipmentChip eqLabel={equipment.name} key={equipment.id} />;
   });
+
+  const resetFilterEq = () => {
+    setFilterEq([]);
+  };
 
   return (
     <FilterPaper>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
-      <FilterHeaderDiv onClick={() => {setMobileOpen(prev => !prev)}}>
+      <FilterHeaderDiv
+        onClick={() => {
+          setMobileOpen(prev => !prev);
+        }}
+      >
         <div>
           <KeyboardArrowDownIcon />
           보호구 선택
         </div>
-        <Button onClick={(e) => {e.stopPropagation()}}>
+        <Button
+          onClick={e => {
+            e.stopPropagation();
+            resetFilterEq();
+          }}
+        >
           <span>초기화</span>
           <RestartAlt color="primary" />
         </Button>
       </FilterHeaderDiv>
       {/* mobileopen props를 통해 모바일에서 드롭다운 표시 */}
       {/* 모바일이 아닐 경우 항상 표시 됨 */}
-      <FilterContentDiv mobileopen={mobileOpen}>{EquipmentChips}</FilterContentDiv>
+      <FilterContentDiv mobileopen={mobileOpen}>
+        {EquipmentChips}
+      </FilterContentDiv>
     </FilterPaper>
   );
 }
@@ -81,6 +106,6 @@ const FilterContentDiv = styled.div<{ mobileopen: boolean }>`
 
   /* 모바일 한정 컨텐츠 표시 */
   ${mobileV} {
-    display: ${props => props.mobileopen ? "block" : "none"};
+    display: ${props => (props.mobileopen ? 'block' : 'none')};
   }
 `;

@@ -11,4 +11,9 @@ const DashboardDayAtom = atom<TdashboardDay>({
   default: { startDay: dayjs(), endDay: dayjs() },
 });
 
-export { DashboardDayAtom };
+const DashboardEqAtom = atom<string[]>({
+  key: 'dashboardEq',
+  default: []
+})
+
+export { DashboardDayAtom, DashboardEqAtom };
