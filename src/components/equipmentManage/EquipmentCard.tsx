@@ -1,52 +1,46 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { Card, CardMedia, Switch, Button } from '@mui/material';
+import { CardMedia, Switch, Button, css } from '@mui/material';
 import React from 'react';
+import { EquipmentType } from 'EquipmentTypes';
+
+type EquipmentCardProps = {
+  equipment: EquipmentType,
+  onDelete: (willDeleteID: number) => void,
+  onToggleAccessibility: (willToggleID: number) => void,
+}
 
 
-function EquipmentCard() {
-  const [disabled, setDisabled] = useState<boolean>(true);
-
-  const switchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDisabled(e.currentTarget.checked);
-  };
-
+function EquipmentCard({ equipment, onDelete, onToggleAccessibility }: EquipmentCardProps) {
   return (
-    <EqCard ischecked={disabled.toString()}>
+    <EqCard ischecked={equipment.isActive.toString()}>
       <CardHeaderDiv>
-        <h2>안전모</h2>
-        <Switch checked={disabled} onChange={switchHandler} />
+        <h2>{equipment.name}</h2>
+        <Switch checked={equipment.isActive} onChange={() => onToggleAccessibility(equipment.id)} />
       </CardHeaderDiv>
-      <CardMedia
-        component="img"
-        height={'250'}
-        title=""
-        image="https://safe-s.co.kr/web/product/tiny/20200127/89baf7d3d3626b8a408b8397249d3a0c.jpg"
-      />
+      <img css={imageStyle} src={equipment.img} />
       <CardContentDiv>
-        <div>설명설명</div>
-        <Button color="error" variant="contained">
+        <div>{equipment.desc}</div>
+        <Button onClick={() => onDelete(equipment.id)} color="error" variant="contained">
           삭제
         </Button>
       </CardContentDiv>
       <ProgressBarDiv>
         <ProgressBarSpan />
       </ProgressBarDiv>
-      <ProgressContextSpan>20XX-XX-XX 60% 학습진행중...</ProgressContextSpan>
+      <ProgressContextDiv>학습 진행률: 60%</ProgressContextDiv>
     </EqCard>
   );
 }
 
 export default EquipmentCard;
 
-const EqCard = styled(Card)<{ ischecked: string }>`
+const EqCard = styled.div<{ ischecked: string }>`
   width: 18rem;
-
   padding: 1rem;
   margin: 1rem;
-
   transition: 0.2s all ease;
-
+  background-color: ${props => props.theme.palette.neutral.section};
   -webkit-filter: grayscale(${props => (props.ischecked === "true" ? 0 : 0.8)});
 `;
 
@@ -56,11 +50,16 @@ const CardHeaderDiv = styled.div`
   justify-content: space-between;
 `;
 
+const imageStyle = css`
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+`
+
 const CardContentDiv = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  margin: 10px 0px;
 `;
 
 const ProgressBarDiv = styled.div`
@@ -77,7 +76,8 @@ const ProgressBarSpan = styled.div`
   border-radius: 20px;
 `;
 
-const ProgressContextSpan = styled.span`
+const ProgressContextDiv = styled.div`
   font-size: 0.8rem;
   color: ${props => props.theme.palette.text.secondary};
+  margin-top: 5px;
 `;
