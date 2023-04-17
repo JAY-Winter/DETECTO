@@ -8,9 +8,6 @@ import styled from '@emotion/styled';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import NavigationBar from '@components/navbar/NavigationBar';
 import EquipmentManagePage from './pages/EquipmentManagePage';
-import DummyDashboard from '@components/dummies/DummyDashboard';
-import DummyManage from '@components/dummies/DummyManage';
-import DummySummary from '@components/dummies/DummySummary';
 import { mobileV, tabletV } from './utils/Mixin';
 import NavigationBarTablet from '@components/navbar/NavigationBarTablet';
 
@@ -63,6 +60,7 @@ const StyledDiv = styled.div`
   background-color: ${props => props.theme.palette.neutral.main};
   transition: background-color 0.3s ease;
   height: 100vh;
+  color: ${props => props.theme.palette.text.primary};
 `;
 
 const RouterContainerDiv = styled.div`
