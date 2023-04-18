@@ -62,7 +62,7 @@ const DropdownNav = styled.div`
       background-color: darkgray;
     }
     &:hover {
-      background-color: ${props => props.theme.palette.neutral.main};
+      background-color: ${props => props.theme.palette.neutral.cardHover};
     }
   }
 `

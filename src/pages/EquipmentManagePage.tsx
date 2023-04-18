@@ -1,14 +1,18 @@
 import EquipmentCard from '@components/equipmentManage/EquipmentCard';
 import styled from '@emotion/styled';
-import { Button, css } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
 import { EquipmentType } from 'EquipmentTypes';
 import { useRecoilState } from 'recoil';
 import { EquipmentsAtom } from '@/store/EquipmentStore';
 import { getRandomBool, getRandomNumber, getRandomString } from '@/utils/RandomDataGenerator';
+import { useState } from 'react';
+import ModalPortal from '@components/common/ModalPortal';
+import CenterModal from '@components/common/CenterModal';
+import EditEquipment from '@components/equipmentManage/EditEquipment';
 
 function EquipmentManagePage() {
   const [equipments, setEquipment] = useRecoilState(EquipmentsAtom);
+  const [isShowEditModal, setIsShowEditModal] = useState(false);
 
   // 장비 삭제 핸들러: 카드로부터 ID를 입력받아 삭제한다
   const deleteHandler = (willDeleteID: number) => {
@@ -33,56 +37,63 @@ function EquipmentManagePage() {
       return newState;
     })
   }
-
+  const showModal = () => {
+    setIsShowEditModal(!isShowEditModal);
+  }
+  const closeModalHandler = () => {
+    setIsShowEditModal(false);
+  }
   const addItem = () => {
     /* (temp)더미 랜덤 데이터 생성 */
-    const randomID = getRandomNumber(1, 10000000);
-    const randomName = getRandomString(5);
-    const randomDesc = getRandomString(10);
-    const randomImgURL = `https://unsplash.it/150/200?image=${getRandomNumber(1, 100)}`;
-    const randomIsActive = getRandomBool();
+    // const randomID = getRandomNumber(1, 10000000);
+    // const randomName = getRandomString(5);
+    // const randomDesc = getRandomString(10);
+    // const randomImgURL = `https://unsplash.it/150/200?image=${getRandomNumber(1, 100)}`;
+    // const randomIsActive = getRandomBool();
 
-    const newItem: EquipmentType = {
-      id: randomID,
-      name: randomName,
-      desc: randomDesc,
-      img: randomImgURL,
-      isActive: randomIsActive
-    }
+    // const newItem: EquipmentType = {
+    //   id: randomID,
+    //   name: randomName,
+    //   desc: randomDesc,
+    //   img: randomImgURL,
+    //   isActive: randomIsActive
+    // }
+
+    // setEquipment((oldState) => {
+    //   return [...oldState, newItem];
+    // })
     /* -------------------------- */
-    
-    setEquipment((oldState) => {
-      return [...oldState, newItem];
-    })
   }
 
   return (
-    <EquipmentManageDiv>
-      <h1>보호구 관리</h1>
-      <EquipmentCardDiv>
-        {equipments.map(equipment => <EquipmentCard key={equipment.id} equipment={equipment} onDelete={deleteHandler} onToggleActiveness={toggleHandler} />)}
-        <button css={tempStyle} onClick={addItem}>+</button>
-      </EquipmentCardDiv>
-    </EquipmentManageDiv>
+    <>
+      { isShowEditModal &&
+      <ModalPortal>
+        <CenterModal onClose={closeModalHandler}>
+          <EditEquipment />
+        </CenterModal>
+      </ModalPortal>
+      }
+      <EquipmentManageDiv>
+        <h1>보호구 관리</h1>
+        <EquipmentCardDiv>
+          {equipments.map(equipment => <EquipmentCard key={equipment.id} equipment={equipment} onDelete={deleteHandler} onToggleActiveness={toggleHandler} />)}
+          <EquipmentAddButton onClick={showModal}>
+            <AddCircleOutline color="disabled" />
+          </EquipmentAddButton>
+        </EquipmentCardDiv>
+      </EquipmentManageDiv>
+    </>
   );
 }
 
 export default EquipmentManagePage;
-
-const tempStyle = css`
-  width: 22rem;
-  height: 100%;
-  min-height: 350px;
-  border: none;
-  cursor: pointer;
-`
 
 const EquipmentManageDiv = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* background-color: red; */
   margin: 3rem 0px;
   padding: 0px 1rem;
 `;
@@ -97,11 +108,15 @@ const EquipmentCardDiv = styled.div`
   margin-top: 1.5rem;
 `;
 
-const EquipmentAddButton = styled(Button)`
-  width: 80%;
-
-  margin-bottom: 1rem;
-  svg {
-    font-size: 3rem;
+const EquipmentAddButton = styled.button`
+  width: 22rem;
+  height: 100%;
+  min-height: 400px;
+  border: none;
+  cursor: pointer;
+  background-color: ${props => props.theme.palette.neutral.card};
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: ${props => props.theme.palette.neutral.cardHover};
   }
-`;
+`
