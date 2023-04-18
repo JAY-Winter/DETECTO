@@ -31,9 +31,11 @@ const getDesignTokens = (mode: PaletteMode) => ({
             contrastText: '#fff',
           },
           neutral: {
+            opposite: '#121212',
             main: '#ffffff',
             section: '#fafafa',
-            card: '#ececec'
+            card: '#ececec',
+            cardHover: '#e0e0e0'
           },
           text: {
             primary: '#000000',
@@ -89,9 +91,11 @@ const getDesignTokens = (mode: PaletteMode) => ({
             contrastText: '#000000',
           },
           neutral: {
+            opposite: '#ffffff',
             main: '#121212',
             section: '#1e1e1e',
-            card: '#2c2c2c'
+            card: '#2c2c2c',
+            cardHover: '#3d3d3d'
           },
           text: {
             primary: '#fff',

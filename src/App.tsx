@@ -66,7 +66,7 @@ const StyledDiv = styled.div`
 const RouterContainerDiv = styled.div`
   width: 100%;
   margin-left: 300px;
-  display: flex;
+  /* display: flex; */
   overflow-y: auto;
   ${tabletV} {
     margin-left: 70px;

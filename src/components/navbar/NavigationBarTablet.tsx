@@ -67,11 +67,13 @@ function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
 
   return (
     <div>
+      { isShowLeftModal &&
       <ModalPortal>
-        <LeftModal isShowLeftModal={isShowLeftModal} onClose={() => setIsShowLeftModal(false)}>
+        <LeftModal onClose={() => setIsShowLeftModal(false)}>
           <NavigationBar mode={mode} setMode={setMode} isModal={true} />
         </LeftModal>
       </ModalPortal>
+      }
       <StyledNav>
         {/* Header */}
         <MenuButton onClick={handleClickMenu}>

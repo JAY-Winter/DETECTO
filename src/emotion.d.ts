@@ -49,9 +49,11 @@ declare module '@emotion/react' {
         900: string;
       };
       neutral: {
+        opposite: string;
         main: string;
         section: string;
         card: string;
+        cardHover: string;
       };
       text: {
         primary: string;
