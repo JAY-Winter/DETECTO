@@ -108,7 +108,7 @@ const StyledNav = styled.nav<{isModal: boolean}>`
   display: flex;
   flex-direction: column;
   width: 300px;
-  height: 100vh;
+  height: 100%;
   min-height: 700px;
   background-color: ${props => props.theme.palette.neutral.section};
   color: ${props => props.theme.palette.text.primary};
@@ -137,7 +137,7 @@ const StyledHeaderDiv = styled.div`
 
 const logoContainer = css`
   width: 100%;
-  /* height: 2rem; */
+  height: 3rem;
   /* padding: 0px 10px; */
   /* margin-left: 10px; */
   margin: 10px 0px 30px 0px;

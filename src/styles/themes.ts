@@ -126,7 +126,7 @@ const getDesignTokens = (mode: PaletteMode) => ({
         }),
   },
   typography: {
-    fontFamily: 'Pretendard',
+    fontFamily: 'Pretendard Variable',
     fontSize: 16
   },
 });
