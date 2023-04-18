@@ -14,12 +14,14 @@ function DashboardPage() {
   }, [])
 
   return (
-    <DashboardDiv>
-      <h1>대시보드</h1>
-      <DashboardEquipmentFilter />
-      <DashboardDatePicker />
-      <DashboardSafetyIssue />
-    </DashboardDiv>
+    <div style={{display: "flex"}}>
+      <DashboardDiv>
+        <h1>대시보드</h1>
+        <DashboardEquipmentFilter />
+        <DashboardDatePicker />
+        <DashboardSafetyIssue />
+      </DashboardDiv>
+    </div>
   );
 }
 
