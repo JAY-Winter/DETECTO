@@ -4,7 +4,7 @@ import React from 'react'
 function EditEquipment() {
   return (
     <EditEquipmentDiv>
-
+      장비 추가 및 수정 컴포넌트
     </EditEquipmentDiv>
   )
 }
