@@ -16,31 +16,14 @@ import {
   KeyboardArrowLeft,
   KeyboardArrowRight,
 } from '@mui/icons-material';
-
-export type TteamMember = {
-  memberId: number;
-  memberImg: string;
-  memberName: string;
-  memberTeam: string;
-};
-
-export type TtableData = {
-  date: string;
-  issue: string[];
-  work: string;
-  team: number;
-  violate_img: string;
-  violate_member?: TteamMember;
-  teamList: TteamMember[];
-};
+import { TtableData, TteamMember } from '@/store/DashboardIssue';
 
 const nullMember: TteamMember = {
   memberId: 0,
-  memberImg: "",
-  memberName: "미지정",
-  memberTeam: "팀 미지정"
-}
-
+  memberImg: '',
+  memberName: '미지정',
+  memberTeam: '팀 미지정',
+};
 
 const TableCollapseCard = ({
   violate_img,
@@ -51,19 +34,28 @@ const TableCollapseCard = ({
   teamList: TteamMember[];
   violate_member?: TteamMember;
 }) => {
-  const [cardList, setCardList] = useState([nullMember, ...teamList])
-  const [memberNum, setMemberNum] = useState(0)
+  const [cardList, setCardList] = useState([nullMember, ...teamList]);
+  const [memberNum, setMemberNum] = useState(0);
 
-  const switchMemeber = () => {
+  const switchRightMemeber = () => {
     setMemberNum(prev => {
-      if (prev+1 < cardList.length) {
-        return prev+1
+      if (prev - 1 >= 0) {
+        return prev - 1;
+      } else {
+        return cardList.length - 1;
       }
-      else {
-        return 0
+    });
+  };
+
+  const switchLeftMemeber = () => {
+    setMemberNum(prev => {
+      if (prev + 1 < cardList.length) {
+        return prev + 1;
+      } else {
+        return 0;
       }
-    })
-  }
+    });
+  };
 
   return (
     <Box
@@ -85,11 +77,7 @@ const TableCollapseCard = ({
         }}
       >
         <h2>위반 사진</h2>
-        <img
-          css={IssueImageStyle}
-          src={violate_img}
-          alt=""
-        />
+        <img css={IssueImageStyle} src={violate_img} alt="" />
       </div>
       <div
         style={{
@@ -102,13 +90,17 @@ const TableCollapseCard = ({
       >
         <h2>위반 사원</h2>
         <ProfileCard>
-          <img css={profileImageStyle} src={cardList[memberNum].memberImg} alt="" />
+          <img
+            css={profileImageStyle}
+            src={cardList[memberNum].memberImg}
+            alt=""
+          />
           <p>{cardList[memberNum].memberName} Pro</p>
           <p>{cardList[memberNum].memberTeam}</p>
-          <IconButton className="leftArrow" onClick={switchMemeber}>
+          <IconButton className="leftArrow" onClick={switchRightMemeber}>
             <KeyboardArrowLeft />
           </IconButton>
-          <IconButton className="rightArrow" onClick={switchMemeber}>
+          <IconButton className="rightArrow" onClick={switchLeftMemeber}>
             <KeyboardArrowRight />
           </IconButton>
         </ProfileCard>
