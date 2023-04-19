@@ -117,7 +117,7 @@ const StyledNav = styled.nav`
   flex-direction: column;
   align-items: center;
   width: 70px;
-  height: 100vh;
+  height: 100%;
   min-height: 700px;
   padding-top: 20px;
   padding-bottom: 20px;

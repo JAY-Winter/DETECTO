@@ -3,7 +3,6 @@ import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import React, { useEffect, useState } from 'react';
 import DashboardPage from './pages/DashboardPage';
 import getDesignTokens from './styles/themes';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import NavigationBar from '@components/navbar/NavigationBar';
@@ -39,10 +38,10 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <StyledDiv css={container}>
+      <StyledDiv>
         <NavigationBar mode={mode} setMode={setMode} />
         <NavigationBarTablet mode={mode} setMode={setMode} />
-        <RouterContainerDiv>
+        <RouterContainerDiv role="TTTTT">
           <Routes>
             <Route path="/" element={<Navigate replace to="/dashboard" />} />
             <Route path="/dashboard" element={<DashboardPage />} />
@@ -59,7 +58,6 @@ const StyledDiv = styled.div`
   display: flex;
   background-color: ${props => props.theme.palette.neutral.main};
   transition: background-color 0.3s ease;
-  height: 100vh;
   color: ${props => props.theme.palette.text.primary};
 `;
 
@@ -74,10 +72,6 @@ const RouterContainerDiv = styled.div`
   ${mobileV} {
     margin-left: 0px;
   }
-`;
-
-const container = css`
-  display: flex;
 `;
 
 export default App;

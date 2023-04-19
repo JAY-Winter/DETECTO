@@ -31,7 +31,7 @@ function LeftModal({children, onClose}: ModalProps) {
         leftModalRef.current.style.transform = 'translateX(-100%)';  // 왼쪽으로 옮긴다
         setTimeout(() => {
           onClose();
-        }, 150);
+        }, 500);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -68,10 +68,10 @@ const modalContainer = css`
   position: fixed;
   top: 0px;
   left: 0px;
-  height: 100vh;
+  height: 100%;
   width: 300px;
   transform: translate(-100%);  // 처음에는 일단 숨긴다 
-  transition: transform 0.3s;
+  transition: transform ease 0.5s;
   z-index: 1003;
 `
 

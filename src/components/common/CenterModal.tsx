@@ -2,12 +2,12 @@ import { css, keyframes } from '@emotion/react'
 import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react'
 
-type CenterModal = {
+type CenterModalProps = {
   children: React.ReactNode,
   onClose: () => void
 }
 
-function CenterModal({ children, onClose}: CenterModal) {
+function CenterModal({ children, onClose}: CenterModalProps) {
   const centerModalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -41,6 +41,7 @@ function CenterModal({ children, onClose}: CenterModal) {
 const scaleUp = keyframes`
   0% {
     transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
   }
   
   50% {
@@ -49,6 +50,7 @@ const scaleUp = keyframes`
  
   100% {
     transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
   }
 `
 
@@ -66,11 +68,11 @@ const BackgroundDiv = styled.div`
 
 const modalContainer = css`
   position: fixed;
+  animation: ${scaleUp} 500ms ease forwards;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1003;
-  animation: ${scaleUp} 0.3s ease;
 `
 
 export default CenterModal
