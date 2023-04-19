@@ -12,7 +12,7 @@ type EquipmentCardProps = {
   onToggleActiveness: (willToggleID: number) => void,
 }
 
-const dummy = "주며, 우리의 소금이라 동산에는 천지는 못하다 것이다. 무엇을 밝은 이상 소담스러운 갑 풀이 싶이 아름다우냐? 바로 것은 얼마나 청춘이 우리 실로 능히 아름다우냐? 할지라도 뛰노는 노래하며 소금이라 능히 수 않는 위하여 이상이 봄바람이다. 얼마나 광야에서 가치를 이 위하여서 있다. 천하를 생생하며, 황금시대를 같이, 피어나기 가치를 품으며, 이성은 교향악이다. 두손을 가진 가장 역사를 끓는 튼튼하며, 장식하는 주며, 청춘을 황금시대다. 것은 얼마나 그들에게 그러므로 많이 얼음과 대한 산야에 불어 아름다우냐? 원질이 가치를 것은 인간은 무엇을 천지는 무엇을 소금이라 것이다. 것이다.보라, 대고, 무엇을 무엇이 유소년에게서 듣는다.";
+// const dummy = "주며, 우리의 소금이라 동산에는 천지는 못하다 것이다. 무엇을 밝은 이상 소담스러운 갑 풀이 싶이 아름다우냐? 바로 것은 얼마나 청춘이 우리 실로 능히 아름다우냐? 할지라도 뛰노는 노래하며 소금이라 능히 수 않는 위하여 이상이 봄바람이다. 얼마나 광야에서 가치를 이 위하여서 있다. 천하를 생생하며, 황금시대를 같이, 피어나기 가치를 품으며, 이성은 교향악이다. 두손을 가진 가장 역사를 끓는 튼튼하며, 장식하는 주며, 청춘을 황금시대다. 것은 얼마나 그들에게 그러므로 많이 얼음과 대한 산야에 불어 아름다우냐? 원질이 가치를 것은 인간은 무엇을 천지는 무엇을 소금이라 것이다. 것이다.보라, 대고, 무엇을 무엇이 유소년에게서 듣는다.";
 
 
 function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCardProps) {
@@ -51,7 +51,7 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
       </div>
       <div css={bodyContainer}>
         <img css={imageStyle} src={equipment.img} />
-        <p css={descContainer}>{dummy}</p>
+        <p css={descContainer}>{equipment.desc}</p>
       </div>
       <div css={footerContainer}>
         <ProgressBarDiv>

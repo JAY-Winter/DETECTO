@@ -14,6 +14,7 @@ const styles = css`
     box-sizing: border-box;
     font-family: 'Pretendard Variable';
   }
+  
   /* [0] */
   @font-face {
     font-family: 'Pretendard Variable';

@@ -65,12 +65,26 @@ function EquipmentManagePage() {
     /* -------------------------- */
   }
 
+  const addItemHandler = (name: string, desc: string, img: string) => {
+    const newItem: EquipmentType = {
+      id: getRandomNumber(1, 10000000),
+      name: name,
+      desc: desc,
+      img: img,
+      isActive: true
+    }
+
+    setEquipment((oldState) => {
+      return [...oldState, newItem];
+    })
+  }
+
   return (
     <>
       { isShowEditModal &&
       <ModalPortal>
         <CenterModal onClose={closeModalHandler}>
-          <EditEquipment />
+          <EditEquipment addItemHandler={addItemHandler} onClose={closeModalHandler}/>
         </CenterModal>
       </ModalPortal>
       }
