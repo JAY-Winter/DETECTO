@@ -7,13 +7,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useRecoilState } from 'recoil';
 import { DashboardDayAtom } from '@/store/DashboardFilter';
 import dayjs, { Dayjs } from 'dayjs';
-import { RestartAlt, KeyboardArrowDown } from '@mui/icons-material';
+import { RestartAlt, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { mobileV } from '@/utils/Mixin';
 
 // (향후 날짜, 기간 DatePicker 세부 컴포넌트로 추출 예정)
 
 function DashboardDatePicker() {
-  // 모바일 드롭다운 State 
+  // 모바일 드롭다운 State
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // MUI 탭 State
@@ -28,8 +28,8 @@ function DashboardDatePicker() {
   };
 
   const resetFilterDay = () => {
-    setDate({startDay: dayjs(), endDay: dayjs()})
-  }
+    setDate({ startDay: dayjs(), endDay: dayjs() });
+  };
 
   return (
     <DatePaper>
@@ -40,13 +40,13 @@ function DashboardDatePicker() {
         }}
       >
         <div>
-          <KeyboardArrowDown />
+          {mobileOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
           날짜 선택
         </div>
         <Button
           onClick={e => {
             e.stopPropagation();
-            resetFilterDay()
+            resetFilterDay();
           }}
         >
           <span>현재 날짜</span>

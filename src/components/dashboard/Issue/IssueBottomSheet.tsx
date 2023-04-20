@@ -22,7 +22,7 @@ function IssueBottomSheet({
   children,
   handler,
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   handler: TbottomSheetHandler;
 }) {
   return (
@@ -82,7 +82,7 @@ const BottomSheetDiv = styled.div<{ bsAni: boolean }>`
 
   transform: translateY(0);
 
-  height: 90vh;
+  height: 70vh;
   width: 100vw;
 
   border-radius: 10px 10px 0 0;
@@ -118,7 +118,7 @@ const SheetHeader = styled.div`
 `;
 
 const SheetContentDiv = styled.div`
-  height: calc(90vh - 1.5rem);
+  height: calc(70vh - 1.5rem);
   overflow-y: auto;
   background-color: ${props => props.theme.palette.neutral.section};
 `;

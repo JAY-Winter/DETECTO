@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Button, Paper } from '@mui/material';
 import { RestartAlt } from '@mui/icons-material';
 import SafetyEquipmentChip from './Equipment/SafetyEquipmentChip';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import {KeyboardArrowDown, KeyboardArrowUp} from '@mui/icons-material';
 
 import { mobileV } from '@/utils/Mixin';
 
@@ -41,7 +41,7 @@ function DashboardEquipmentFilter() {
         }}
       >
         <div>
-          <KeyboardArrowDownIcon />
+          {mobileOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
           보호구 선택
         </div>
         <Button

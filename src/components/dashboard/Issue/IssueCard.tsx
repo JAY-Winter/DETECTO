@@ -8,6 +8,8 @@ import { TtableData } from '@/store/DashboardIssue';
 import ModalPortal from '@components/common/ModalPortal';
 import useBottomSheet from '@/hooks/useBottomSheet';
 import IssueBottomSheet from './IssueBottomSheet';
+import MemberCard from './MemberCard';
+import IssueImage from './IssueImage';
 
 function IssueCard(issue: TtableData) {
   const { bottomSheetHandler, isOpen, open } = useBottomSheet();
@@ -46,7 +48,15 @@ function IssueCard(issue: TtableData) {
       </Card>
       <ModalPortal>
         {isOpen && (
-          <IssueBottomSheet handler={bottomSheetHandler}>123</IssueBottomSheet>
+          <IssueBottomSheet handler={bottomSheetHandler}>
+            <p>위반 사항</p>
+            <p>뭐라도 쓰지 않을까요?</p>
+            <IssueImage violate_img={issue.violate_img} />
+            <MemberCard
+              teamList={issue.teamList}
+              violate_member={issue.violate_member}
+            />
+          </IssueBottomSheet>
         )}
       </ModalPortal>
     </>
