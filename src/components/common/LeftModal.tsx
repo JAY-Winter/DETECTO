@@ -28,10 +28,11 @@ function LeftModal({children, onClose}: ModalProps) {
     // 모달창 외부를 클릭하였을 때 모달창 닫히도록 함
     const handleClickOutside = (e: MouseEvent) => {
       if (leftModalRef.current && !leftModalRef.current.contains(e.target as Node)) {
+        leftModalRef.current.style.transition = 'transform ease 300ms';
         leftModalRef.current.style.transform = 'translateX(-100%)';  // 왼쪽으로 옮긴다
         setTimeout(() => {
           onClose();
-        }, 500);
+        }, 300);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -71,7 +72,7 @@ const modalContainer = css`
   height: 100%;
   width: 300px;
   transform: translate(-100%);  // 처음에는 일단 숨긴다 
-  transition: transform ease 0.5s;
+  transition: transform ease 500ms;
   z-index: 1003;
 `
 

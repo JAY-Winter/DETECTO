@@ -5,6 +5,7 @@ import React from 'react';
 import { EquipmentType } from 'EquipmentTypes';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditDropdown from './EditDropdown';
+import { mobileV } from '@/utils/Mixin';
 
 type EquipmentCardProps = {
   equipment: EquipmentType,
@@ -51,7 +52,7 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
       </div>
       <div css={bodyContainer}>
         <img css={imageStyle} src={equipment.img} />
-        <p css={descContainer}>{equipment.desc}</p>
+        <p css={descContainer}>{equipment.desc === "" ? "(설명이 없습니다)" : equipment.desc}</p>
       </div>
       <div css={footerContainer}>
         <ProgressBarDiv>
@@ -67,14 +68,19 @@ export default EquipmentCard;
 
 const EqCardDiv = styled.div<{ ischecked: string }>`
   width: 22rem;
+  max-width: 100%;
   padding: 1rem;
   transition: 0.2s all ease;
   background-color: ${props => props.theme.palette.neutral.section};
   -webkit-filter: grayscale(${props => (props.ischecked === "true" ? 0 : 0.8)});
   box-shadow: rgba(0, 0, 0, 0.125) 0px 4px 16px 0px;
+  ${mobileV} {
+    width: 100%;
+  }
 `;
 
 const headerContainer = css`
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -82,11 +88,13 @@ const headerContainer = css`
 
 const titleContainer = css`
   display: flex;
+  width: 80%;
   align-items: center;
   h2 {
-    max-width: 9rem;
+    max-width: 80%;
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
   }
 `
 

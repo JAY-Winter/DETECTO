@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import DragAndDrop from './DragAndDrop';
 import { getRandomNumber } from '@/utils/RandomDataGenerator';
 
+
 type EditEquipmentProps = {
   addItemHandler: (name: string, desc: string, img: string) => void,
   onClose: () => void
@@ -12,17 +13,22 @@ type EditEquipmentProps = {
 
 function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedZip, setSelectedZip] = useState<File | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [equipmentName, setEquipmentName] = useState("");
   const [equipmentDesc, setEquipmentDesc] = useState("");
   const [isErrorName, setIsErrorName] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [imageSrc, setImageSrc] = useState(null);
 
   const submit = () => {
     console.log(equipmentName, equipmentDesc);
     const randomImgURL = `https://unsplash.it/150/200?image=${getRandomNumber(1, 100)}`;
-    addItemHandler(equipmentName, equipmentDesc, randomImgURL);
+    if (imageSrc === null) {
+      console.log("null 잼");
+    }
+    addItemHandler(equipmentName, equipmentDesc, imageSrc);
     onClose()
   }
 
@@ -48,16 +54,31 @@ function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
   }
 
   useEffect(() => {
-    if (selectedFile !== null && equipmentName.trim() !== "") {
+    if (selectedZip !== null && equipmentName.trim() !== "") {
       setIsValid(true);
     }
-  }, [equipmentName, selectedFile])
+  }, [equipmentName, selectedZip])
+  
+  useEffect(() => {
+    if (selectedImage && selectedImage.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        console.log("변환하기: ", e.target?.result);
+        
+        setImageSrc(e.target?.result);
+      }
+      reader.readAsDataURL(selectedImage);
+    } else {
+      setImageSrc(null);
+    }
+  }, [selectedImage])
 
   return (
     <EditEquipmentForm>
       <div>
-        <DragAndDrop isDragging={isDragging} setIsDragging={setIsDragging} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
-        <div css={previewUploadStyle}>프리뷰 업로드</div>
+        <DragAndDrop isDragging={isDragging} setIsDragging={setIsDragging} selectedFile={selectedZip} setSelectedFile={setSelectedZip} type='zip' />
+        <br />
+        <DragAndDrop isDragging={isDragging} setIsDragging={setIsDragging} selectedFile={selectedImage} setSelectedFile={setSelectedImage} type='image' />
         <TextField fullWidth label="장비명(공백제외 최대 20자)" variant="standard" onChange={handleNameinput} margin="normal" error={isErrorName} helperText={errorMessage} />
         <TextField fullWidth label="장비 설명(선택)" variant="standard" onChange={handleDescinput} />
       </div>

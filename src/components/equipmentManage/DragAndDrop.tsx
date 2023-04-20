@@ -1,16 +1,18 @@
 import { css } from '@emotion/react';
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import { Button } from '@mui/material';
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 
 type DragAndDropProps = {
   isDragging: boolean,
   setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
   selectedFile: File | null,
-  setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>
+  setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>,
+  type: 'zip' | 'image'
 }
 
-function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile }: DragAndDropProps) {
+function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile, type }: DragAndDropProps) {
   const countRef = useRef(0);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
 
@@ -44,10 +46,8 @@ function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile 
 
     const files = e.dataTransfer.files;
     if (files.length) {
-      const file = files[0]
+      const file = files[0];
       setSelectedFile(file);
-      // console.log('드롭한 파일:', files[0]);
-      // 여기에서 파일을 처리하거나 업로드를 수행합니다.
     }
   }
 
@@ -58,8 +58,6 @@ function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile 
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      // console.log('선택한 파일:', file);
-      // 여기에서 파일을 처리하거나 업로드를 수행합니다.
     }
   };
 
@@ -83,10 +81,10 @@ function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile 
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <input type='file' accept=".zip" ref={inputFileRef} style={{display: 'none'}} onChange={handleFileChange}/>
+      <input type='file' accept={type === 'zip' ? 'zip' : 'image/png, image/gif, image/jpeg'} ref={inputFileRef} style={{display: 'none'}} onChange={handleFileChange}/>
       {selectedFile === null ? 
         <>
-          <FileUploadOutlinedIcon color="disabled" />
+          {type === 'zip' ? <FileUploadOutlinedIcon color="disabled"/> : <AddPhotoAlternateOutlinedIcon color="disabled" /> }
           <Button onClick={openBrowser}>파일 선택</Button>
         </> :
         <>

@@ -30,7 +30,6 @@ function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
   const handleClickMenu = () => {
     // portal로 네비게이션 바 띄우기
     setIsShowLeftModal(!isShowLeftModal);
-    console.log(isShowLeftModal);
   }
   
   // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
