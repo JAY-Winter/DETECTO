@@ -4,11 +4,12 @@ import { AddCircleOutline } from '@mui/icons-material';
 import { EquipmentType } from 'EquipmentTypes';
 import { useRecoilState } from 'recoil';
 import { EquipmentsAtom } from '@/store/EquipmentStore';
-import { getRandomBool, getRandomNumber, getRandomString } from '@/utils/RandomDataGenerator';
+import { getRandomNumber } from '@/utils/RandomDataGenerator';
 import { useState } from 'react';
 import ModalPortal from '@components/common/ModalPortal';
 import CenterModal from '@components/common/CenterModal';
 import EditEquipment from '@components/equipmentManage/EditEquipment';
+import { mobileV } from '@/utils/Mixin';
 
 function EquipmentManagePage() {
   const [equipments, setEquipment] = useRecoilState(EquipmentsAtom);
@@ -65,12 +66,26 @@ function EquipmentManagePage() {
     /* -------------------------- */
   }
 
+  const addItemHandler = (name: string, desc: string, img: string) => {
+    const newItem: EquipmentType = {
+      id: getRandomNumber(1, 10000000),
+      name: name,
+      desc: desc,
+      img: img,
+      isActive: true
+    }
+
+    setEquipment((oldState) => {
+      return [...oldState, newItem];
+    })
+  }
+
   return (
     <>
       { isShowEditModal &&
       <ModalPortal>
         <CenterModal onClose={closeModalHandler}>
-          <EditEquipment />
+          <EditEquipment addItemHandler={addItemHandler} onClose={closeModalHandler}/>
         </CenterModal>
       </ModalPortal>
       }
@@ -100,11 +115,11 @@ const EquipmentManageDiv = styled.div`
 
 const EquipmentCardDiv = styled.div`
   display: grid;
+  width: 100%;
   place-items: center;
-  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
   column-gap: 30px;
   row-gap: 30px;
-  width: 100%;
   margin-top: 1.5rem;
 `;
 
@@ -119,4 +134,7 @@ const EquipmentAddButton = styled.button`
   &:hover {
     background-color: ${props => props.theme.palette.neutral.cardHover};
   }
+  /* ${mobileV} {
+    width: 90%;
+  } */
 `

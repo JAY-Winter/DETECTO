@@ -41,7 +41,7 @@ function App() {
       <StyledDiv>
         <NavigationBar mode={mode} setMode={setMode} />
         <NavigationBarTablet mode={mode} setMode={setMode} />
-        <RouterContainerDiv role="TTTTT">
+        <RouterContainerDiv>
           <Routes>
             <Route path="/" element={<Navigate replace to="/dashboard" />} />
             <Route path="/dashboard" element={<DashboardPage />} />
@@ -56,6 +56,7 @@ function App() {
 
 const StyledDiv = styled.div`
   display: flex;
+  height: 100%;
   background-color: ${props => props.theme.palette.neutral.main};
   transition: background-color 0.3s ease;
   color: ${props => props.theme.palette.text.primary};
@@ -64,7 +65,6 @@ const StyledDiv = styled.div`
 const RouterContainerDiv = styled.div`
   width: 100%;
   margin-left: 300px;
-  /* display: flex; */
   overflow-y: auto;
   ${tabletV} {
     margin-left: 70px;

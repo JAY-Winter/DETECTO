@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react'
 
 type CenterModalProps = {
-  children: React.ReactNode,
+  children: React.ReactElement,
   onClose: () => void
 }
 
@@ -32,7 +32,8 @@ function CenterModal({ children, onClose}: CenterModalProps) {
     <>
       <BackgroundDiv></BackgroundDiv>
       <div css={modalContainer} ref={centerModalRef}>
-        {children}
+        { children }
+        {/* {React.cloneElement(children, { onClose }) } */}
       </div>
     </>
   )
@@ -58,8 +59,8 @@ const BackgroundDiv = styled.div`
   position: fixed;
   top: 0px;
   left: 0px;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   backdrop-filter: blur(5px);
   overflow-y: auto;
   z-index: 1002;
