@@ -9,16 +9,13 @@ import { useRecoilValue } from 'recoil';
 
 function DashboardPage() {
   const equips = useRecoilValue(EquipmentsAtom);
-  useEffect(() => {
-    console.log("dashboard: ", equips);
-  }, [])
 
   return (
     <div style={{display: "flex"}}>
       <DashboardDiv>
         <h1>대시보드</h1>
-        <DashboardEquipmentFilter />
         <DashboardDatePicker />
+        <DashboardEquipmentFilter />
         <DashboardSafetyIssue />
       </DashboardDiv>
     </div>
