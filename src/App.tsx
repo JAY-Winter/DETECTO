@@ -9,6 +9,8 @@ import NavigationBar from '@components/navbar/NavigationBar';
 import EquipmentManagePage from './pages/EquipmentManagePage';
 import { mobileV, tabletV } from './utils/Mixin';
 import NavigationBarTablet from '@components/navbar/NavigationBarTablet';
+import NavigationBarMobile from '@components/navbar/NavigationBarMobile';
+import SummaryPage from './pages/SummaryPage';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -38,7 +40,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <StyledDiv>
+      {/* <StyledDiv> */}
         <NavigationBar mode={mode} setMode={setMode} />
         <NavigationBarTablet mode={mode} setMode={setMode} />
         <RouterContainerDiv>
@@ -46,31 +48,34 @@ function App() {
             <Route path="/" element={<Navigate replace to="/dashboard" />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
-            <Route path="/summary" />
+            <Route path="/summary" element={<SummaryPage />} />
+            <Route path="/setting" />
           </Routes>
         </RouterContainerDiv>
-      </StyledDiv>
+        <NavigationBarMobile />
+      {/* </StyledDiv> */}
     </ThemeProvider>
   );
 }
 
-const StyledDiv = styled.div`
-  display: flex;
-  height: 100%;
-  background-color: ${props => props.theme.palette.neutral.main};
-  transition: background-color 0.3s ease;
-  color: ${props => props.theme.palette.text.primary};
-`;
+// const StyledDiv = styled.div`
+//   display: flex;
+//   height: 100%;
+//   background-color: ${props => props.theme.palette.neutral.main};
+//   transition: background-color 0.3s ease;
+//   color: ${props => props.theme.palette.text.primary};
+// `;
 
 const RouterContainerDiv = styled.div`
-  width: 100%;
   margin-left: 300px;
   overflow-y: auto;
+  color: ${props => props.theme.palette.text.primary};
   ${tabletV} {
     margin-left: 70px;
   }
   ${mobileV} {
     margin-left: 0px;
+    padding-bottom: 70px;
   }
 `;
 

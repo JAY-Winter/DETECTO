@@ -78,9 +78,9 @@ function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
       <div css={bodyContainer}>
         {/* 네비게이션 아이템들 */}
         <ul css={listContainer}>
-          <ListItem renderMode='full' icon={<SpaceDashboardOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-          <ListItem renderMode='full' icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-          <ListItem renderMode='full' icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          <ListItem renderMode='desktop' icon={<SpaceDashboardOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          <ListItem renderMode='desktop' icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          <ListItem renderMode='desktop' icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
         </ul>
         
         <div css={footerContainer}>
@@ -102,10 +102,10 @@ function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
 }
 
 const StyledNav = styled.nav<{isModal: boolean}>`
+  display: flex;
   position: fixed;
   top: 0px;
   left: 0px;
-  display: flex;
   flex-direction: column;
   width: 300px;
   height: 100%;

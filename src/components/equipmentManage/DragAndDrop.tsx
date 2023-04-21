@@ -81,7 +81,7 @@ function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile,
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <input type='file' accept={type === 'zip' ? 'zip' : 'image/png, image/gif, image/jpeg'} ref={inputFileRef} style={{display: 'none'}} onChange={handleFileChange}/>
+      <input type='file' accept={type === 'zip' ? '.zip' : 'image/png, image/gif, image/jpeg'} ref={inputFileRef} style={{display: 'none'}} onChange={handleFileChange}/>
       {selectedFile === null ? 
         <>
           {type === 'zip' ? <FileUploadOutlinedIcon color="disabled"/> : <AddPhotoAlternateOutlinedIcon color="disabled" /> }
