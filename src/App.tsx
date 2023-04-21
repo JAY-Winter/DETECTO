@@ -11,6 +11,7 @@ import { mobileV, tabletV } from './utils/Mixin';
 import NavigationBarTablet from '@components/navbar/NavigationBarTablet';
 import NavigationBarMobile from '@components/navbar/NavigationBarMobile';
 import SummaryPage from './pages/SummaryPage';
+import MorePage from './pages/MorePage';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -49,7 +50,7 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
             <Route path="/summary" element={<SummaryPage />} />
-            <Route path="/setting" />
+            <Route path="/setting" element={<MorePage />} />
           </Routes>
         </RouterContainerDiv>
         <NavigationBarMobile />

@@ -11,7 +11,7 @@ function DashboardPage() {
   const equips = useRecoilValue(EquipmentsAtom);
 
   return (
-    <div style={{display: "flex"}}>
+    <div style={{display: "flex", marginTop: "3rem"}}>
       <DashboardDiv>
         <h1>대시보드</h1>
         <DashboardDatePicker />
