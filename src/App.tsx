@@ -9,6 +9,7 @@ import NavigationBar from '@components/navbar/NavigationBar';
 import EquipmentManagePage from './pages/EquipmentManagePage';
 import { mobileV, tabletV } from './utils/Mixin';
 import NavigationBarTablet from '@components/navbar/NavigationBarTablet';
+import IframePage from './pages/IframePage';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -47,6 +48,7 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
             <Route path="/summary" />
+            <Route path="/iframe" element={<IframePage />} />
           </Routes>
         </RouterContainerDiv>
       </StyledDiv>

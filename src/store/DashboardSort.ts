@@ -6,12 +6,12 @@ export type TDashboardSortOrder = 'asc' | 'desc';
 
 const DashboardSortField = atom<TDashboardSortField>({
   key: 'dashboardSortField',
-  default: '',
+  default: 'Date',
 });
 
 const DashboardSortOrder = atom<TDashboardSortOrder>({
   key: 'dashboardSortOrder',
-  default: 'asc',
+  default: 'desc',
 });
 
 export { DashboardSortField, DashboardSortOrder };
