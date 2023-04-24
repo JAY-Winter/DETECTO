@@ -1,6 +1,12 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { IconButton, TableCell, TableHead, TableRow } from '@mui/material';
+import {
+  Button,
+  IconButton,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@mui/material';
 import {
   KeyboardArrowDown,
   KeyboardArrowUp,
@@ -14,64 +20,76 @@ function TableHeader() {
     <TableHead>
       <TableRow>
         <TableCell>
-          안전사항 위반 날짜
           {sortField === 'Date' ? (
-            <IconButton
+            <Button
               onClick={() => {
                 changeSortHandler('Date');
               }}
+              color="primary"
+              variant="contained"
             >
+              안전사항 위반 날짜
               {order === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-            </IconButton>
+            </Button>
           ) : (
-            <IconButton
+            <Button
               onClick={() => {
                 changeSortHandler('Date');
               }}
+              color="inherit"
             >
+              안전사항 위반 날짜
               <UnfoldMore />
-            </IconButton>
+            </Button>
           )}
         </TableCell>
         <TableCell align="left">
-          위반 사항
           {sortField === 'Equipment' ? (
-            <IconButton
+            <Button
               onClick={() => {
                 changeSortHandler('Equipment');
               }}
+              color="primary"
+              variant="contained"
             >
+              위반 사항
               {order === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-            </IconButton>
+            </Button>
           ) : (
-            <IconButton
+            <Button
               onClick={() => {
                 changeSortHandler('Equipment');
               }}
+              color="inherit"
             >
+              위반 사항
               <UnfoldMore />
-            </IconButton>
+            </Button>
           )}
         </TableCell>
         <TableCell align="left">작업 사항</TableCell>
         <TableCell align="left">
-          작업 조
           {sortField === 'Team' ? (
-            <IconButton
+            <Button
               onClick={() => {
                 changeSortHandler('Team');
               }}
+              color="primary"
+              variant="contained"
             >
+              작업 조
               {order === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-            </IconButton>
+            </Button>
           ) : (
-            <IconButton
+            <Button
               onClick={() => {
                 changeSortHandler('Team');
               }}
+              color="inherit"
             >
+              작업 조
               <UnfoldMore />
-            </IconButton>
+            </Button>
           )}
         </TableCell>
         <PendingTableCell align="center" />

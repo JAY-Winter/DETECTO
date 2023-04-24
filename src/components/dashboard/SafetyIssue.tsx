@@ -6,24 +6,17 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableRow,
   TableFooter,
   TablePagination,
   Pagination,
 } from '@mui/material';
-import {
-  KeyboardArrowDown,
-  KeyboardArrowUp,
-  UnfoldMore,
-} from '@mui/icons-material';
 import { mobileV } from '@/utils/Mixin';
 import IssueCard from './Issue/IssueCard';
 import TablePaginationActions from './Issue/TablePaginationActions';
 import Row from './Issue/TableRow';
 import MobileSortButton from './Issue/MobileSortButton';
 import { useRecoilValue } from 'recoil';
-import useDashSort from '@/hooks/useDashSort';
 import { DashboardIssue } from '@/store/DashboardIssue';
 import TableHeader from './Issue/TableHeader';
 
@@ -36,9 +29,12 @@ function DashboardSafetyIssue() {
 
   // mobile Pagination
   const [mobilePage, setMobliePage] = useState(1);
-  const handleMobliePage = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handleMobliePage = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
     setMobliePage(value);
-  }
+  };
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -99,11 +95,17 @@ function DashboardSafetyIssue() {
         </Table>
       </IssueTableContainer>
       <IssueCardContainer>
-        <MobileSortButton />
+        <MobileSortDiv>
+          <MobileSortButton />
+        </MobileSortDiv>
         {data.slice(mobilePage * 5 - 5, mobilePage * 5).map(issue => {
           return <IssueCard {...issue} key={issue.date} />;
         })}
-        <Pagination count={Math.ceil(data.length / 5)} page={mobilePage} onChange={handleMobliePage} />
+        <Pagination
+          count={Math.ceil(data.length / 5)}
+          page={mobilePage}
+          onChange={handleMobliePage}
+        />
       </IssueCardContainer>
     </>
   );
@@ -132,6 +134,9 @@ const IssueCardContainer = styled.div`
   }
 `;
 
-const PendingTableCell = styled(TableCell)`
-  width: 1rem;
+const MobileSortDiv = styled.div`
+  display: flex;
+
+  width: 100%;
+  justify-content: end;
 `;

@@ -1,13 +1,18 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { Button, Tabs, Tab, Box, Paper, css } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import { koKR } from '@mui/x-date-pickers/locales';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useRecoilState } from 'recoil';
 import { DashboardDayAtom } from '@/store/DashboardFilter';
 import dayjs, { Dayjs } from 'dayjs';
-import { RestartAlt, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import {
+  RestartAlt,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+} from '@mui/icons-material';
 import { mobileV } from '@/utils/Mixin';
 
 // (향후 날짜, 기간 DatePicker 세부 컴포넌트로 추출 예정)
@@ -64,7 +69,7 @@ function DashboardDatePicker() {
           {/* 탭 패널 */}
           <div hidden={tabValue !== 0}>
             <TabPanelDiv>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} localeText={koKR.components.MuiLocalizationProvider.defaultProps.localeText}>
                 <DatePicker
                   label="시작 날짜"
                   format="YYYY.MM.DD"
@@ -76,6 +81,10 @@ function DashboardDatePicker() {
                     });
                   }}
                   css={DatePickerCSS}
+                  slotProps={{
+                    toolbar: { toolbarFormat: 'YYYY.MM.DD', hidden: false },
+                  }}
+                  
                 />
                 <DatePicker
                   label="끝 날짜"
