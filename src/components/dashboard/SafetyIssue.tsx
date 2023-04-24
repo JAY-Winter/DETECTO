@@ -6,33 +6,35 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableRow,
   TableFooter,
   TablePagination,
-  Button,
+  Pagination,
 } from '@mui/material';
-import {
-  KeyboardArrowDown,
-  KeyboardArrowUp,
-  UnfoldMore,
-} from '@mui/icons-material';
 import { mobileV } from '@/utils/Mixin';
 import IssueCard from './Issue/IssueCard';
 import TablePaginationActions from './Issue/TablePaginationActions';
 import Row from './Issue/TableRow';
 import MobileSortButton from './Issue/MobileSortButton';
 import { useRecoilValue } from 'recoil';
-import useDashSort from '@/hooks/useDashSort';
 import { DashboardIssue } from '@/store/DashboardIssue';
+import TableHeader from './Issue/TableHeader';
 
 function DashboardSafetyIssue() {
   const data = useRecoilValue(DashboardIssue);
-  const [sortField, order, changeSortHandler] = useDashSort();
 
-  // Pagenation
+  // Pagination
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  // mobile Pagination
+  const [mobilePage, setMobliePage] = useState(1);
+  const handleMobliePage = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setMobliePage(value);
+  };
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -56,102 +58,7 @@ function DashboardSafetyIssue() {
     <>
       <IssueTableContainer>
         <Table stickyHeader aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                {sortField === 'Date' ? (
-                  <Button
-                    onClick={() => {
-                      changeSortHandler('Date');
-                      setPage(0)
-                    }}
-                    color="primary"
-                    variant="contained"
-                  >
-                    안전사항 위반 날짜
-                    {order === 'asc' ? (
-                      <KeyboardArrowUp />
-                    ) : (
-                      <KeyboardArrowDown />
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      changeSortHandler('Date');
-                      setPage(0)
-                    }}
-                    color="inherit"
-                  >
-                    안전사항 위반 날짜
-                    <UnfoldMore />
-                  </Button>
-                )}
-              </TableCell>
-              <TableCell align="left">
-                {sortField === 'Equipment' ? (
-                  <Button
-                    onClick={() => {
-                      changeSortHandler('Equipment');
-                      setPage(0)
-                    }}
-                    color="primary"
-                    variant="contained"
-                  >
-                    위반 사항
-                    {order === 'asc' ? (
-                      <KeyboardArrowUp />
-                    ) : (
-                      <KeyboardArrowDown />
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      changeSortHandler('Equipment');
-                      setPage(0)
-                    }}
-                    color="inherit"
-                  >
-                    위반 사항
-                    <UnfoldMore />
-                  </Button>
-                )}
-              </TableCell>
-              <TableCell align="left">작업 사항</TableCell>
-              <TableCell align="left">
-                {sortField === 'Team' ? (
-                  <Button
-                    onClick={() => {
-                      changeSortHandler('Team');
-                      setPage(0)
-                    }}
-                    color="primary"
-                    variant="contained"
-                  >
-                    작업 조
-                    {order === 'asc' ? (
-                      <KeyboardArrowUp />
-                    ) : (
-                      <KeyboardArrowDown />
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      changeSortHandler('Team');
-                      setPage(0)
-                    }}
-                    color="inherit"
-                  >
-                    작업 조
-                    <UnfoldMore />
-                  </Button>
-                )}
-              </TableCell>
-              <PendingTableCell align="center" />
-            </TableRow>
-          </TableHead>
+          <TableHeader />
           <TableBody>
             {(rowsPerPage > 0
               ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -188,10 +95,17 @@ function DashboardSafetyIssue() {
         </Table>
       </IssueTableContainer>
       <IssueCardContainer>
-        <MobileSortButton />
-        {data.map(issue => {
+        <MobileSortDiv>
+          <MobileSortButton />
+        </MobileSortDiv>
+        {data.slice(mobilePage * 5 - 5, mobilePage * 5).map(issue => {
           return <IssueCard {...issue} key={issue.date} />;
         })}
+        <Pagination
+          count={Math.ceil(data.length / 5)}
+          page={mobilePage}
+          onChange={handleMobliePage}
+        />
       </IssueCardContainer>
     </>
   );
@@ -212,12 +126,17 @@ const IssueTableContainer = styled(Paper)`
 const IssueCardContainer = styled.div`
   display: none;
   width: 100%;
+
   ${mobileV} {
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
 `;
 
-const PendingTableCell = styled(TableCell)`
-  width: 1rem;
+const MobileSortDiv = styled.div`
+  display: flex;
+
+  width: 100%;
+  justify-content: end;
 `;

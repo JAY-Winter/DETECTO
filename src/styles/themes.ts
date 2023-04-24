@@ -128,7 +128,7 @@ const getDesignTokens = (mode: PaletteMode) => ({
   typography: {
     fontFamily: 'Pretendard Variable',
     fontSize: 16
-  },
+  }
 });
 
 export default getDesignTokens;
