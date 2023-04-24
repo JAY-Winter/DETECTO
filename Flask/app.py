@@ -34,12 +34,10 @@ def upload_image():
     nparr = np.frombuffer(contents, np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     results = model(img) # YOLO
-    # annotated_frame = results[0].plot()
 
     cctv_id = int(request.form['id'])
     cctv_list[cctv_id] = results[0].plot()
     print('cctv id: ', cctv_id)
-    # print('             ', cctv_list[cctv_id])
     return {"result": "이미지 업로드 성공"}
 
 # 영상 프레임 생성
@@ -59,7 +57,6 @@ def index(cctv_id):
 # html로 detecting된 영상 전송
 @app.route('/video_feed/<cctv_id>')
 def video_feed(cctv_id):
-    print(cctv_id, '!!!!!!!!!')
     return Response(generate_video(int(cctv_id)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 

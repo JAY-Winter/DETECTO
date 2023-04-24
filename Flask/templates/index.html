@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Image Feed</title>
+    <title>YOLO</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
   </head>
   <body>
-    <h1>Image Feed</h1>
     <img id="image_feed" src="{{ url_for('video_feed', cctv_id=cctv_id) }}" />
   </body>
 </html>
