@@ -6,7 +6,7 @@ import time
 cctv_id = 0
 
 # Server Url
-url = "http://127.0.0.1:5000/upload_image"
+url = "http://127.0.0.1:5000/upload"
 
 # 카메라 실행
 def camera():
