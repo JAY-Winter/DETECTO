@@ -34,8 +34,6 @@ function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
   
   // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
   const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();  // 클릭된 아이템의 레이아웃 정보를 알아낸다
-    const itemTopPos = rect.top;  // 클릭된 아이템의 최상위 지점의 위치를 알아낸다
   }
 
   // 로그아웃 핸들러
@@ -83,9 +81,9 @@ function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
         <div css={bodyContainer}>
           {/* 네비게이션 아이템들 */}
           <ul css={listContainer}>
-            <ListItem renderMode='mini' icon={<SpaceDashboardOutlinedIcon fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-            <ListItem renderMode='mini' icon={<EngineeringOutlinedIcon  fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-            <ListItem renderMode='mini' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+            <ListItem renderMode='tablet' icon={<SpaceDashboardOutlinedIcon fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
+            <ListItem renderMode='tablet' icon={<EngineeringOutlinedIcon  fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
+            <ListItem renderMode='tablet' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/summary" currentPathName={currentPathName} />
           </ul>
           
           <div css={footerContainer}>

@@ -20,16 +20,15 @@ function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
   const [isErrorName, setIsErrorName] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [imageSrc, setImageSrc] = useState(null);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   const submit = () => {
     console.log(equipmentName, equipmentDesc);
     const randomImgURL = `https://unsplash.it/150/200?image=${getRandomNumber(1, 100)}`;
-    if (imageSrc === null) {
-      console.log("null 잼");
+    if (imageSrc !== null) {
+      addItemHandler(equipmentName, equipmentDesc, imageSrc);
     }
-    addItemHandler(equipmentName, equipmentDesc, imageSrc);
-    onClose()
+    onClose();
   }
 
   const handleNameinput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,9 +62,8 @@ function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
     if (selectedImage && selectedImage.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onload = e => {
-        console.log("변환하기: ", e.target?.result);
-        
-        setImageSrc(e.target?.result);
+        const imageURL = e.target?.result as string ?? "";
+        setImageSrc(imageURL);
       }
       reader.readAsDataURL(selectedImage);
     } else {

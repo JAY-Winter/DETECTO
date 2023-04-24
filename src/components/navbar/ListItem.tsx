@@ -6,48 +6,57 @@
 
 import styled from '@emotion/styled'
 import { useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from 'react'
-import { tabletV } from '@/utils/Mixin';
+import React from 'react'
 
 type ListItemProps = {
-  renderMode: 'full' | 'mini',
+  renderMode: 'desktop' | 'tablet' | 'mobile',
   icon: React.ReactNode,
   label?: string,
   pathName: string,  // 이동할 경로
   currentPathName: string,  // 현재 머무르고 있는 경로
-  clickHandler: (e: React.MouseEvent<HTMLLIElement>) => void
+  clickHandler?: (e: React.MouseEvent<HTMLLIElement>) => void
 }
 
 function ListItem({renderMode, icon, label, pathName, currentPathName, clickHandler}: ListItemProps) {
   const navigate = useNavigate();
 
   const handleClickItem = (e: React.MouseEvent<HTMLLIElement>) => {
-    clickHandler(e);  // 부모로부터 입력받은 핸들러 실행
+    if (clickHandler) {
+      clickHandler(e);  // 부모로부터 입력받은 핸들러 실행
+    }
     navigate(pathName);  // 이동할 경로를 향해 라우팅한다
   }
-  if (renderMode === 'full') {
+
+  if (renderMode === 'desktop') {
     return (
-      <StyledFullLi currentPathName={currentPathName} pathName={pathName} onClick={(e) => handleClickItem(e)}>
+      <StyledDesktopLi currentPathName={currentPathName} pathName={pathName} onClick={(e) => handleClickItem(e)}>
         {/* MUI 아이콘 */}
         {icon}
 
         {/* 레이블 */}
         <p>{label}</p>
-      </StyledFullLi>
+      </StyledDesktopLi>
     )
-  } else if (renderMode === 'mini') {
+  } else if (renderMode === 'tablet') {
     return (
-      <StyledMiniLi currentPathName={currentPathName} pathName={pathName} onClick={(e) => handleClickItem(e)}>
+      <StyledTabletLi currentPathName={currentPathName} pathName={pathName} onClick={(e) => handleClickItem(e)}>
         {/* MUI 아이콘 */}
         {icon}
-      </StyledMiniLi>
+      </StyledTabletLi>
+    )
+  } else if (renderMode === 'mobile') {
+    return (
+      <StyledMobileLi currentPathName={currentPathName} pathName={pathName} onClick={(e) => handleClickItem(e)}>
+        {/* MUI 아이콘 */}
+        {icon}
+      </StyledMobileLi>
     )
   } else {
     return <li></li>
   }
 }
 
-const StyledFullLi = styled.li<{currentPathName: string, pathName: string}>`
+const StyledDesktopLi = styled.li<{currentPathName: string, pathName: string}>`
   /* height: 40px; */
   display: flex;
   align-items: center;
@@ -65,7 +74,7 @@ const StyledFullLi = styled.li<{currentPathName: string, pathName: string}>`
   }
 `
 
-const StyledMiniLi = styled.li<{currentPathName: string, pathName: string}>`
+const StyledTabletLi = styled.li<{currentPathName: string, pathName: string}>`
   background-color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.neutral.card};
   color: ${props => props.currentPathName === props.pathName ? props.theme.palette.neutral.main : props.theme.palette.text.secondary};
   @media(hover: hover) {
@@ -73,6 +82,10 @@ const StyledMiniLi = styled.li<{currentPathName: string, pathName: string}>`
       color: ${props => props.currentPathName === props.pathName ? props.theme.palette.neutral.main : props.theme.palette.primary.main};
     }
   }
+`
+
+const StyledMobileLi = styled.li<{currentPathName: string, pathName: string}>`
+  color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.text.secondary};
 `
 
 export default ListItem
