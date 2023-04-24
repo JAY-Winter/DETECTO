@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
-import { Button, Card, IconButton } from '@mui/material';
+import { Button, Card } from '@mui/material';
 import { TteamMember } from '@/store/DashboardIssue';
 
 const nullMember: TteamMember = {
@@ -117,6 +117,6 @@ const profileImageStyle = css`
   box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.15);
 `;
 
-const ArrowButton = styled(IconButton)`
+const ArrowButton = styled(Button)`
   height: 100%;
-`
+`;
