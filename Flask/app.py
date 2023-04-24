@@ -5,13 +5,8 @@ import cv2
 from ultralytics import YOLO
 
 app = Flask(__name__)
-annotated_frame = None
 cctv_list = {}
 model = YOLO('model/best.pt')
-
-'''
-{id: 0, frame: ~~}
-'''
 
 app.config["flask_profiler"] = {
     "enabled": True,
@@ -49,11 +44,12 @@ def upload_image():
 
 # 영상 프레임 생성
 def generate_video(cctv_id):
-    annotated_frame = cctv_list[cctv_id]
-    if annotated_frame is not None:
-        image_bytes = cv2.imencode('.jpg', annotated_frame)[1].tobytes()
-        # frame = b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + image_bytes + b'\r\n'
-        return image_bytes
+    while True:
+      annotated_frame = cctv_list[cctv_id]
+      if annotated_frame is not None:
+          image_bytes = cv2.imencode('.jpg', annotated_frame)[1].tobytes()
+          frame = b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + image_bytes + b'\r\n'
+          yield frame
 
 # CCTV 화면 받기
 @app.route('/<int:cctv_id>')
@@ -63,8 +59,8 @@ def index(cctv_id):
 # html로 detecting된 영상 전송
 @app.route('/video_feed/<cctv_id>')
 def video_feed(cctv_id):
-    print(cctv_id)
-    return Response(generate_video(),
+    print(cctv_id, '!!!!!!!!!')
+    return Response(generate_video(int(cctv_id)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':

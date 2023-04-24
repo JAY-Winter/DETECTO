@@ -3,7 +3,7 @@ import requests
 import time
 
 # CCTV 번호 (CCTV 별로 다르게 지정)
-cctv_id = 0
+cctv_id = 1
 
 # Server Url
 url = "http://127.0.0.1:5000/upload_image"
@@ -42,7 +42,7 @@ def camera():
         # 'q' 키를 누르면 종료
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        
+
         # 2초에 1프레임 전송 
         time.sleep(2)
 
