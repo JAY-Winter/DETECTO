@@ -39,9 +39,27 @@ function IssueBottomSheet({
         </SheetHeader>
         <SheetContentDiv
           ref={handler.sheetContent}
-          onTouchStart={handler.isTop ? handler.contentTouchStart : () => {}}
-          onTouchMove={handler.isTop ? handler.contentTouchMove : () => {}}
-          onTouchEnd={handler.isTop ? handler.contentTouchEnd : () => {}}
+          onTouchStart={
+            handler.isTop
+              ? handler.contentTouchStart
+              : () => {
+                  return;
+                }
+          }
+          onTouchMove={
+            handler.isTop
+              ? handler.contentTouchMove
+              : () => {
+                  return;
+                }
+          }
+          onTouchEnd={
+            handler.isTop
+              ? handler.contentTouchEnd
+              : () => {
+                  return;
+                }
+          }
         >
           <div ref={handler.sheetObserver}></div>
           {children}
@@ -51,7 +69,7 @@ function IssueBottomSheet({
   );
 }
 
-export default IssueBottomSheet
+export default IssueBottomSheet;
 
 const bottomUP = keyframes`
   0% {
@@ -74,6 +92,8 @@ const BackdropDiv = styled.div`
   height: 100vh;
   width: 100vw;
   z-index: 999;
+
+  background-color: rgba(0, 0, 0, 0.2);
 `;
 
 const BottomSheetDiv = styled.div<{ bsAni: boolean }>`
@@ -91,7 +111,7 @@ const BottomSheetDiv = styled.div<{ bsAni: boolean }>`
 
   background-color: ${props => props.theme.palette.neutral.section};
 
-  transition: 0.2s all ease-out;
+  transition: 0.2s transform ease-out;
 
   animation: ${props => {
     return props.bsAni

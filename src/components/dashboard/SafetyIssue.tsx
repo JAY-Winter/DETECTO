@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import styled from '@emotion/styled';
 import {
-  IconButton,
   Paper,
   Table,
   TableBody,
