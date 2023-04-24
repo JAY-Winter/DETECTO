@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Button, Paper } from '@mui/material';
 import { RestartAlt } from '@mui/icons-material';
 import SafetyEquipmentChip from './Equipment/SafetyEquipmentChip';
-import {KeyboardArrowDown, KeyboardArrowUp} from '@mui/icons-material';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 
 import { mobileV } from '@/utils/Mixin';
 
@@ -16,7 +16,6 @@ const eq = ['안전모', '장갑', '앞치마', '보안경', '방진마스크'];
 
 function DashboardEquipmentFilter() {
   const equipments = useRecoilValue(EquipmentsAtom);
-
 
   const [filterEq, setFilterEq] = useRecoilState(DashboardEqAtom);
 
