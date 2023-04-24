@@ -3,14 +3,17 @@ import React from 'react'
 import { Route } from 'react-router-dom';
 
 type PrivateRouteProps = {
-  children: React.ReactNode
+  element: React.ReactNode
 }
 
-function PrivateRoute({ children }: PrivateRouteProps) {
+function PrivateRoute({ element, ...rest}: PrivateRouteProps) {
   const isAuthenticated = useAuth();
 
   return (
-    <></>
+    <Route
+      {...rest}
+      element={element}
+    />
   )
 }
 

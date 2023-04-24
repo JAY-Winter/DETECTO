@@ -1,4 +1,4 @@
-import { createTheme, PaletteMode } from '@mui/material';
+import { createTheme, dividerClasses, PaletteMode } from '@mui/material';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import React, { useEffect, useState } from 'react';
 import DashboardPage from './pages/DashboardPage';
@@ -12,6 +12,9 @@ import NavigationBarTablet from '@components/navbar/NavigationBarTablet';
 import NavigationBarMobile from '@components/navbar/NavigationBarMobile';
 import SummaryPage from './pages/SummaryPage';
 import MorePage from './pages/MorePage';
+import ProtectedRoute from '@components/common/ProtectedRoute';
+import SignIn from './pages/SignIn';
+import Root from './Root';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -40,21 +43,23 @@ function App() {
   }, [mode]);
 
   return (
+    // <Routes>
+    //   <Route path="/*" element={<Root />} />
+    //   <Route path="/sign" element={<div>로그인</div>} />
+    // </Routes>
     <ThemeProvider theme={theme}>
-      {/* <StyledDiv> */}
-        <NavigationBar mode={mode} setMode={setMode} />
-        <NavigationBarTablet mode={mode} setMode={setMode} />
-        <RouterContainerDiv>
-          <Routes>
-            <Route path="/" element={<Navigate replace to="/dashboard" />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/manage" element={<EquipmentManagePage />} />
-            <Route path="/summary" element={<SummaryPage />} />
-            <Route path="/setting" element={<MorePage />} />
-          </Routes>
-        </RouterContainerDiv>
-        <NavigationBarMobile />
-      {/* </StyledDiv> */}
+      <NavigationBar mode={mode} setMode={setMode} />
+      <NavigationBarTablet mode={mode} setMode={setMode} />
+      <RouterContainerDiv>
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/dashboard" />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/manage" element={<EquipmentManagePage />} />
+          <Route path="/summary" element={<SummaryPage />} />
+          <Route path="/setting" element={<MorePage />} />
+        </Routes>
+      </RouterContainerDiv>
+      <NavigationBarMobile />
     </ThemeProvider>
   );
 }
