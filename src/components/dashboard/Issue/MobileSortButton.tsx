@@ -15,7 +15,6 @@ type Toptions = {
 };
 
 const options: Toptions[] = [
-  { label: '정렬 기준 선택', accessor: '' },
   { label: '날짜 순 정렬', accessor: 'Date' },
   { label: '위반사항 순 정렬', accessor: 'Equipment' },
   { label: '작업 조 순 정렬', accessor: 'Team' },
@@ -113,7 +112,6 @@ function MobileSortButton() {
                   {options.map((option, index) => (
                     <MenuItem
                       key={option.label}
-                      disabled={index === 0}
                       selected={index === selectedIndex}
                       onClick={event => handleMenuItemClick(event, index)}
                     >
