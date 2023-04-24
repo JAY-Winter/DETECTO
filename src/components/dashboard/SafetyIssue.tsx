@@ -63,8 +63,10 @@ function DashboardSafetyIssue() {
                   <Button
                     onClick={() => {
                       changeSortHandler('Date');
+                      setPage(0)
                     }}
                     color="primary"
+                    variant="contained"
                   >
                     안전사항 위반 날짜
                     {order === 'asc' ? (
@@ -77,6 +79,7 @@ function DashboardSafetyIssue() {
                   <Button
                     onClick={() => {
                       changeSortHandler('Date');
+                      setPage(0)
                     }}
                     color="inherit"
                   >
@@ -90,7 +93,10 @@ function DashboardSafetyIssue() {
                   <Button
                     onClick={() => {
                       changeSortHandler('Equipment');
+                      setPage(0)
                     }}
+                    color="primary"
+                    variant="contained"
                   >
                     위반 사항
                     {order === 'asc' ? (
@@ -103,6 +109,7 @@ function DashboardSafetyIssue() {
                   <Button
                     onClick={() => {
                       changeSortHandler('Equipment');
+                      setPage(0)
                     }}
                     color="inherit"
                   >
@@ -117,7 +124,10 @@ function DashboardSafetyIssue() {
                   <Button
                     onClick={() => {
                       changeSortHandler('Team');
+                      setPage(0)
                     }}
+                    color="primary"
+                    variant="contained"
                   >
                     작업 조
                     {order === 'asc' ? (
@@ -130,6 +140,7 @@ function DashboardSafetyIssue() {
                   <Button
                     onClick={() => {
                       changeSortHandler('Team');
+                      setPage(0)
                     }}
                     color="inherit"
                   >

@@ -111,7 +111,7 @@ const BottomSheetDiv = styled.div<{ bsAni: boolean }>`
 
   background-color: ${props => props.theme.palette.neutral.section};
 
-  transition: 0.2s transform ease-in-out;
+  transition: 0.2s transform ease-out;
 
   animation: ${props => {
     return props.bsAni
