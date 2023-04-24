@@ -11,6 +11,7 @@ import {
   TableRow,
   TableFooter,
   TablePagination,
+  Pagination,
 } from '@mui/material';
 import {
   KeyboardArrowDown,
@@ -25,14 +26,20 @@ import MobileSortButton from './Issue/MobileSortButton';
 import { useRecoilValue } from 'recoil';
 import useDashSort from '@/hooks/useDashSort';
 import { DashboardIssue } from '@/store/DashboardIssue';
+import TableHeader from './Issue/TableHeader';
 
 function DashboardSafetyIssue() {
   const data = useRecoilValue(DashboardIssue);
-  const [sortField, order, changeSortHandler] = useDashSort();
 
-  // Pagenation
+  // Pagination
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  // mobile Pagination
+  const [mobilePage, setMobliePage] = useState(1);
+  const handleMobliePage = (event: React.ChangeEvent<unknown>, value: number) => {
+    setMobliePage(value);
+  }
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -56,84 +63,7 @@ function DashboardSafetyIssue() {
     <>
       <IssueTableContainer>
         <Table stickyHeader aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                안전사항 위반 날짜
-                {sortField === 'Date' ? (
-                  <IconButton
-                    onClick={() => {
-                      changeSortHandler('Date');
-                    }}
-                  >
-                    {order === 'asc' ? (
-                      <KeyboardArrowUp />
-                    ) : (
-                      <KeyboardArrowDown />
-                    )}
-                  </IconButton>
-                ) : (
-                  <IconButton
-                    onClick={() => {
-                      changeSortHandler('Date');
-                    }}
-                  >
-                    <UnfoldMore />
-                  </IconButton>
-                )}
-              </TableCell>
-              <TableCell align="left">
-                위반 사항
-                {sortField === 'Equipment' ? (
-                  <IconButton
-                    onClick={() => {
-                      changeSortHandler('Equipment');
-                    }}
-                  >
-                    {order === 'asc' ? (
-                      <KeyboardArrowUp />
-                    ) : (
-                      <KeyboardArrowDown />
-                    )}
-                  </IconButton>
-                ) : (
-                  <IconButton
-                    onClick={() => {
-                      changeSortHandler('Equipment');
-                    }}
-                  >
-                    <UnfoldMore />
-                  </IconButton>
-                )}
-              </TableCell>
-              <TableCell align="left">작업 사항</TableCell>
-              <TableCell align="left">
-                작업 조
-                {sortField === 'Team' ? (
-                  <IconButton
-                    onClick={() => {
-                      changeSortHandler('Team');
-                    }}
-                  >
-                    {order === 'asc' ? (
-                      <KeyboardArrowUp />
-                    ) : (
-                      <KeyboardArrowDown />
-                    )}
-                  </IconButton>
-                ) : (
-                  <IconButton
-                    onClick={() => {
-                      changeSortHandler('Team');
-                    }}
-                  >
-                    <UnfoldMore />
-                  </IconButton>
-                )}
-              </TableCell>
-              <PendingTableCell align="center" />
-            </TableRow>
-          </TableHead>
+          <TableHeader />
           <TableBody>
             {(rowsPerPage > 0
               ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -171,9 +101,10 @@ function DashboardSafetyIssue() {
       </IssueTableContainer>
       <IssueCardContainer>
         <MobileSortButton />
-        {data.map(issue => {
+        {data.slice(mobilePage * 5 - 5, mobilePage * 5).map(issue => {
           return <IssueCard {...issue} key={issue.date} />;
         })}
+        <Pagination count={Math.ceil(data.length / 5)} page={mobilePage} onChange={handleMobliePage} />
       </IssueCardContainer>
     </>
   );
@@ -194,9 +125,11 @@ const IssueTableContainer = styled(Paper)`
 const IssueCardContainer = styled.div`
   display: none;
   width: 100%;
+
   ${mobileV} {
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
 `;
 

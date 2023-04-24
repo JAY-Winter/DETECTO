@@ -36,28 +36,6 @@ const TableCollapseCard = ({
   teamList: TteamMember[];
   violate_member?: TteamMember;
 }) => {
-  const [cardList, setCardList] = useState([nullMember, ...teamList]);
-  const [memberNum, setMemberNum] = useState(0);
-
-  const switchRightMemeber = () => {
-    setMemberNum(prev => {
-      if (prev - 1 >= 0) {
-        return prev - 1;
-      } else {
-        return cardList.length - 1;
-      }
-    });
-  };
-
-  const switchLeftMemeber = () => {
-    setMemberNum(prev => {
-      if (prev + 1 < cardList.length) {
-        return prev + 1;
-      } else {
-        return 0;
-      }
-    });
-  };
 
   return (
     <Box
