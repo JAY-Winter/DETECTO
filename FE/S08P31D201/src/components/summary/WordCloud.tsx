@@ -14,13 +14,13 @@ interface Props {
   height: number;
 }
 
-const myWords: Word[] = [
-  { word: '안전모', size: 100 },
-  { word: '장갑', size: 120 },
-  { word: '앞치마', size: 20 },
-  { word: '보안경', size: 60 },
-  { word: '방진마스크', size: 1000 },
-];
+// const myWords: Word[] = [
+//   { word: '안전모', size: 100 },
+//   { word: '장갑', size: 120 },
+//   { word: '앞치마', size: 20 },
+//   { word: '보안경', size: 60 },
+//   { word: '방진마스크', size: 1000 },
+// ];
 
 const maxFontSize = 80;
 const minFontSize = 10;
@@ -53,7 +53,37 @@ const WordCloud: React.FC<Props> = ({ words, width, height }) => {
           .attr('transform', `translate(${width / 2}, ${height / 2})`)
           .selectAll('text')
           .data(words)
-          .join('text')
+          .join(
+            enter =>
+              enter
+                .append('text')
+                .style('fill-opacity', 0)
+                .style('scale', 0)
+                .style('font-size', 1)
+                .style('font-family', 'Impact')
+                .attr('text-anchor', 'middle')
+                // .attr(
+                //   'transform',
+                //   d => `translate(${d.x},${d.y}) rotate(${d.rotate})`
+                // )
+                .text(d => d.text as string)
+                .call(enter =>
+                  enter
+                    .transition()
+                    .duration(750)
+                    .attr('font-size', d => `${d.size}px`)
+                    .style('fill-opacity', 1)
+                    .style('scale', 1)
+                ),
+            update => update,
+            exit =>
+              exit
+                .transition()
+                .duration(750)
+                .style('fill-opacity', 0)
+                .attr('font-size', 1)
+                .remove()
+          )
           .style('font-size', d => `${d.size}px`)
           .style('fill', '#034ea2')
           .attr('text-anchor', 'middle')
@@ -69,16 +99,10 @@ const WordCloud: React.FC<Props> = ({ words, width, height }) => {
   }, [words, width, height]);
 
   return (
-    <WordCloudSVG ref={svgRef} width={width} height={height}>
+    <svg ref={svgRef} width={width} height={height}>
       <g />
-    </WordCloudSVG>
+    </svg>
   );
 };
 
 export default WordCloud;
-
-const WordCloudSVG = styled.svg`
-  text {
-    transition: font-size 0.5s ease-out;
-  }
-`;
