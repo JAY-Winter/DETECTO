@@ -44,7 +44,7 @@ def camera():
             break
         
         # 2초에 1프레임 전송 
-        time.sleep(2)
+        time.sleep(1)
 
     # 리소스 해제
     cap.release()
