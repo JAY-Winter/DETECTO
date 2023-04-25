@@ -62,10 +62,10 @@ const WordCloud: React.FC<Props> = ({ words, width, height }) => {
                 .style('font-size', 1)
                 .style('font-family', 'Impact')
                 .attr('text-anchor', 'middle')
-                // .attr(
-                //   'transform',
-                //   d => `translate(${d.x},${d.y}) rotate(${d.rotate})`
-                // )
+                .attr(
+                  'transform',
+                  d => `translate(${d.x},${d.y}) rotate(${d.rotate})`
+                )
                 .text(d => d.text as string)
                 .call(enter =>
                   enter

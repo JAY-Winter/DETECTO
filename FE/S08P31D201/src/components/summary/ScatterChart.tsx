@@ -37,21 +37,21 @@ function ScatterChart() {
         .attr('y1', 0)
         .attr('x2', width)
         .attr('y2', 0)
-        .attr('stroke', 'black');
+        .attr('stroke', 'currentColor');
 
       g.append('line')
         .attr('x1', 0)
         .attr('y1', height)
         .attr('x2', width)
         .attr('y2', height)
-        .attr('stroke', 'black');
+        .attr('stroke', 'currentColor');
 
       g.append('line')
         .attr('x1', 0)
         .attr('y1', height / 2)
         .attr('x2', width)
         .attr('y2', height / 2)
-        .attr('stroke', 'black');
+        .attr('stroke', 'currentColor');
 
       // Create y-axis line
 
@@ -60,21 +60,21 @@ function ScatterChart() {
         .attr('y1', 0)
         .attr('x2', 0)
         .attr('y2', height)
-        .attr('stroke', 'black');
+        .attr('stroke', 'currentColor');
 
       g.append('line')
         .attr('x1', width)
         .attr('y1', 0)
         .attr('x2', width)
         .attr('y2', height)
-        .attr('stroke', 'black');
+        .attr('stroke', 'currentColor');
 
       g.append('line')
         .attr('x1', width / 2)
         .attr('y1', 0)
         .attr('x2', width / 2)
         .attr('y2', height)
-        .attr('stroke', 'black');
+        .attr('stroke', 'currentColor');
 
       const cctv1: d3.Arc<any, d3.DefaultArcObject> = d3
         .arc()
@@ -107,53 +107,61 @@ function ScatterChart() {
       // Create CCTV Circle
       g.append('path')
         .attr('d', cctv1 as any)
+        .style('fill', 'currentColor')
         .attr('transform', `translate(0,0)`);
       g.append('text')
         .attr('x', 10)
         .attr('y', 10)
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
-        .style('fill', 'white')
+        .style('fill', 'currentcolor')
+        .style('filter', 'invert(1)')
         .text('1');
 
       g.append('path')
         .attr('d', cctv2 as any)
+        .style('fill', 'currentColor')
         .attr('transform', `translate(${width}, 0)`);
       g.append('text')
         .attr('x', width - 10)
         .attr('y', 10)
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
-        .style('fill', 'white')
+        .style('fill', 'currentcolor')
+        .style('filter', 'invert(1)')
         .text('2');
 
       g.append('path')
         .attr('d', cctv3 as any)
+        .style('fill', 'currentColor')
         .attr('transform', `translate(0, ${height})`);
       g.append('text')
         .attr('x', 10)
         .attr('y', height - 10)
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
-        .style('fill', 'white')
+        .style('fill', 'currentcolor')
+        .style('filter', 'invert(1)')
         .text('3');
 
       g.append('path')
         .attr('d', cctv4 as any)
+        .style('fill', 'currentColor')
         .attr('transform', `translate(${width}, ${height})`);
       g.append('text')
         .attr('x', width - 10)
         .attr('y', height - 10)
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
-        .style('fill', 'white')
+        .style('fill', 'currentcolor')
+        .style('filter', 'invert(1)')
         .text('4');
 
       // Color scale: give me a specie name, I return a color
       const color = d3
         .scaleOrdinal()
         .domain(['setosa', 'versicolor', 'virginica'])
-        .range(['#4301545e', '#21908c5d', '#fde72557']);
+        .range(['#4301545e', '#21908c5d', '#fde72573']);
 
       // Highlight the specie that is hovered
       const highlight = function (event: MouseEvent, d: any) {
@@ -173,11 +181,16 @@ function ScatterChart() {
       };
       // d에서 정확한 타입지정이 안된다...
       // Highlight the specie that is hovered
-      const doNotHighlight = function (event: MouseEvent, d: any) {
+      const doNotHighlight = function (
+        event: MouseEvent,
+        d: d3.DSVRowString<string>
+      ) {
         d3.selectAll('.dot')
           .transition()
           .duration(200)
-          .style('fill', (d: any) => color(d.Species) as string)
+          .style('fill', function (d: any) {
+            return color(d.Species) as string;
+          })
           .attr('r', 5);
       };
 
@@ -206,9 +219,9 @@ function ScatterChart() {
   }, []);
 
   return (
-    <svg ref={svgRef} width={width} height={height}>
-      <g />
-    </svg>
+      <svg ref={svgRef}>
+        <g />
+      </svg>
   );
 }
 
