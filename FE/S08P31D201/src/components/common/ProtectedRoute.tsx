@@ -1,4 +1,4 @@
-import SignIn from '@/pages/SignIn';
+import useAuth from '@/utils/useAuth';
 import React, { useEffect } from 'react'
 import { Navigate } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ type ProtectedRouteProps = {
 }
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const isAuthenticated = true;
+  const isAuthenticated = useAuth();
 
   if (isAuthenticated) {
     return (
@@ -16,7 +16,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
       </>
     )
   } else {
-    return <Navigate to="/signin" replace={true} />
+    return <Navigate to="/login" replace={true} />
   }
 }
 
