@@ -21,6 +21,7 @@ function ScatterChart() {
       const g = svg
         .append('g')
         .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
       // Add X axis
       const x = d3.scaleLinear().domain([4, 8]).range([0, width]);
       // g.append('g')
@@ -219,9 +220,9 @@ function ScatterChart() {
   }, []);
 
   return (
-      <svg ref={svgRef}>
-        <g />
-      </svg>
+    <svg ref={svgRef}>
+      <g />
+    </svg>
   );
 }
 

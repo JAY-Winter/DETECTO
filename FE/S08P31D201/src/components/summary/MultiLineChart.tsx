@@ -22,9 +22,9 @@ function MultiLineChart() {
       'https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv'
     ).then(function (data) {
       // group the data: I want to draw one line per group
-      console.log(data);
+
       const sumstat = d3.group(data, d => d.name); // nest function allows to group the calculation per level of a factor
-      console.log(sumstat);
+
       // Add X axis --> it is a date format
       const x = d3
         .scaleLinear()
@@ -34,7 +34,8 @@ function MultiLineChart() {
           }) as [number, number]
         )
         .range([0, width]);
-      g.append('g')
+      const gx = g
+        .append('g')
         .attr('transform', `translate(0, ${height})`)
         .call(d3.axisBottom(x).ticks(5));
 
@@ -66,7 +67,8 @@ function MultiLineChart() {
         ]);
 
       // Draw the line
-      g.selectAll('.line')
+      const line = g
+        .selectAll('.line')
         .data(sumstat)
         .join('path')
         .attr('fill', 'none')
@@ -74,7 +76,27 @@ function MultiLineChart() {
           return color(d[0] as string) as string;
         })
         .attr('stroke-width', 1.5)
-        .attr('d', function (d) {
+        // .attr('d', function (d) {
+        //   return d3
+        //     .line<d3.DSVRowString<string>>()
+        //     .x(d => {
+        //       return x(+(d.year as string));
+        //     })
+        //     .y(d => {
+        //       return y(+(d.n as string));
+        //     })(d[1]);
+        // });
+
+      const xAxis = (g, x) =>
+        g.call(
+          d3
+            .axisBottom(x)
+            .ticks(width / 80)
+            .tickSizeOuter(0)
+        );
+
+      const nline = (data, x) => {
+        console.log(x)
           return d3
             .line<d3.DSVRowString<string>>()
             .x(d => {
@@ -82,8 +104,34 @@ function MultiLineChart() {
             })
             .y(d => {
               return y(+(d.n as string));
-            })(d[1]);
-        });
+            })(data[1]) as string;
+      };
+
+      function zoomed(event) {
+        const xz = event.transform.rescaleX(x);
+        console.log(g)
+        line.attr('d', nline(data, xz));
+        gx.call(xAxis, xz);
+      }
+
+      const zoom = d3
+        .zoom()
+        .scaleExtent([1, 32])
+        .extent([
+          [margin.left, 0],
+          [width - margin.right, height],
+        ])
+        .translateExtent([
+          [margin.left, -Infinity],
+          [width - margin.right, Infinity],
+        ])
+        .on('zoom', zoomed);
+
+      svg
+        .call(zoom as any)
+        .transition()
+        .duration(750)
+        .call(zoom.scaleTo as any, 4, [x(Date.UTC(2001, 8, 1)), 0]);
     });
   }, []);
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import * as cloud from 'd3-cloud';
-import styled from '@emotion/styled';
 
 export interface Word {
   word: string;
