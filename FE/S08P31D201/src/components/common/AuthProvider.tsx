@@ -1,6 +1,6 @@
 import SignIn from '@/pages/SignIn';
 import authState from '@/store/authState';
-import useAuth from '@/utils/useAuth';
+import useAuth from '@/hooks/useAuth';
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';

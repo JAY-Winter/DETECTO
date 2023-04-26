@@ -1,5 +1,5 @@
 import authState from '@/store/authState'
-import { mobileV, tabletV } from '@/utils/Mixin'
+import { tabletV } from '@/utils/Mixin'
 import styled from '@emotion/styled'
 import { Button, TextField, css } from '@mui/material'
 import React, { useState } from 'react'
@@ -8,6 +8,7 @@ import { useRecoilState } from 'recoil'
 function SignIn() {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
+  const [isRequested, setIsRequested] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useRecoilState(authState);
 
   const inputId = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -18,22 +19,30 @@ function SignIn() {
     setPw(e.target.value.trim());
   }
 
-  const submitSignInfo = () => {
+  const submitSignInfo = async () => {
     // 서버에게 요청 보내서 올바른 응답 코드가 날아와야 로그인 처리한다
-    if (id === "admin" && pw === "admin") {
+    const response = await fetch('/login', {
+      method: 'POST',
+      body: JSON.stringify({id: id, pw: pw})
+    })
+    setIsRequested(false);
+    if (response.status === 200) {
       setIsAuthenticated(true);
     } else {
-      alert("아이디 또는 비밀번호 잘못 입력");
+      alert('아이디와 비밀번호를 확인해주세요');
+      setIsAuthenticated(false);
       setPw("");
     }
   }
 
   const clickLogin = () => {
+    setIsRequested(true);
     submitSignInfo();
   }
 
   const handleOnKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === "Enter") {
+      setIsRequested(true);
       submitSignInfo();
     }
   }
@@ -46,10 +55,10 @@ function SignIn() {
         <h1>로그인</h1>
         <LoginForm>
           <p>아이디</p>
-          <TextField fullWidth size="medium" value={id} onChange={inputId} />
+          <TextField fullWidth size="small" value={id} onChange={inputId} />
           <p>비밀번호</p>
-          <TextField fullWidth size="medium" value={pw} onChange={inputPw} type="password" onKeyPress={handleOnKeyPress}/>
-          <Button fullWidth variant="contained" size="large" onClick={clickLogin} disabled={id === "" || pw === "" }>
+          <TextField fullWidth size="small" value={pw} onChange={inputPw} type="password" onKeyPress={handleOnKeyPress}/>
+          <Button fullWidth variant="contained" size="large" onClick={clickLogin} disabled={id === "" || pw === "" || isRequested}>
             로그인
           </Button>
         </LoginForm>
@@ -79,8 +88,6 @@ const LeftContainerDiv = styled.div`
     display: none;
   }
 `
-
-
 
 const RightContainerDiv = styled.div`
   background-color: ${props => props.theme.palette.neutral.section};
