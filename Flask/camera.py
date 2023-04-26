@@ -1,12 +1,24 @@
 import cv2
 import requests
 import time
+import ntplib
+from datetime import datetime
 
 # CCTV 번호 (CCTV 별로 다르게 지정)
 cctv_id = 0
 
 # Server Url
 url = "http://127.0.0.1:5000/upload"
+
+# 동기화할 NTP 서버
+ntp_server = "pool.ntp.org"
+
+# sync time
+def sync_time_with_ntp_server(ntp_server="pool.ntp.org"):
+    ntp_client = ntplib.NTPClient()
+    response = ntp_client.request(ntp_server)
+    current_time = datetime.fromtimestamp(response.tx_time)
+    return current_time
 
 # 카메라 실행
 def camera():
@@ -51,4 +63,9 @@ def camera():
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
+    # NTP 서버와 시간 동기화
+    synced_time = sync_time_with_ntp_server(ntp_server)
+    # 동기화된 시간 출력
+    print(f"Synced time: {synced_time}")
+
     camera()
