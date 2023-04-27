@@ -37,13 +37,13 @@ def calculate(imglist, model):
             #cv2.imwrite(time.strftime('%Y-%m-%d %H:%M:%S'),annotated_frame) 이미지를 어딘가로 보낼 계획임 TODO
     arr = np.zeros((100, 65))
     center_x = [0,0,0,99,99,0]
-    center_y = [0,0,74,0,74,0]
+    center_y = [0,0,64,0,64,0]
 
     i, j = np.meshgrid(np.arange(100), np.arange(65), indexing='ij')
     for k in range(1, 5):
-        mask = np.sqrt((center_x[k] - i) ** 2 + (center_y[k] - j) ** 2) <= int(distance[k] / 10) + 15
+        mask = np.sqrt((center_x[k] - i) ** 2 + (center_y[k] - j) ** 2) <= int(distance[k] / 10) + 20
         arr[mask] = arr[mask] + 1
-    visualize_arr = np.zeros((100, 65, 4), dtype=np.uint8)
+    visualize_arr = np.zeros((100, 65, 3), dtype=np.uint8)
 
     mask_1 = arr == 1
     mask_2 = arr == 2
