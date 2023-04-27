@@ -57,4 +57,3 @@ class message_queue():
 
         finally:
             self.connect_close(connection)
-

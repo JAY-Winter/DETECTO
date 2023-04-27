@@ -1,8 +1,6 @@
 import cv2
 import requests
 
-
-
 class Camera():
     def __init__(self, cctvNum, flaskUrl):
         self.__camera_index = 0
