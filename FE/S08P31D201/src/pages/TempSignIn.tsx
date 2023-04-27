@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 import authState from '@/store/authState';
 import backBlue from '@/assets/img/back-blue.jpg';
 
-function SignIn() {
+function TempSignIn() {
   const [inputID, setInputID] = useState("");
   const [inputPW, setInputPW] = useState("");
   const [isRequested, setIsRequested] = useState(false);  // 연속 클릭 방지를 위한 토글변수
@@ -56,7 +56,7 @@ function SignIn() {
 
       </LeftContainerDiv>
       <RightContainerDiv>
-        <div css={lockIconStyle}>
+        <div css={temp}>
           <LockOutlinedIcon />
         </div>
         <p>로그인</p>
@@ -100,7 +100,7 @@ const RightContainerDiv = styled.div`
     width: 100%;
   }
 `
-const lockIconStyle = css`
+const temp = css`
   background-color: #3571b5;
   color: white;
   padding: 8px;
@@ -130,4 +130,4 @@ const ButtonContainerDiv = styled.div`
   }
 `
 
-export default SignIn
+export default TempSignIn

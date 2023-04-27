@@ -89,10 +89,10 @@ function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
         
         <div css={footerContainer}>
           {/* 로그아웃 버튼 */}
-          <StyledButton onClick={handleClickLogout}>
+          <LogoutButton onClick={handleClickLogout}>
             <LogoutOutlinedIcon />
             <p>로그아웃</p>
-          </StyledButton>
+          </LogoutButton>
           {/* 테마 토글 버튼 */}
           <div css={switchContainer}>
             <LightModeIcon />
@@ -206,7 +206,7 @@ const footerContainer = css`
   justify-content: space-between;
 `
 
-const StyledButton = styled.button`
+const LogoutButton = styled.button`
   display: flex;
   align-items: center;
   color: ${props => props.theme.palette.text.secondary};

@@ -53,41 +53,19 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
             <Route path="/summary" element={<SummaryPage />} />
-            <Route path="/setting" element={<MorePage />} />
+            <Route path="/more" element={<MorePage mode={mode} setMode={setMode} />} />
           </Routes>
         </RouterContainerDiv>
         <NavigationBarMobile />
       </AuthProvider>
     </ThemeProvider>
-    // <ThemeProvider theme={theme}>
-    //   <AuthProvider>
-    //     <Routes>
-    //       <Route path="/*" element={<Root mode={mode} setMode={setMode} />} />
-    //     </Routes>
-    //     <NavigationBarMobile />
-    //   </AuthProvider>
-    // </ThemeProvider>
-
-    // <ThemeProvider theme={theme}>
-    //   <NavigationBar mode={mode} setMode={setMode} />
-    //   <NavigationBarTablet mode={mode} setMode={setMode} />
-    //   <RouterContainerDiv>
-    //     <Routes>
-    //       <Route path="/" element={<Navigate replace to="/dashboard" />} />
-    //       <Route path="/dashboard" element={<DashboardPage />} />
-    //       <Route path="/manage" element={<EquipmentManagePage />} />
-    //       <Route path="/summary" element={<SummaryPage />} />
-    //       <Route path="/setting" element={<MorePage />} />
-    //     </Routes>
-    //   </RouterContainerDiv>
-    //   <NavigationBarMobile />
-    // </ThemeProvider>
   );
 }
 
 const RouterContainerDiv = styled.div`
   margin-left: 300px;
   overflow-y: auto;
+  height: 100%;
   color: ${props => props.theme.palette.text.primary};
   ${tabletV} {
     margin-left: 70px;
