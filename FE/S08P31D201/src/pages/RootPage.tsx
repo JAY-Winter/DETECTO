@@ -8,7 +8,6 @@ import SummaryPage from '@/pages/SummaryPage'
 import MorePage from '@/pages/MorePage'
 import styled from '@emotion/styled'
 import { mobileV, tabletV } from '@/utils/Mixin'
-import ProtectedRoute from '@components/common/ProtectedRoute'
 
 type RootPageProps = {
   mode: 'dark' | 'light',

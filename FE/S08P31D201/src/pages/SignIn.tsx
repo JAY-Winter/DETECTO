@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil'
 function SignIn() {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
-  const [isRequested, setIsRequested] = useState(false);
+  const [isRequested, setIsRequested] = useState(false);  // 연속 클릭 방지를 위한 토글변수
   const [isAuthenticated, setIsAuthenticated] = useRecoilState(authState);
 
   const inputId = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
