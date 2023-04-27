@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import pika, sys, os
 
-__url = 'http://k8d201.p.ssafy.io'
-__port = 15672
+__url = 'k8d201.p.ssafy.io'
+__port = 5672
 __vhost = '/'
 __cred = pika.PlainCredentials('guest', 'guest')
 __queue = 'hello'; 

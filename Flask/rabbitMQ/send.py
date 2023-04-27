@@ -2,10 +2,10 @@
 import pika
 
 __url = 'k8d201.p.ssafy.io'
-__port = 15672
+__port = 5672
 __vhost = '/'
 __cred = pika.PlainCredentials('guest', 'guest')
-__queue = 'hello'; 
+__queue = 'cctv';
 
 # RabbitMQ 서버에 연결
 connection = pika.BlockingConnection(pika.ConnectionParameters(__url, __port, __vhost, __cred))
