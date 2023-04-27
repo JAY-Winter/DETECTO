@@ -7,7 +7,8 @@ import time
 class trigger_mq():
     def __init__(self):
         # self.__url = 'k8d201.p.ssafy.io'
-        self.__url = '192.168.100.210'
+        # self.__url = '192.168.100.210'
+        self.__url = '192.168.35.234'
         self.__port = 5672
         self.__vhost = '/'
         self.__cred = pika.PlainCredentials('guest', 'guest')
@@ -23,11 +24,14 @@ class trigger_mq():
         return [connection, channel]
 
     # message publish
-    def publish(self, channel, body):
-        channel.basic_publish(exchange='',              # exchange를 거쳐 큐로 전송됨. default exchange는 빈 문자열
-                              routing_key=self.__queue,   # routing key는 큐 이름
-                              body=body)                  # 전송 내역
-        print(f" [x] Sent {body}")
+    def publish(self, channel):
+        now = time.time()
+
+        channel.basic_publish(exchange='',                  # exchange를 거쳐 큐로 전송됨. default exchange는 빈 문자열
+                              routing_key=self.__queue,     # routing key는 큐 이름
+                              body=str(now))                # 전송 내역
+
+        print(f" [x] Sent {now}")
 
     # connect close
     def connect_close(self, connection):
@@ -39,7 +43,7 @@ class trigger_mq():
         [connection, channel] = self.connect_pika()
 
         # set schedule to publish per 1 second
-        schedule.every(1).seconds.do(self.publish, channel, "True")
+        schedule.every(1).seconds.do(self.publish, channel)
 
         try:
             # publish per 1 second
