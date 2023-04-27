@@ -1,18 +1,16 @@
-#!/usr/bin/env python
 import pika
-import schedule
-import time
 
 
-class trigger_mq():
-    def __init__(self):
+class message_queue():
+    def __init__(self, cctvNum, camera):
         # self.__url = 'k8d201.p.ssafy.io'
         self.__url = '192.168.100.210'
         self.__port = 5672
         self.__vhost = '/'
         self.__cred = pika.PlainCredentials('guest', 'guest')
         self.__queue = 'hello'
-        self.main()
+        self.__cctvNum = cctvNum
+        self.__camera = camera
 
     # connect to RabbitMQ
     def connect_pika(self):
@@ -22,15 +20,17 @@ class trigger_mq():
         channel.queue_declare(queue=self.__queue)  # 큐 생성/ 접근
         return [connection, channel]
 
-    # message publish
-    def publish(self, channel):
-        now = time.time()
+    # run when subscribe
+    def subscribeCallback(self, ch, method, properties, body):
+        print(" [x] Received %r" % body)
+        # 이미지 전송
+        self.__camera()
 
-        channel.basic_publish(exchange='',                  # exchange를 거쳐 큐로 전송됨. default exchange는 빈 문자열
-                              routing_key=self.__queue,     # routing key는 큐 이름
-                              body=str(now))                # 전송 내역
-
-        print(f" [x] Sent {now}")
+    # subscribe
+    def subscribe(self, channel):
+        channel.basic_consume(queue=self.__queue,
+                              auto_ack=True,
+                              on_message_callback=self.subscribeCallback)
 
     # connect close
     def connect_close(self, connection):
@@ -38,16 +38,14 @@ class trigger_mq():
 
     # main
     def main(self):
-        print('[!] Trigger Start')
+        print(f'[@] {self.__cctvNum} queue start!')
         [connection, channel] = self.connect_pika()
-
-        # set schedule to publish per 1 second
-        schedule.every(1).seconds.do(self.publish, channel)
+        self.subscribe(channel)
 
         try:
-            # publish per 1 second
-            while True:
-                schedule.run_pending()
-                time.sleep(1)
+            # start subscribe
+            print(' [*] Waiting for messages. To exit press CTRL+C')
+            channel.start_consuming()
+
         finally:
             self.connect_close(connection)

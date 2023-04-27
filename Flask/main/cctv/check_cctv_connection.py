@@ -1,4 +1,5 @@
 from .send_cctv_trigger_event import trigger_mq
+from multiprocessing import Process
 
 
 # CCTV로부터 연결 요청 받음.
@@ -10,7 +11,8 @@ def check_connection(request, cctv_list):
     # cctv 4대 연결 됐으면 트리거 시작
     if (check_connect_full(cctv_list)):
         print('full', cctv_list)
-        trigger_mq()
+        thread = Process(target=trigger_mq)
+        thread.start()
 
     return {"result": "CONNECT SUCCESS"}
 
