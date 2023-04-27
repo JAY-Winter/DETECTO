@@ -27,7 +27,7 @@ class message_queue():
     def subscribeCallback(self, ch, method, properties, body):
         print(" [x] Received %r" % body)
         # 이미지 전송
-        self.__camera.capture()
+        self.__camera.capture(body)
 
     # subscribe
     def subscribe(self, channel):

@@ -17,7 +17,7 @@ class Camera():
         cv2.destroyAllWindows()
 
     # open camera
-    def capture(self):
+    def capture(self, time):
         self.__cap = cv2.VideoCapture(self.__camera_index)
         # 웹캠에서 프레임 읽기
         if self.__cap.isOpened():
@@ -26,7 +26,7 @@ class Camera():
                 print('[X] no ret!')
                 return
 
-            print('capture!!')
+            print('capture!! ', time)
 
             frame = cv2.resize(frame, (640, 480))
 
@@ -34,7 +34,7 @@ class Camera():
             _, img_encoded = cv2.imencode('.jpg', frame)
             img_bytes = img_encoded.tobytes()
             files = {'file': ('image.jpg', img_bytes, 'image/jpeg')}
-            data = {'id': self.__cctvNum}
+            data = {'id': self.__cctvNum, 'time': time}
             response = requests.post(
                 self.__flaskUrl + '/upload', files=files, data=data)
 
