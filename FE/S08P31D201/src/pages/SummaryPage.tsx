@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
-import { Card } from '@mui/material';
+import { Button, Card } from '@mui/material';
 import { useState } from 'react';
+import * as d3 from 'd3';
 
 import {
   SpaceDashboard,
@@ -9,8 +10,22 @@ import {
   CalendarMonth,
   Engineering,
 } from '@mui/icons-material';
+import MultiLineChart from '@components/summary/Charts/MultiLineChart';
+import SummaryCards from '@components/summary/SummaryCards';
+import ZoomChart from '@components/summary/Charts/ZoomChart';
 
 function SummaryPage() {
+  const data = [
+    { name: ['a', 'b'] },
+    { name: ['a', 'd'] },
+    { name: ['a', 'c'] },
+  ];
+  const groupedData = d3.group(
+    [...data.flatMap(d => d.name.map(n => ({ name: n, data: d })))],
+    d => d.name
+  );
+  console.log(groupedData);
+
   return (
     <SummaryContainer>
       <SummaryHeader>
@@ -20,18 +35,11 @@ function SummaryPage() {
         <h1>대시보드</h1>
       </SummaryHeader>
       <SummaryContent>
-        <TeamCard>
-          <Groups />
-        </TeamCard>
-        <EquipmentCard>
-          <Engineering />
-        </EquipmentCard>
-        <CCTVCard>
-          <VideoCameraFrontOutlined />
-        </CCTVCard>
-        <DailyCard>
-          <CalendarMonth />
-        </DailyCard>
+        <Card sx={{ height: '3rem', marginBottom: '1rme' }}>날짜선택기</Card>
+        <SummaryCards />
+        <Card>
+          <ZoomChart />
+        </Card>
       </SummaryContent>
     </SummaryContainer>
   );
@@ -66,115 +74,7 @@ const SummaryHeader = styled.div`
 
 const SummaryContent = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  width: calc(100% - 4rem);
   margin: 2rem;
-`;
-
-const CCTVCard = styled(Card)`
-  position: relative;
-  height: 40vh;
-  width: 30vw;
-
-  padding: 1rem;
-  margin: 0 1rem 1rem 0;
-
-  border-radius: 1rem;
-  background: ${props =>
-    `linear-gradient(to bottom right, ${props.theme.palette.primary.main}, ${props.theme.palette.primary.light})`};
-  transition: 0.2s all ease;
-
-  :hover {
-    scale: 1.05;
-  }
-
-  svg {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translate(0, -50%);
-    font-size: 20rem;
-    color: #ffffff6f;
-  }
-`;
-
-const TeamCard = styled(Card)`
-  position: relative;
-  height: 40vh;
-  width: 30vw;
-
-  padding: 1rem;
-  margin: 0 1rem 1rem 0;
-
-  border-radius: 1rem;
-  background-image: ${props =>
-    `linear-gradient(to bottom right, ${props.theme.palette.error.main}, ${props.theme.palette.error.light})`};
-
-  transition: 0.2s all ease;
-
-  :hover {
-    scale: 1.05;
-  }
-
-  svg {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translate(0, -50%);
-    font-size: 20rem;
-    color: #ffffff6f;
-  }
-`;
-
-const DailyCard = styled(Card)`
-  position: relative;
-  height: 40vh;
-  width: 30vw;
-
-  padding: 1rem;
-  margin: 0 1rem 1rem 0;
-
-  border-radius: 1rem;
-  background: ${props =>
-    `linear-gradient(to bottom right, ${props.theme.palette.secondary.main}, ${props.theme.palette.secondary.light})`};
-  transition: 0.2s all ease;
-
-  :hover {
-    scale: 1.05;
-  }
-
-  svg {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translate(0, -50%);
-    font-size: 20rem;
-    color: #ffffff6f;
-  }
-`;
-
-const EquipmentCard = styled(Card)`
-  position: relative;
-  height: 40vh;
-  width: 30vw;
-
-  padding: 1rem;
-  margin: 0 1rem 1rem 0;
-
-  border-radius: 1rem;
-  background: ${props =>
-    `linear-gradient(to bottom right, ${props.theme.palette.success.main}, ${props.theme.palette.success.light})`};
-  transition: 0.2s all ease;
-
-  :hover {
-    scale: 1.05;
-  }
-
-  svg {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translate(0, -50%);
-    font-size: 20rem;
-    color: #ffffff6f;
-  }
 `;

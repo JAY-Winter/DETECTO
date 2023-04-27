@@ -22,9 +22,9 @@ function MultiLineChart() {
       'https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv'
     ).then(function (data) {
       // group the data: I want to draw one line per group
-
+      console.log(data)
       const sumstat = d3.group(data, d => d.name); // nest function allows to group the calculation per level of a factor
-
+      console.log(sumstat)
       // Add X axis --> it is a date format
       const x = d3
         .scaleLinear()
