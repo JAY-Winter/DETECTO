@@ -1,6 +1,6 @@
-import { css, jsx, keyframes } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 export type TbottomSheetHandler = {
   bsAni: boolean;

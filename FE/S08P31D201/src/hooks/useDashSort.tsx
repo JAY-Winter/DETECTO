@@ -6,7 +6,7 @@ import {
   TDashboardSortOrder,
 } from '@/store/DashboardSort';
 import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 
 // 향후 수정 점 : 데이터 다시 sort해주는걸 어디로 빼야할까?
 // 직접 받아오기 보다는 Recoil을 사용하는게 좋은가?
@@ -17,7 +17,7 @@ function useDashSort(): [
   TDashboardSortOrder,
   (accessor: TDashboardSortField) => void
 ] {
-  const [data, setData] = useRecoilState(DashboardIssue);
+  const setData = useSetRecoilState(DashboardIssue);
 
   const [sortField, setSortField] = useRecoilState(DashboardSortField);
   const [order, setOrder] = useRecoilState(DashboardSortOrder);
@@ -28,9 +28,9 @@ function useDashSort(): [
       clonedPrev.sort((a, b) => {
         return new Date(b.date).getTime() - new Date(a.date).getTime();
       });
-      return clonedPrev
-    })
-  }, [])
+      return clonedPrev;
+    });
+  }, []);
 
   const changeSortHandler = (accessor: TDashboardSortField) => {
     const sortOrder =

@@ -1,12 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import {
-  Button,
-  IconButton,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@mui/material';
+import { Button, TableCell, TableHead, TableRow } from '@mui/material';
 import {
   KeyboardArrowDown,
   KeyboardArrowUp,
