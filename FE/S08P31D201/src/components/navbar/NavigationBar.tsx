@@ -1,11 +1,10 @@
-import { css } from '@emotion/react'
+import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import React, { useState, useEffect } from 'react'
 import { useLocation, NavLink } from "react-router-dom";
 
 import SamLogoLight from '@/assets/img/samlogoLight.svg'
 import SamLogoDark from '@/assets/img/samlogoDark.svg'
-import Albert from '@/assets/img/albert.jpg'
 import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
@@ -16,23 +15,26 @@ import ListItem from './ListItem';
 import { Switch } from '@mui/material';
 import { tabletV } from '@/utils/Mixin';
 import authState from '@/store/authState';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { UserInfo } from '@/store/userInfoStroe';
+import DefaultProfile from '@/assets/img/default-profile.svg'
 
 type NavigationBarProps = {
-  mode: 'dark' | 'light',
   setMode: React.Dispatch<React.SetStateAction<'dark' | 'light'>>,
   isModal?: boolean
 }
 
-function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
+function NavigationBar({setMode, isModal=false}: NavigationBarProps) {
+  const theme = useTheme();
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
   const setIsAuthenticated = useSetRecoilState(authState);
+  const userInfo = useRecoilValue(UserInfo);
 
   // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
   const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
     // const rect = e.currentTarget.getBoundingClientRect();  // 클릭된 아이템의 레이아웃 정보를 알아낸다
-    // const itemTopPos = rect.top;  // 클릭된 아이템의 최상위 지점의 위치를 알아낸다
+    // const itemTopPos = rect.top;  // 클릭된 아이템의 최상위 지점을 알아낸다
   }
 
   // 로그아웃 핸들러
@@ -67,14 +69,14 @@ function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
       {/* Header */}
       {/* 삼성 로고 */}
       <NavLink to={'/'}>
-        <img css={logoContainer} src={mode ==='light' ? SamLogoLight : SamLogoDark} />
+        <img css={logoContainer} src={theme.palette.mode ==='light' ? SamLogoLight : SamLogoDark} />
       </NavLink>
 
       {/* 프로필 카드 */}
       <ProfileCardDiv>
-        <img css={profileImageStyle} src={Albert} alt="" />
-        <p>{"아인슈타인"} Pro</p>
-        <p>{"삼성전기 안전관리1팀"}</p>
+        <img css={profileImageStyle} src={userInfo.img ?? DefaultProfile} alt="" />
+        <p>{userInfo.name ?? "Unknown"} Pro</p>
+        <p>{userInfo.division ?? "Unknown"}</p>
       </ProfileCardDiv>
 
       {/* Body & Footer */}
@@ -95,9 +97,9 @@ function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
           </LogoutButton>
           {/* 테마 토글 버튼 */}
           <div css={switchContainer}>
-            <LightModeIcon />
-            <Switch color="default" checked={mode === 'dark' ? true : false} onChange={handleToggleTheme}/>
-            <DarkModeIcon />
+            <LightModeIcon color={theme.palette.mode === 'light' ? 'secondary' : 'disabled'}/>
+            <Switch color="default" checked={theme.palette.mode === 'dark' ? true : false} onChange={handleToggleTheme}/>
+            <DarkModeIcon color={theme.palette.mode === 'dark' ? 'primary' : 'disabled'}/>
           </div>
         </div>
       </div>

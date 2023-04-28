@@ -11,18 +11,18 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import MenuIcon from '@mui/icons-material/Menu';
 import ListItem from '@components/navbar/ListItem';
 import { useLocation } from 'react-router-dom';
-import { css } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 import ModalPortal from '@components/common/ModalPortal';
 import LeftModal from '@components/common/LeftModal';
 import NavigationBar from './NavigationBar';
 
 
 type NavigationBarTabletProps = {
-  mode: 'dark' | 'light',
   setMode: React.Dispatch<React.SetStateAction<'dark' | 'light'>>,
 }
 
-function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
+function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
+  const theme = useTheme();
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
   const [isShowLeftModal, setIsShowLeftModal] = useState(false);
@@ -67,7 +67,7 @@ function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
       { isShowLeftModal &&
       <ModalPortal>
         <LeftModal onClose={() => setIsShowLeftModal(false)}>
-          <NavigationBar mode={mode} setMode={setMode} isModal={true} />
+          <NavigationBar setMode={setMode} isModal={true} />
         </LeftModal>
       </ModalPortal>
       }
@@ -88,8 +88,8 @@ function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
           
           <div css={footerContainer}>
             {/* 테마 토글 버튼 */}
-            <ThemeToggleButton mode={mode} onClick={() => handleToggleTheme()}>
-              {mode === 'light' ? 
+            <ThemeToggleButton mode={theme.palette.mode} onClick={() => handleToggleTheme()}>
+              {theme.palette.mode === 'light' ? 
                 <LightModeIcon /> :
                 <DarkModeIcon />
               }

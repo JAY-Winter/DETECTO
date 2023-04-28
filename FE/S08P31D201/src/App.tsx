@@ -40,15 +40,15 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        <NavigationBar mode={mode} setMode={setMode} />
-        <NavigationBarTablet mode={mode} setMode={setMode} />
+        <NavigationBar setMode={setMode} />
+        <NavigationBarTablet setMode={setMode} />
         <RouterContainerDiv>
           <Routes>
             <Route path="/" element={<Navigate replace to="/history" />} />
             <Route path="/history" element={<DashboardPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
             <Route path="/dashboard" element={<SummaryPage />} />
-            <Route path="/more" element={<MorePage mode={mode} setMode={setMode} />} />
+            <Route path="/more" element={<MorePage setMode={setMode} />} />
           </Routes>
         </RouterContainerDiv>
         <NavigationBarMobile />

@@ -1,19 +1,21 @@
-import { css } from '@emotion/react'
+import { css, useTheme } from '@emotion/react'
 import React from 'react'
-import Albert from '@/assets/img/albert.jpg'
 import styled from '@emotion/styled'
 import lightPreview from '@/assets/img/light-preview.png'
 import darkPreview from '@/assets/img/dark-preview.png'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import { useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import authState from '@/store/authState'
+import { UserInfo } from '@/store/userInfoStroe';
+import DefaultProfile from '@/assets/img/default-profile.svg'
 
 type MorePageProps = {
-  mode: 'dark' | 'light',
   setMode: React.Dispatch<React.SetStateAction<'dark' | 'light'>>,
 }
 
-function MorePage({ mode, setMode }: MorePageProps) {
+function MorePage({ setMode }: MorePageProps) {
+  const theme = useTheme()
+  const userInfo = useRecoilValue(UserInfo);
   const setIsAuthenticated = useSetRecoilState(authState);
 
   const selectTheme = (theme: 'light' | 'dark') => {
@@ -31,10 +33,12 @@ function MorePage({ mode, setMode }: MorePageProps) {
       <h1>더보기</h1>
       {/* 프로필 카드 */}
       <ProfileCardDiv>
-        <img css={profileImageStyle} src={Albert} alt="" />
+      
+        
+        <img css={profileImageStyle} src={userInfo.img ?? DefaultProfile} alt="" />
         <div style={{marginLeft: "10px"}}>
-          <p>{"아인슈타인"} Pro</p>
-          <p>{"삼성전기 안전관리1팀"}</p>
+          <p>{userInfo.name ?? "Unknown"} Pro</p>
+          <p>{userInfo.division ?? "Unknown"}</p>
         </div>
       </ProfileCardDiv>
       <div css={temp}>
@@ -47,7 +51,7 @@ function MorePage({ mode, setMode }: MorePageProps) {
                 <img src={lightPreview} alt="" />
                 <p>라이트 모드</p>
               </div>
-              <input type="radio" name='tico' checked={mode === 'light'} onChange={() => selectTheme('light')}/>
+              <input type="radio" name='tico' checked={theme.palette.mode === 'light'} onChange={() => selectTheme('light')}/>
             </ThemeCardDiv>
           </label>
           <label>
@@ -56,7 +60,7 @@ function MorePage({ mode, setMode }: MorePageProps) {
                 <img src={darkPreview} alt="" />
                 <p>다크 모드</p>
               </div>
-              <input type="radio" name='tico' checked={mode === 'dark'} onChange={() => selectTheme('dark')}/>
+              <input type="radio" name='tico' checked={theme.palette.mode === 'dark'} onChange={() => selectTheme('dark')}/>
             </ThemeCardDiv>
           </label>
         </ThemeSelectDiv>
