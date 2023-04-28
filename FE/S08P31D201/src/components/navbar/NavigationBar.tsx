@@ -15,6 +15,8 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import ListItem from './ListItem';
 import { Switch } from '@mui/material';
 import { tabletV } from '@/utils/Mixin';
+import { useRecoilState } from 'recoil';
+import authState from '@/store/authState';
 
 type NavigationBarProps = {
   mode: 'dark' | 'light',
@@ -25,6 +27,7 @@ type NavigationBarProps = {
 function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useRecoilState(authState);
 
   // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
   const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
@@ -35,6 +38,7 @@ function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
   // 로그아웃 핸들러
   const handleClickLogout = () => {
     confirm("로그아웃 하시겠습니까??");
+    setIsAuthenticated(false);
   }
 
   const handleToggleTheme = () => {
