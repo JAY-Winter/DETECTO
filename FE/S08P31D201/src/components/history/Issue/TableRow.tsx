@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { Box, Collapse, TableCell, TableRow } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import { TtableData, TteamMember } from '@/store/DashboardIssue';
+import { TtableData, TteamMember } from '@/store/HistoryIssue';
 import MemberCard from './MemberCard';
 import IssueImage from './IssueImage';
 
@@ -68,11 +68,10 @@ function Row(props: { row: TtableData }) {
           {row.date}
         </TableCell>
         <TableCell align="left">{row.issue.toString()}</TableCell>
-        <TableCell align="left">{row.work}</TableCell>
-        <TableCell align="left">{row.team}</TableCell>
-        <PendingTableCell align="center">
+        <TableCell align="left">{row.team}팀</TableCell>
+        <TableCell align="right" padding='checkbox'>
           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-        </PendingTableCell>
+        </TableCell>
       </IssueTableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>

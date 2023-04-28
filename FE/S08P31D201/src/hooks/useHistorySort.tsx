@@ -1,10 +1,10 @@
-import { DashboardIssue } from '@/store/DashboardIssue';
+import { HistoryIssue } from '@/store/HistoryIssue';
 import {
-  DashboardSortField,
-  DashboardSortOrder,
-  TDashboardSortField,
-  TDashboardSortOrder,
-} from '@/store/DashboardSort';
+  HistorySortField,
+  HistorySortOrder,
+  THistorySortField,
+  THistorySortOrder,
+} from '@/store/HistorySort';
 import { useEffect } from 'react';
 import { useSetRecoilState, useRecoilState } from 'recoil';
 
@@ -12,15 +12,15 @@ import { useSetRecoilState, useRecoilState } from 'recoil';
 // 직접 받아오기 보다는 Recoil을 사용하는게 좋은가?
 // 커스텀 훅 리턴타입 정확히 지정해야함
 
-function useDashSort(): [
-  TDashboardSortField,
-  TDashboardSortOrder,
-  (accessor: TDashboardSortField) => void
+function useHistorySort(): [
+  THistorySortField,
+  THistorySortOrder,
+  (accessor: THistorySortField) => void
 ] {
-  const setData = useSetRecoilState(DashboardIssue);
+  const setData = useSetRecoilState(HistoryIssue);
 
-  const [sortField, setSortField] = useRecoilState(DashboardSortField);
-  const [order, setOrder] = useRecoilState(DashboardSortOrder);
+  const [sortField, setSortField] = useRecoilState(HistorySortField);
+  const [order, setOrder] = useRecoilState(HistorySortOrder);
 
   useEffect(() => {
     setData(prev => {
@@ -32,7 +32,7 @@ function useDashSort(): [
     });
   }, []);
 
-  const changeSortHandler = (accessor: TDashboardSortField) => {
+  const changeSortHandler = (accessor: THistorySortField) => {
     const sortOrder =
       accessor === sortField && order === 'desc' ? 'asc' : 'desc';
     setSortField(accessor);
@@ -90,4 +90,4 @@ function useDashSort(): [
   return [sortField, order, changeSortHandler];
 }
 
-export default useDashSort;
+export default useHistorySort;

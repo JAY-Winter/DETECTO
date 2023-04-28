@@ -4,14 +4,14 @@ import React, { useEffect, useMemo, useState } from 'react';
 import getDesignTokens from './styles/themes';
 import { Route, Routes, Navigate } from 'react-router-dom';
 
-import DashboardPage from './pages/DashboardPage';
+import HistoryPage from './pages/HistoryPage';
 import styled from '@emotion/styled';
 import NavigationBar from '@components/navbar/NavigationBar';
 import EquipmentManagePage from './pages/EquipmentManagePage';
 import { mobileV, tabletV } from './utils/Mixin';
 import NavigationBarTablet from '@components/navbar/NavigationBarTablet';
 import NavigationBarMobile from '@components/navbar/NavigationBarMobile';
-import SummaryPage from './pages/SummaryPage';
+import DashboardPage from './pages/DashboardPage';
 import MorePage from './pages/MorePage';
 import AuthProvider from '@components/common/AuthProvider';
 
@@ -45,9 +45,9 @@ function App() {
         <RouterContainerDiv>
           <Routes>
             <Route path="/" element={<Navigate replace to="/history" />} />
-            <Route path="/history" element={<DashboardPage />} />
+            <Route path="/history" element={<HistoryPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
-            <Route path="/dashboard" element={<SummaryPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/more" element={<MorePage mode={mode} setMode={setMode} />} />
           </Routes>
         </RouterContainerDiv>

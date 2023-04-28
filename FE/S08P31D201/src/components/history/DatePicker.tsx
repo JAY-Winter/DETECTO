@@ -6,7 +6,7 @@ import { koKR } from '@mui/x-date-pickers/locales';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useRecoilState } from 'recoil';
-import { DashboardDayAtom } from '@/store/DashboardFilter';
+import { HistoryDayAtom } from '@/store/HistoryFilter';
 import dayjs, { Dayjs } from 'dayjs';
 import {
   RestartAlt,
@@ -14,10 +14,9 @@ import {
   KeyboardArrowUp,
 } from '@mui/icons-material';
 import { mobileV } from '@/utils/Mixin';
+import HistoryDatepicker from './Date/HistoryDatepicker';
 
-// (향후 날짜, 기간 DatePicker 세부 컴포넌트로 추출 예정)
-
-function DashboardDatePicker() {
+function HistoryDatePicker() {
   // 모바일 드롭다운 State
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -25,7 +24,7 @@ function DashboardDatePicker() {
   const [tabValue, setTabValue] = useState<number>(0);
 
   // 날짜 지정 Recoil State
-  const [date, setDate] = useRecoilState(DashboardDayAtom);
+  const [date, setDate] = useRecoilState(HistoryDayAtom);
 
   // MUI 탭 onChange
   const tabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -69,56 +68,12 @@ function DashboardDatePicker() {
           {/* 탭 패널 */}
           <div hidden={tabValue !== 0}>
             <TabPanelDiv>
-              <LocalizationProvider dateAdapter={AdapterDayjs} localeText={koKR.components.MuiLocalizationProvider.defaultProps.localeText}>
-                <DatePicker
-                  label="시작 날짜"
-                  format="YYYY.MM.DD"
-                  value={date.startDay}
-                  maxDate={date.endDay}
-                  onChange={(newValue: Dayjs | null) => {
-                    setDate(prev => {
-                      return { ...prev, startDay: newValue || dayjs() };
-                    });
-                  }}
-                  css={DatePickerCSS}
-                  slotProps={{
-                    toolbar: { toolbarFormat: 'YYYY.MM.DD', hidden: false },
-                  }}
-                  
-                />
-                <DatePicker
-                  label="끝 날짜"
-                  format="YYYY.MM.DD"
-                  value={date.endDay}
-                  minDate={date.startDay}
-                  maxDate={dayjs()}
-                  onChange={(newValue: Dayjs | null) => {
-                    setDate(prev => {
-                      return { ...prev, endDay: newValue || dayjs() };
-                    });
-                  }}
-                  css={DatePickerCSS}
-                />
-              </LocalizationProvider>
+              <HistoryDatepicker datetypes={[["startDay"], ["endDay"]]} />
             </TabPanelDiv>
           </div>
           <div hidden={tabValue !== 1}>
             <TabPanelDiv>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="날짜 선택"
-                  format="YYYY.MM.DD"
-                  value={date.startDay}
-                  maxDate={dayjs()}
-                  onChange={(newValue: Dayjs | null) => {
-                    setDate({
-                      startDay: newValue || dayjs(),
-                      endDay: newValue || dayjs(),
-                    });
-                  }}
-                  css={DatePickerCSS}
-                />
-              </LocalizationProvider>
+            <HistoryDatepicker datetypes={[["startDay", "endDay"]]} />
             </TabPanelDiv>
           </div>
         </TabBox>
@@ -127,7 +82,7 @@ function DashboardDatePicker() {
   );
 }
 
-export default DashboardDatePicker;
+export default HistoryDatePicker;
 
 const DatePaper = styled(Paper)`
   width: 100%;
@@ -176,10 +131,6 @@ const DateContentDiv = styled.div<{ mobileopen: boolean }>`
 const TabBox = styled(Box)`
   width: '100%';
   margin-bottom: '1rem';
-`;
-
-const DatePickerCSS = css`
-  margin: 10px;
 `;
 
 const TabPanelDiv = styled.div`
