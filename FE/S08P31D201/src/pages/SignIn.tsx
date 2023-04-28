@@ -4,7 +4,7 @@ import { Button, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { tabletV } from '@/utils/Mixin';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import authState from '@/store/authState';
 import backBlue from '@/assets/img/back-blue.jpg';
 
@@ -12,7 +12,7 @@ function SignIn() {
   const [inputID, setInputID] = useState("");
   const [inputPW, setInputPW] = useState("");
   const [isRequested, setIsRequested] = useState(false);  // 연속 클릭 방지를 위한 토글변수
-  const [isAuthenticated, setIsAuthenticated] = useRecoilState(authState);
+  const setIsAuthenticated = useSetRecoilState(authState);
 
   const handleChangeInputID = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     setInputID(e.target.value.trim());

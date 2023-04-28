@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Button } from '@mui/material';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';

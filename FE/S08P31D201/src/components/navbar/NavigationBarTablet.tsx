@@ -33,8 +33,8 @@ function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
   }
   
   // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
-  const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-  }
+  // const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
+  // }
 
   // 로그아웃 핸들러
   const handleClickLogout = () => {
@@ -81,9 +81,9 @@ function NavigationBarTablet({mode, setMode}: NavigationBarTabletProps) {
         <div css={bodyContainer}>
           {/* 네비게이션 아이템들 */}
           <ul css={listContainer}>
-            <ListItem renderMode='tablet' icon={<SpaceDashboardOutlinedIcon fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
+            <ListItem renderMode='tablet' icon={<SpaceDashboardOutlinedIcon fontSize='medium'/>} pathName="/history" currentPathName={currentPathName} />
             <ListItem renderMode='tablet' icon={<EngineeringOutlinedIcon  fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
-            <ListItem renderMode='tablet' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/summary" currentPathName={currentPathName} />
+            <ListItem renderMode='tablet' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
           </ul>
           
           <div css={footerContainer}>

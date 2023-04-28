@@ -1,9 +1,7 @@
 import SignIn from '@/pages/SignIn';
-import authState from '@/store/authState';
 import useAuth from '@/hooks/useAuth';
 import React, { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 
 type AuthProviderProps = {
   children: React.ReactNode
@@ -14,29 +12,30 @@ function AuthProvider({ children }: AuthProviderProps) {
   const navigate = useNavigate();
   const isAuthenticated = useAuth();
 
+  // 로그인 상태가 변경되면 액션을 달리 취함
   useEffect(() => {
     if (isAuthenticated) {
       console.log(`로그인 성공. ${location.pathname}로 이동할 것임`);
       navigate(location.pathname);
     } else if (isAuthenticated === false) {
-      console.log("로그인 실패. login으로 이동할 것임");
+      console.log("로그인 실패");
       navigate('/', { replace: true });
     }
   }, [isAuthenticated])
 
-  if (isAuthenticated === undefined) {
+  if (isAuthenticated === true) {
     return (
-      <div>로딩중...</div>
+      <>
+        {children}
+      </>
     )
   } else if (isAuthenticated === false) {
     return (
       <SignIn />
     )
-  }else {
+  } else {
     return (
-      <>
-        {children}
-      </>
+      <div>로딩중...</div>
     )
   }
 }

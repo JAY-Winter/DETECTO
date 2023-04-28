@@ -15,8 +15,8 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import ListItem from './ListItem';
 import { Switch } from '@mui/material';
 import { tabletV } from '@/utils/Mixin';
-import { useRecoilState } from 'recoil';
 import authState from '@/store/authState';
+import { useSetRecoilState } from 'recoil';
 
 type NavigationBarProps = {
   mode: 'dark' | 'light',
@@ -27,12 +27,12 @@ type NavigationBarProps = {
 function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useRecoilState(authState);
+  const setIsAuthenticated = useSetRecoilState(authState);
 
   // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
   const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();  // 클릭된 아이템의 레이아웃 정보를 알아낸다
-    const itemTopPos = rect.top;  // 클릭된 아이템의 최상위 지점의 위치를 알아낸다
+    // const rect = e.currentTarget.getBoundingClientRect();  // 클릭된 아이템의 레이아웃 정보를 알아낸다
+    // const itemTopPos = rect.top;  // 클릭된 아이템의 최상위 지점의 위치를 알아낸다
   }
 
   // 로그아웃 핸들러
@@ -82,9 +82,9 @@ function NavigationBar({mode, setMode, isModal=false}: NavigationBarProps) {
       <div css={bodyContainer}>
         {/* 네비게이션 아이템들 */}
         <ul css={listContainer}>
-          <ListItem renderMode='desktop' icon={<SpaceDashboardOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          <ListItem renderMode='desktop' icon={<SpaceDashboardOutlinedIcon/>} label={"히스토리"} pathName="/history" currentPathName={currentPathName} clickHandler={clickItemHandler} />
           <ListItem renderMode='desktop' icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} clickHandler={clickItemHandler} />
-          <ListItem renderMode='desktop' icon={<ArticleOutlinedIcon/>} label={"리포트"} pathName="/summary" currentPathName={currentPathName} clickHandler={clickItemHandler} />
+          <ListItem renderMode='desktop' icon={<ArticleOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} clickHandler={clickItemHandler} />
         </ul>
         
         <div css={footerContainer}>
@@ -123,22 +123,6 @@ const StyledNav = styled.nav<{isModal: boolean}>`
   }
 `
 
-const StyledHeaderDiv = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0px;
-  svg {
-    color: ${props => props.theme.palette.text.primary};
-    font-size: 2rem;
-  }
-  button {
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-  }
-`
-
 const logoContainer = css`
   width: 100%;
   height: 3rem;
@@ -172,13 +156,13 @@ const profileImageStyle = css`
   box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.15);
 `
 
-const StyledIndicatorDibv = styled.div`
-  position: absolute;
-  width: 7px;
-  height: 50px;
-  border-radius: 0px 30px 30px 0px;
-  background-color: ${props => props.theme.palette.primary.main};
-`
+// const StyledIndicatorDibv = styled.div`
+//   position: absolute;
+//   width: 7px;
+//   height: 50px;
+//   border-radius: 0px 30px 30px 0px;
+//   background-color: ${props => props.theme.palette.primary.main};
+// `
 
 const bodyContainer = css`
   width: 100%;

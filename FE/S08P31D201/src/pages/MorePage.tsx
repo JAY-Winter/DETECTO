@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import lightPreview from '@/assets/img/light-preview.png'
 import darkPreview from '@/assets/img/dark-preview.png'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import { useRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import authState from '@/store/authState'
 
 type MorePageProps = {
@@ -14,8 +14,7 @@ type MorePageProps = {
 }
 
 function MorePage({ mode, setMode }: MorePageProps) {
-  const [isAuthenticated, setIsAuthenticated] = useRecoilState(authState);
-
+  const setIsAuthenticated = useSetRecoilState(authState);
 
   const selectTheme = (theme: 'light' | 'dark') => {
     setMode(theme);

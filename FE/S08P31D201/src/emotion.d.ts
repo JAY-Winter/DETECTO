@@ -27,6 +27,18 @@ declare module '@emotion/react' {
         dark: string;
         contrastText: string;
       };
+      neutral: {
+        opposite: string;
+        main: string;
+        section: string;
+        card: string;
+        cardHover: string;
+      };
+      text: {
+        primary: string;
+        secondary: string;
+        disabled: string;
+      };
       grey: {
         0: string;
         10: string;
@@ -47,18 +59,6 @@ declare module '@emotion/react' {
         700: string;
         800: string;
         900: string;
-      };
-      neutral: {
-        opposite: string;
-        main: string;
-        section: string;
-        card: string;
-        cardHover: string;
-      };
-      text: {
-        primary: string;
-        secondary: string;
-        disabled: string;
       };
     };
   }

@@ -19,17 +19,12 @@ import AuthProvider from '@components/common/AuthProvider';
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
 
-  useMemo(
-    () => ({
-      // The dark mode switch would invoke this method
-      toggleColorMode: () => {
-        setMode((prevMode: PaletteMode) =>
-          prevMode === 'light' ? 'dark' : 'light'
-        );
-      },
-    }),
-    []
-  );
+  useMemo(() => {
+    // The dark mode switch would invoke this method
+    toggleColorMode: () => {
+      setMode((prevMode: PaletteMode) => prevMode === 'light' ? 'dark' : 'light');
+    }
+  }, []);
 
   const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
@@ -49,10 +44,10 @@ function App() {
         <NavigationBarTablet mode={mode} setMode={setMode} />
         <RouterContainerDiv>
           <Routes>
-            <Route path="/" element={<Navigate replace to="/dashboard" />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/" element={<Navigate replace to="/history" />} />
+            <Route path="/history" element={<DashboardPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
-            <Route path="/summary" element={<SummaryPage />} />
+            <Route path="/dashboard" element={<SummaryPage />} />
             <Route path="/more" element={<MorePage mode={mode} setMode={setMode} />} />
           </Routes>
         </RouterContainerDiv>

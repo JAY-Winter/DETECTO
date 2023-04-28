@@ -1,9 +1,7 @@
-import { mobileV, tabletV } from '@/utils/Mixin'
-import { Button, Input, TextField, css } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import styled from '@emotion/styled'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import DragAndDrop from './DragAndDrop';
-import { getRandomNumber } from '@/utils/RandomDataGenerator';
 
 
 type EditEquipmentProps = {
@@ -24,7 +22,6 @@ function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
 
   const submit = () => {
     console.log(equipmentName, equipmentDesc);
-    const randomImgURL = `https://unsplash.it/150/200?image=${getRandomNumber(1, 100)}`;
     if (imageSrc !== null) {
       addItemHandler(equipmentName, equipmentDesc, imageSrc);
     }
@@ -94,14 +91,6 @@ const EditEquipmentForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`
-
-const previewUploadStyle = css`
-  width: 100%;
-  height: 250px;
-  border-radius: 10px;
-  border: 2px dashed gray;
-  margin-top: 10px;
 `
 
 export default EditEquipment
