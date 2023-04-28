@@ -1,21 +1,7 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
-import {
-  Box,
-  Button,
-  Card,
-  Collapse,
-  IconButton,
-  TableCell,
-  TableRow,
-} from '@mui/material';
-import {
-  KeyboardArrowDown,
-  KeyboardArrowUp,
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-} from '@mui/icons-material';
+import { Box, Collapse, TableCell, TableRow } from '@mui/material';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { TtableData, TteamMember } from '@/store/DashboardIssue';
 import MemberCard from './MemberCard';
 import IssueImage from './IssueImage';
@@ -36,7 +22,6 @@ const TableCollapseCard = ({
   teamList: TteamMember[];
   violate_member?: TteamMember;
 }) => {
-
   return (
     <Box
       sx={{

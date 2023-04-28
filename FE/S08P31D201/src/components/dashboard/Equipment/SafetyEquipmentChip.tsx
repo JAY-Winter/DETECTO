@@ -1,7 +1,6 @@
 import { DashboardEqAtom } from '@/store/DashboardFilter';
 import styled from '@emotion/styled';
 import { Chip } from '@mui/material';
-import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 function SafetyEquipmentChip({ eqLabel }: { eqLabel: string }) {

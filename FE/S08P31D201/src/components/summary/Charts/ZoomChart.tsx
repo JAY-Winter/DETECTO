@@ -1,16 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
 const height = 600;
 const width = 800;
 const margin = { top: 20, right: 20, bottom: 30, left: 60 };
-
-function formatDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
 
 function ZoomChart() {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -23,7 +16,7 @@ function ZoomChart() {
 
     const defs = svg.append('defs');
 
-    const clip = defs
+    defs
       .append('clipPath')
       .attr('id', 'clip')
       .append('rect')
@@ -50,30 +43,33 @@ function ZoomChart() {
         };
       }
     ).then(function (data) {
-      const x = d3
-        .scaleTime()
+      const xScale = d3
+        .scaleUtc()
         .domain(
           d3.extent(data, function (d) {
             console.log(d.date);
             return +(d.date as Date);
           }) as [number, number]
         )
-        .range([0, width - margin.right - margin.left]).nice();
+        .range([0, width - margin.right - margin.left])
+        .nice();
 
       const xAxis = AxisG.append('g')
         .attr(
           'transform',
           `translate(0, ${height - margin.bottom - margin.top})`
         )
-        .call(d3.axisBottom(x).tickFormat((d: any) => {
-          const date = new Date(d);
-          const month = date.getMonth() + 1;
-          const year = date.getFullYear();
-          const day = date.getDate();
-          return `${year}-${month}-${day}`;
-        }));
+        .call(
+          d3.axisBottom(xScale).tickFormat((d: any) => {
+            const date = new Date(d);
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            const day = date.getDate();
+            return `${year}-${month}-${day}`;
+          })
+        );
 
-      const y = d3
+      const yScale = d3
         .scaleLinear()
         .domain([
           0,
@@ -83,7 +79,7 @@ function ZoomChart() {
         ])
         .range([height - margin.bottom - margin.top, 0]);
 
-      const yAxis = AxisG.append('g').call(d3.axisLeft(y));
+      const yAxis = AxisG.append('g').call(d3.axisLeft(yScale));
 
       const path = g
         .append('path')
@@ -96,17 +92,19 @@ function ZoomChart() {
           d3
             .line<d3.DSVRowString<string>>()
             .x(function (d) {
-              return x(d.date as any);
+              return xScale(d.date as any);
             })
             .y(function (d) {
-              return y(d.value as any);
+              return yScale(d.value as any);
             })
             .curve(d3.curveCardinal) as any
         );
-      const zoomed = (event: any) => {
-        const newX = event.transform.rescaleX(x);
 
-        x.copy().domain(newX.domain());
+      // zoom
+      const zoomed = (event: any) => {
+        const newX = event.transform.rescaleX(xScale);
+
+        xScale.copy().domain(newX.domain());
 
         path.attr(
           'd',
@@ -116,18 +114,20 @@ function ZoomChart() {
               return newX(d.date as any);
             })
             .y(function (d) {
-              return y(d.value as any);
+              return yScale(d.value as any);
             })
             .curve(d3.curveCardinal) as any
         );
 
-        xAxis.call(d3.axisBottom(newX).tickFormat((d: any) => {
-          const date = new Date(d);
-          const month = date.getMonth() + 1;
-          const year = date.getFullYear();
-          const day = date.getDate();
-          return `${year}-${month}-${day}`;
-        }));
+        xAxis.call(
+          d3.axisBottom(newX).tickFormat((d: any) => {
+            const date = new Date(d);
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            const day = date.getDate();
+            return `${year}-${month}-${day}`;
+          })
+        );
       };
 
       const zoom = d3
@@ -142,14 +142,74 @@ function ZoomChart() {
         ])
         .translateExtent([
           [
-            x(new Date(data[0].date as Date)),
-            y(d3.max(data, d => +(d.value as string)) as number),
+            xScale(new Date(data[0].date as Date)),
+            yScale(d3.max(data, d => +(d.value as string)) as number),
           ],
-          [x(new Date(data[data.length - 1].date as Date)), y(0)],
+          [xScale(new Date(data[data.length - 1].date as Date)), yScale(0)],
         ])
         .on('zoom', zoomed);
 
       svg.call(zoom as any);
+
+      // tooltip
+
+      
+      // const tooltip = svg.append("g")
+      // .style("pointer-events", "none");
+
+      // let title: (i: any) => string
+
+      // if (title === undefined) {
+      //   const formatDate = xScale.tickFormat(null, "%b %-d, %Y");
+      //   const formatValue = yScale.tickFormat(100, yFormat);
+      //   title = i => `${formatDate(X[i])}\n${formatValue(Y[i])}`;
+      // } else {
+      //   const O = d3.map(data, d => d);
+      //   const T = title;
+      //   title = i => T(O[i], i, data);
+      // }
+      
+      // function pointermoved(event: any) {
+      //   const X = d3.map(data, d => +(d.date as Date))
+      //   const Y = d3.map(data, d => d.value)
+      //   const i = d3.bisectCenter(X, xScale.invert(d3.pointer(event)[0]));
+      //   tooltip.style("display", null);
+      //   tooltip.attr("transform", `translate(${xScale(X[i])},${yScale(Y[i])})`);
+    
+      //   const path = tooltip.selectAll("path")
+      //     .data([,])
+      //     .join("path")
+      //       .attr("fill", "white")
+      //       .attr("stroke", "black");
+    
+      //   const text = tooltip.selectAll("text")
+      //     .data([,])
+      //     .join("text")
+      //     .call(text => text
+      //       .selectAll("tspan")
+      //       .data(`${title(i)}`.split(/\n/))
+      //       .join("tspan")
+      //         .attr("x", 0)
+      //         .attr("y", (_, i) => `${i * 1.1}em`)
+      //         .attr("font-weight", (_, i) => i ? null : "bold")
+      //         .text(d => d));
+    
+      //   const {x, y, width: w, height: h} = text.node().getBBox();
+      //   text.attr("transform", `translate(${-w / 2},${15 - y})`);
+      //   path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
+      //   svg.property("value", O[i]).dispatch("input", {bubbles: true});
+      // }
+
+      // function pointerleft() {
+      //   tooltip.style("display", "none");
+      //   svg.node().value = null;
+      //   svg.dispatch("input", {bubbles: true});
+      // }
+
+      // svg.on("pointerenter pointermove", pointermoved)
+      // .on("pointerleave", pointerleft)
+      // .on("touchstart", event => event.preventDefault());
+      
     });
   }, []);
 

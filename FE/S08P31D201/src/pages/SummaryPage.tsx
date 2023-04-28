@@ -1,16 +1,8 @@
 import styled from '@emotion/styled';
-import { Button, Card } from '@mui/material';
-import { useState } from 'react';
+import { Card } from '@mui/material';
 import * as d3 from 'd3';
 
-import {
-  SpaceDashboard,
-  VideoCameraFrontOutlined,
-  Groups,
-  CalendarMonth,
-  Engineering,
-} from '@mui/icons-material';
-import MultiLineChart from '@components/summary/Charts/MultiLineChart';
+import { SpaceDashboard } from '@mui/icons-material';
 import SummaryCards from '@components/summary/SummaryCards';
 import ZoomChart from '@components/summary/Charts/ZoomChart';
 
@@ -37,7 +29,7 @@ function SummaryPage() {
       <SummaryContent>
         <Card sx={{ height: '3rem', marginBottom: '1rme' }}>날짜선택기</Card>
         <SummaryCards />
-        <Card>
+        <Card sx={{width: 800}}>
           <ZoomChart />
         </Card>
       </SummaryContent>

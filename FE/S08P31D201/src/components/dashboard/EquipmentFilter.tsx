@@ -8,16 +8,16 @@ import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { mobileV } from '@/utils/Mixin';
 
 import { DashboardEqAtom } from '@/store/DashboardFilter';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { EquipmentsAtom } from '@/store/EquipmentStore';
 
-const eq = ['안전모', '장갑', '앞치마', '보안경', '방진마스크'];
+// const eq = ['안전모', '장갑', '앞치마', '보안경', '방진마스크'];
 
 function DashboardEquipmentFilter() {
   const equipments = useRecoilValue(EquipmentsAtom);
 
-  const [filterEq, setFilterEq] = useRecoilState(DashboardEqAtom);
+  const setFilterEq = useSetRecoilState(DashboardEqAtom);
 
   // 모바일 드롭다운 State
   const [mobileOpen, setMobileOpen] = useState(false);
