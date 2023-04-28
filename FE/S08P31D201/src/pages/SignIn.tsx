@@ -1,29 +1,32 @@
-import authState from '@/store/authState'
-import { tabletV } from '@/utils/Mixin'
+import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Button, TextField, css } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import React, { useState } from 'react'
-import { useRecoilState } from 'recoil'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { tabletV } from '@/utils/Mixin';
+import { useSetRecoilState } from 'recoil';
+import authState from '@/store/authState';
+import backBlue from '@/assets/img/back-blue.jpg';
 
 function SignIn() {
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
-  const [isRequested, setIsRequested] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useRecoilState(authState);
+  const [inputID, setInputID] = useState("");
+  const [inputPW, setInputPW] = useState("");
+  const [isRequested, setIsRequested] = useState(false);  // 연속 클릭 방지를 위한 토글변수
+  const setIsAuthenticated = useSetRecoilState(authState);
 
-  const inputId = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    setId(e.target.value.trim());
+  const handleChangeInputID = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    setInputID(e.target.value.trim());
   }
 
-  const inputPw = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    setPw(e.target.value.trim());
+  const handleChangeInputPW = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    setInputPW(e.target.value.trim());
   }
 
   const submitSignInfo = async () => {
     // 서버에게 요청 보내서 올바른 응답 코드가 날아와야 로그인 처리한다
     const response = await fetch('/login', {
       method: 'POST',
-      body: JSON.stringify({id: id, pw: pw})
+      body: JSON.stringify({id: inputID, pw: inputPW})
     })
     setIsRequested(false);
     if (response.status === 200) {
@@ -31,7 +34,7 @@ function SignIn() {
     } else {
       alert('아이디와 비밀번호를 확인해주세요');
       setIsAuthenticated(false);
-      setPw("");
+      setInputPW("");
     }
   }
 
@@ -50,66 +53,80 @@ function SignIn() {
   return (
     <div css={container}>
       <LeftContainerDiv>
+
       </LeftContainerDiv>
       <RightContainerDiv>
-        <h1>로그인</h1>
-        <LoginForm>
-          <p>아이디</p>
-          <TextField fullWidth size="small" value={id} onChange={inputId} />
-          <p>비밀번호</p>
-          <TextField fullWidth size="small" value={pw} onChange={inputPw} type="password" onKeyPress={handleOnKeyPress}/>
-          <Button fullWidth variant="contained" size="large" onClick={clickLogin} disabled={id === "" || pw === "" || isRequested}>
-            로그인
-          </Button>
-        </LoginForm>
+        <div css={lockIconStyle}>
+          <LockOutlinedIcon />
+        </div>
+        <p>로그인</p>
+        <TextField label="아이디" margin="normal" required fullWidth value={inputID} onChange={handleChangeInputID} />
+        <TextField label="비밀번호" margin="normal" required fullWidth type="password" value={inputPW} onChange={handleChangeInputPW} onKeyPress={handleOnKeyPress} />
+        <Button onClick={clickLogin} variant="contained" fullWidth style={{marginTop: "30px"}} disabled={inputID === "" || inputPW === "" || isRequested}>로그인</Button>
+        <ButtonContainerDiv>
+          <button>관리자에게 문의하기</button>
+        </ButtonContainerDiv>
       </RightContainerDiv>
     </div>
   )
 }
 
 const container = css`
-  position: relative;
   display: flex;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  border-radius: 20px;
-  box-shadow: 0 2px 30px rgba(0, 0, 0, 0.1);
-  width: 90vw;
-  max-width: 1000px;
-  overflow: hidden;
+  height: 100%;
 `
 
 const LeftContainerDiv = styled.div`
-  background-color: ${props => props.theme.palette.neutral.card};
-  flex: 1;
-  padding: 3rem;
+  width: 60%;
+  background-image: url(${backBlue});
+  background-size: cover;
   ${tabletV} {
     display: none;
   }
 `
 
 const RightContainerDiv = styled.div`
-  background-color: ${props => props.theme.palette.neutral.section};
-  flex: 2;
-  padding: 5rem 3rem;
+  width: 40%;
+  box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12);;
+  p {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
   display: flex;
   flex-direction: column;
   align-items: center;
-  h1 {
-    color: ${props => props.theme.palette.text.primary};
+  padding: 4rem 2rem;
+  ${tabletV} {
+    width: 100%;
   }
 `
+const lockIconStyle = css`
+  background-color: #3571b5;
+  color: white;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-bottom: 10px;
+`
 
-const LoginForm = styled.form`
-  color: ${props => props.theme.palette.text.primary};
+const ButtonContainerDiv = styled.div`
+  margin-top: 5px;
   width: 100%;
-  p {
-    margin-top: 30px;
-    margin-bottom: 5px;
-  }
+  display: flex;
+  flex-direction: row-reverse;
   button {
-    margin-top: 30px;
+    transition: color ease 300ms;
+    color: ${props => props.theme.palette.primary.main};
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 1rem;
+    background-color: transparent;
+    border: none;
+    &:hover {
+      color: ${props => props.theme.palette.primary.light};
+    }
   }
 `
 

@@ -38,32 +38,13 @@ function EquipmentManagePage() {
       return newState;
     })
   }
+  
   const showModal = () => {
     setIsShowEditModal(!isShowEditModal);
   }
+
   const closeModalHandler = () => {
     setIsShowEditModal(false);
-  }
-  const addItem = () => {
-    /* (temp)더미 랜덤 데이터 생성 */
-    // const randomID = getRandomNumber(1, 10000000);
-    // const randomName = getRandomString(5);
-    // const randomDesc = getRandomString(10);
-    // const randomImgURL = `https://unsplash.it/150/200?image=${getRandomNumber(1, 100)}`;
-    // const randomIsActive = getRandomBool();
-
-    // const newItem: EquipmentType = {
-    //   id: randomID,
-    //   name: randomName,
-    //   desc: randomDesc,
-    //   img: randomImgURL,
-    //   isActive: randomIsActive
-    // }
-
-    // setEquipment((oldState) => {
-    //   return [...oldState, newItem];
-    // })
-    /* -------------------------- */
   }
 
   const addItemHandler = (name: string, desc: string, img: string) => {

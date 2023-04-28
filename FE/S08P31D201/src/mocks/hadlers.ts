@@ -19,8 +19,6 @@ export const handlers = [
   }),
 
   rest.get('/auth', (req, res, ctx) => {
-    console.log(req.cookies);
-    
     if ('sessionkey' in req.cookies && req.cookies['sessionkey'] === 'qqqqq') {
       return res(
         ctx.delay(2000),

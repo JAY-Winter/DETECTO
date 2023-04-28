@@ -1,11 +1,11 @@
 import authState from "@/store/authState"
 import { useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 
 function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useRecoilState(authState);
   
-  // 서버와 비동기 통신하여 로그인 상태를 결정한다
+  // 현재 보유한 쿠키가 적합한지 판단 요청 보내는 함수
   const checkCookieAvailable = async () => {
     const response = await fetch('/auth');
     if (response.status === 200) {

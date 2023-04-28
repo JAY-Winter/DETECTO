@@ -57,7 +57,6 @@ function ListItem({renderMode, icon, label, pathName, currentPathName, clickHand
 }
 
 const StyledDesktopLi = styled.li<{currentPathName: string, pathName: string}>`
-  /* height: 40px; */
   display: flex;
   align-items: center;
   color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.text.secondary};
