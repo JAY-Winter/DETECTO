@@ -1,4 +1,4 @@
-import { css } from '@emotion/react'
+import { css, keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Button, TextField } from '@mui/material'
 import React, { useState } from 'react'
@@ -6,7 +6,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { tabletV } from '@/utils/Mixin';
 import { useSetRecoilState } from 'recoil';
 import authState from '@/store/authState';
-import backBlue from '@/assets/img/back-blue.jpg';
+import wavemainSVG from '@/assets/img/wavemain.svg'
+import wavedarkSVG from '@/assets/img/wavedark.svg'
+import wavelightSVG from '@/assets/img/wavelight.svg'
 
 function SignIn() {
   const [inputID, setInputID] = useState("");
@@ -53,7 +55,9 @@ function SignIn() {
   return (
     <div css={container}>
       <LeftContainerDiv>
-
+        <WavelightDiv />
+        <WavemainDiv />
+        <WavedarkDiv />
       </LeftContainerDiv>
       <RightContainerDiv>
         <div css={lockIconStyle}>
@@ -77,12 +81,62 @@ const container = css`
 `
 
 const LeftContainerDiv = styled.div`
+  position: relative;
+  overflow: hidden;
+
   width: 60%;
-  background-image: url(${backBlue});
-  background-size: cover;
+  background: ${props => `radial-gradient(white, ${props.theme.palette.primary.light})`};
   ${tabletV} {
     display: none;
   }
+`
+
+const wave = keyframes`
+  0% {
+    margin-left: 0;
+  }
+  100% {
+    margin-left: -1600px;
+  }
+`
+
+const swell = keyframes`
+  0%, 100% {
+    transform: translate3d(0,-35px,0);
+  }
+  50% {
+    transform: translate3d(0,-10px,0);
+  }
+`
+
+const WavemainDiv = styled.div`
+  background: url('/src/assets/img/wavemain.svg') repeat-x;
+  position: absolute;
+  bottom: 0;
+  width: 6400px;
+  height: 350px;
+
+  animation: ${wave} 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.155s infinite, ${swell} 7s ease -1.25s infinite;
+  opacity: 1;
+`
+const WavedarkDiv = styled.div`
+  background: url('/src/assets/img/wavedark.svg') repeat-x;
+  position: absolute;
+  bottom: 0px;
+  width: 6400px;
+  height: 350px;
+
+  animation: ${wave} 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.155s infinite;
+`
+const WavelightDiv = styled.div`
+background: url('/src/assets/img/wavelight.svg') repeat-x;
+  position: absolute;
+  bottom: -25px;
+  width: 6400px;
+  height: 350px;
+
+  animation: ${wave} 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.325s infinite, ${swell} 7s ease -1.55s infinite;
+  opacity: 1;
 `
 
 const RightContainerDiv = styled.div`

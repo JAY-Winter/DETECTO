@@ -4,7 +4,7 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import { TtableData } from '@/store/DashboardIssue';
+import { TtableData } from '@/store/HistoryIssue';
 import ModalPortal from '@components/common/ModalPortal';
 import useBottomSheet from '@/hooks/useBottomSheet';
 import IssueBottomSheet from './IssueBottomSheet';

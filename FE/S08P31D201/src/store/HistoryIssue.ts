@@ -10,7 +10,6 @@ export type TteamMember = {
 export type TtableData = {
   date: string;
   issue: string[];
-  work: string;
   team: number;
   violate_img: string;
   violate_member?: TteamMember;
@@ -81,7 +80,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-10 11:00',
     issue: ['안전모'],
-    work: '어떤작업',
     team: 1,
     violate_img:
       'https://www.enewstoday.co.kr/news/photo/202204/1566109_621853_1110.jpg',
@@ -90,7 +88,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-10 11:30',
     issue: ['안전모', '앞치마'],
-    work: '어떤작업',
     team: 1,
     violate_img:
       'https://www.enewstoday.co.kr/news/photo/202204/1566109_621853_1110.jpg',
@@ -99,7 +96,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-10 13:58',
     issue: ['보안경'],
-    work: '어떤작업',
     team: 1,
     violate_img:
       'https://www.safety.or.kr/resources/safety/img/business/top/st2.jpg',
@@ -108,7 +104,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-10 14:10',
     issue: ['안전모'],
-    work: '어떤작업',
     team: 2,
     violate_img:
       'https://www.safety.or.kr/resources/safety/img/business/top/st2.jpg',
@@ -117,7 +112,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-10 20:13',
     issue: ['안전모', '장갑'],
-    work: '어떤작업',
     team: 2,
     violate_img: 'https://www.m-i.kr/news/photo/202109/859719_629831_4819.jpg',
     teamList: team2,
@@ -125,7 +119,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-10 23:10',
     issue: ['보안경'],
-    work: '어떤작업',
     team: 3,
     violate_img: 'https://www.m-i.kr/news/photo/202109/859719_629831_4819.jpg',
     teamList: team3,
@@ -133,7 +126,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-10 23:20',
     issue: ['보안경'],
-    work: '어떤작업',
     team: 3,
     violate_img: 'https://www.m-i.kr/news/photo/202109/859719_629831_4819.jpg',
     teamList: team3,
@@ -141,7 +133,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-11 05:59',
     issue: ['앞치마'],
-    work: '어떤작업',
     team: 3,
     violate_img:
       'https://www.hyundai.co.kr/image/upload/asset_library/MDA00000000000028577/4eabac6ba112474586415825282bff2f.jpg',
@@ -150,7 +141,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-11 09:00',
     issue: ['팔토시', '앞치마'],
-    work: '어떤작업',
     team: 4,
     violate_img:
       'https://www.hyundai.co.kr/image/upload/asset_library/MDA00000000000028577/4eabac6ba112474586415825282bff2f.jpg',
@@ -159,7 +149,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-11 10:30',
     issue: ['팔토시', '안전모'],
-    work: '어떤작업',
     team: 4,
     violate_img:
       'https://cdn.kmecnews.co.kr/news/photo/202102/9041_4805_3325.jpg',
@@ -168,7 +157,6 @@ const dummyData: TtableData[] = [
   {
     date: '2023-04-11 11:20',
     issue: ['방진마스크', '보안경'],
-    work: '어떤작업',
     team: 4,
     violate_img:
       'https://cdn.kmecnews.co.kr/news/photo/202102/9041_4805_3325.jpg',
@@ -176,9 +164,9 @@ const dummyData: TtableData[] = [
   },
 ];
 
-const DashboardIssue = atom({
-  key: 'DashboardIssue',
+const HistoryIssue = atom({
+  key: 'HistoryIssue',
   default: dummyData,
 });
 
-export { DashboardIssue };
+export { HistoryIssue };
