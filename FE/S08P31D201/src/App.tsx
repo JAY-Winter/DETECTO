@@ -19,14 +19,14 @@ import AuthProvider from '@components/common/AuthProvider';
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
 
-  useMemo(() => {
-    // The dark mode switch would invoke this method
-    toggleColorMode: () => {
-      setMode((prevMode: PaletteMode) => prevMode === 'light' ? 'dark' : 'light');
-    }
-  }, []);
+  // useMemo(() => {
+  //   // The dark mode switch would invoke this method
+  //   toggleColorMode: () => {
+  //     setMode((prevMode: PaletteMode) => prevMode === 'light' ? 'dark' : 'light');
+  //   }
+  // }, []);
 
-  const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
   // 테마 따라 body 태그의 백그라운드 색상 결정
   useEffect(() => {

@@ -15,6 +15,8 @@ import { css, useTheme } from '@emotion/react';
 import ModalPortal from '@components/common/ModalPortal';
 import LeftModal from '@components/common/LeftModal';
 import NavigationBar from './NavigationBar';
+import { useSetRecoilState } from 'recoil';
+import authState from '@/store/authState';
 
 
 type NavigationBarTabletProps = {
@@ -26,6 +28,7 @@ function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
   const location = useLocation();
   const [currentPathName, setCurrentPathName] = useState("");
   const [isShowLeftModal, setIsShowLeftModal] = useState(false);
+  const setIsAuthenticated = useSetRecoilState(authState);
 
   const handleClickMenu = () => {
     // portal로 네비게이션 바 띄우기
@@ -38,9 +41,13 @@ function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
 
   // 로그아웃 핸들러
   const handleClickLogout = () => {
-    confirm("로그아웃 하시겠습니까??");
+    const isConfirmToLogout = confirm("로그아웃 하시겠습니까??");
+    if (isConfirmToLogout) {
+      setIsAuthenticated(false);
+    }
   }
 
+  // 테마 변경 핸들러
   const handleToggleTheme = () => {
     setMode((oldState) => {
       if (oldState === 'light') {

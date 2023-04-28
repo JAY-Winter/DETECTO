@@ -29,7 +29,12 @@ export const handlers = [
     if ('sessionkey' in req.cookies && req.cookies['sessionkey'] === 'qqqqq') {
       return res(
         ctx.delay(2000),
-        ctx.status(200)
+        ctx.status(200),
+        ctx.body(JSON.stringify({
+          id: 12345,
+          name: "티코",
+          division: "안전관리 3팀",
+        }))
       )
     } else {
       return res(
