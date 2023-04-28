@@ -6,14 +6,14 @@ import {
   KeyboardArrowUp,
   UnfoldMore,
 } from '@mui/icons-material';
-import useDashSort from '@/hooks/useDashSort';
+import useHistorySort from '@/hooks/useHistorySort';
 
 function TableHeader() {
-  const [sortField, order, changeSortHandler] = useDashSort();
+  const [sortField, order, changeSortHandler] = useHistorySort();
   return (
     <TableHead>
       <TableRow>
-        <TableCell>
+        <TableCell sx={{ width: '60%' }}>
           {sortField === 'Date' ? (
             <Button
               onClick={() => {
@@ -37,7 +37,7 @@ function TableHeader() {
             </Button>
           )}
         </TableCell>
-        <TableCell align="left">
+        <TableCell align="left" sx={{ width: '20%' }}>
           {sortField === 'Equipment' ? (
             <Button
               onClick={() => {
@@ -61,8 +61,7 @@ function TableHeader() {
             </Button>
           )}
         </TableCell>
-        <TableCell align="left">작업 사항</TableCell>
-        <TableCell align="left">
+        <TableCell align="left" sx={{ width: '20%' }}>
           {sortField === 'Team' ? (
             <Button
               onClick={() => {
@@ -86,7 +85,7 @@ function TableHeader() {
             </Button>
           )}
         </TableCell>
-        <PendingTableCell align="center" />
+        <PendingTableCell align="right" />
       </TableRow>
     </TableHead>
   );

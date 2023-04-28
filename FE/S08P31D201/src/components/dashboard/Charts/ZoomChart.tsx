@@ -22,7 +22,7 @@ function ZoomChart() {
       .append('rect')
       .attr('x', 0)
       .attr('y', 0)
-      .attr('width', width - margin.right)
+      .attr('width', width - margin.right - margin.left)
       .attr('height', height);
 
     const g = svg
@@ -47,7 +47,6 @@ function ZoomChart() {
         .scaleUtc()
         .domain(
           d3.extent(data, function (d) {
-            console.log(d.date);
             return +(d.date as Date);
           }) as [number, number]
         )
@@ -153,11 +152,12 @@ function ZoomChart() {
 
       // tooltip
 
-      
+      // 툴팁 추가
       // const tooltip = svg.append("g")
       // .style("pointer-events", "none");
 
-      // let title: (i: any) => string
+      // // 타이틀 지정
+      // let title: any
 
       // if (title === undefined) {
       //   const formatDate = xScale.tickFormat(null, "%b %-d, %Y");
@@ -168,10 +168,14 @@ function ZoomChart() {
       //   const T = title;
       //   title = i => T(O[i], i, data);
       // }
+
+      // // 마우스 포인트 움직임 함수
       
       // function pointermoved(event: any) {
+      //   console.log('마우스 움직입니다')
       //   const X = d3.map(data, d => +(d.date as Date))
       //   const Y = d3.map(data, d => d.value)
+      //   // 터치 포인트 지정하는 함수
       //   const i = d3.bisectCenter(X, xScale.invert(d3.pointer(event)[0]));
       //   tooltip.style("display", null);
       //   tooltip.attr("transform", `translate(${xScale(X[i])},${yScale(Y[i])})`);
@@ -187,7 +191,7 @@ function ZoomChart() {
       //     .join("text")
       //     .call(text => text
       //       .selectAll("tspan")
-      //       .data(`${title(i)}`.split(/\n/))
+      //       // .data(`${title(i)}`.split(/\n/))
       //       .join("tspan")
       //         .attr("x", 0)
       //         .attr("y", (_, i) => `${i * 1.1}em`)
@@ -200,14 +204,15 @@ function ZoomChart() {
       //   svg.property("value", O[i]).dispatch("input", {bubbles: true});
       // }
 
+      // // 포인터 아웃 함수
       // function pointerleft() {
       //   tooltip.style("display", "none");
       //   svg.node().value = null;
       //   svg.dispatch("input", {bubbles: true});
       // }
 
-      // svg.on("pointerenter pointermove", pointermoved)
-      // .on("pointerleave", pointerleft)
+      // svg.on("mousemove", pointermoved)
+      // .on("mouseleave", pointerleft)
       // .on("touchstart", event => event.preventDefault());
       
     });

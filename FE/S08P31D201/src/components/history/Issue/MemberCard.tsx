@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 import { Button, Card } from '@mui/material';
-import { TteamMember } from '@/store/DashboardIssue';
+import { TteamMember } from '@/store/HistoryIssue';
 
 const nullMember: TteamMember = {
   memberId: 0,

@@ -17,17 +17,17 @@ import TablePaginationActions from './Issue/TablePaginationActions';
 import Row from './Issue/TableRow';
 import MobileSortButton from './Issue/MobileSortButton';
 import { useRecoilValue } from 'recoil';
-import { DashboardIssue } from '@/store/DashboardIssue';
+import { HistoryIssue } from '@/store/HistoryIssue';
 import TableHeader from './Issue/TableHeader';
 
-function DashboardSafetyIssue() {
-  const data = useRecoilValue(DashboardIssue);
+function HistorySafetyIssue() {
+  const data = useRecoilValue(HistoryIssue);
 
-  // Pagination
+  // 페이지네이션 state
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  // mobile Pagination
+  // 모바일 페이지네이션 state
   const [mobilePage, setMobliePage] = useState(1);
   const handleMobliePage = (
     event: React.ChangeEvent<unknown>,
@@ -68,7 +68,7 @@ function DashboardSafetyIssue() {
             ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={5} />
+                <TableCell colSpan={4} />
               </TableRow>
             )}
           </TableBody>
@@ -76,7 +76,7 @@ function DashboardSafetyIssue() {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[5]}
-                colSpan={5}
+                colSpan={4}
                 count={data.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
@@ -111,7 +111,7 @@ function DashboardSafetyIssue() {
   );
 }
 
-export default DashboardSafetyIssue;
+export default HistorySafetyIssue;
 
 const IssueTableContainer = styled(Paper)`
   display: flex;

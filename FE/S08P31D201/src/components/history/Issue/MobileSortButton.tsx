@@ -5,13 +5,13 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { Grow, Paper, MenuItem, MenuList, Popper } from '@mui/material';
 import styled from '@emotion/styled';
-import { TDashboardSortField } from '@/store/DashboardSort';
+import { THistorySortField } from '@/store/HistorySort';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import useDashSort from '@/hooks/useDashSort';
+import useDashSort from '@/hooks/useHistorySort';
 
 type Toptions = {
   label: string;
-  accessor: TDashboardSortField;
+  accessor: THistorySortField;
 };
 
 const options: Toptions[] = [

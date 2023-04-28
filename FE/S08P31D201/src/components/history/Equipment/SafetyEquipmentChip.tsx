@@ -1,10 +1,11 @@
-import { DashboardEqAtom } from '@/store/DashboardFilter';
+import { HistoryEqAtom } from '@/store/HistoryFilter';
 import styled from '@emotion/styled';
 import { Chip } from '@mui/material';
+import { EquipmentType } from 'EquipmentTypes';
 import { useRecoilState } from 'recoil';
 
-function SafetyEquipmentChip({ eqLabel }: { eqLabel: string }) {
-  const [filterEq, setFilterEq] = useRecoilState(DashboardEqAtom);
+const SafetyEquipmentChip = ({ eqLabel }: { eqLabel: string }) => {
+  const [filterEq, setFilterEq] = useRecoilState(HistoryEqAtom);
 
   // 칩 클릭시 필터 값 변경
   const chipHandler = () => {
@@ -31,9 +32,21 @@ function SafetyEquipmentChip({ eqLabel }: { eqLabel: string }) {
       clickable
     />
   );
+};
+
+function EquipmentChips({equipments}: {equipments: EquipmentType[]}) {
+  return (
+    <>
+      {equipments.map(equipment => {
+        return (
+          <SafetyEquipmentChip eqLabel={equipment.name} key={equipment.id} />
+        );
+      })}
+    </>
+  );
 }
 
-export default SafetyEquipmentChip;
+export default EquipmentChips;
 
 const EquipmentChip = styled(Chip)`
   font-size: 1rem;

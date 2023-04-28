@@ -2,30 +2,25 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { Button, Paper } from '@mui/material';
 import { RestartAlt } from '@mui/icons-material';
-import SafetyEquipmentChip from './Equipment/SafetyEquipmentChip';
+import EquipmentChips from './Equipment/SafetyEquipmentChip';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 
 import { mobileV } from '@/utils/Mixin';
 
-import { DashboardEqAtom } from '@/store/DashboardFilter';
+import { HistoryEqAtom } from '@/store/HistoryFilter';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { EquipmentsAtom } from '@/store/EquipmentStore';
 
 // const eq = ['안전모', '장갑', '앞치마', '보안경', '방진마스크'];
 
-function DashboardEquipmentFilter() {
+function HistoryEquipmentFilter() {
   const equipments = useRecoilValue(EquipmentsAtom);
 
-  const setFilterEq = useSetRecoilState(DashboardEqAtom);
+  const setFilterEq = useSetRecoilState(HistoryEqAtom);
 
   // 모바일 드롭다운 State
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  // 장비 칩 map 랜더링 함수 (향후 랜더링 부분 추출 예정)
-  const EquipmentChips = equipments.map(equipment => {
-    return <SafetyEquipmentChip eqLabel={equipment.name} key={equipment.id} />;
-  });
 
   const resetFilterEq = () => {
     setFilterEq([]);
@@ -56,13 +51,13 @@ function DashboardEquipmentFilter() {
       {/* mobileopen props를 통해 모바일에서 드롭다운 표시 */}
       {/* 모바일이 아닐 경우 항상 표시 됨 */}
       <FilterContentDiv mobileopen={mobileOpen}>
-        {EquipmentChips}
+        {<EquipmentChips equipments={equipments} />}
       </FilterContentDiv>
     </FilterPaper>
   );
 }
 
-export default DashboardEquipmentFilter;
+export default HistoryEquipmentFilter;
 
 const FilterPaper = styled(Paper)`
   display: flex;

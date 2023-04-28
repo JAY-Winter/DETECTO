@@ -2,10 +2,10 @@ import styled from '@emotion/styled';
 import { Card } from '@mui/material';
 import React from 'react'
 
-function SummaryCards() {
+function HistoryCards() {
   return (
-    <SummaryCardDiv>
-          <SummaryCard linearcolor="primary">
+    <HistoryCardDiv>
+          <HistoryCard linearcolor="primary">
             <div className="content-main">
               <div>안전모</div>
             </div>
@@ -13,8 +13,8 @@ function SummaryCards() {
               <h1>안전모</h1>
               <h4>위반 보호구 1위</h4>
             </div>
-          </SummaryCard>
-          <SummaryCard linearcolor="error">
+          </HistoryCard>
+          <HistoryCard linearcolor="error">
             <div className="content-main">
               <div>1팀</div>
             </div>
@@ -22,31 +22,31 @@ function SummaryCards() {
               <h1>1팀</h1>
               <h4>위반 팀 1위</h4>
             </div>
-          </SummaryCard>
-          <SummaryCard linearcolor="secondary">
+          </HistoryCard>
+          <HistoryCard linearcolor="secondary">
             <div className="content-main">
               <div>+20%</div>
             </div>
             <div className="content-sub">
             <h1>이전달 대비 증가폭</h1>
             </div>
-          </SummaryCard>
-          <SummaryCard linearcolor="success">
+          </HistoryCard>
+          <HistoryCard linearcolor="success">
             <div className="content-main">
               <div>헴헴헴</div>
             </div>
             <div className="content-sub">
               <h1>뭐넣을지 모르겠네요</h1>
             </div>
-          </SummaryCard>
-        </SummaryCardDiv>
+          </HistoryCard>
+        </HistoryCardDiv>
   )
 }
 
-export default SummaryCards
+export default HistoryCards
 
 
-const SummaryCardDiv = styled.div`
+const HistoryCardDiv = styled.div`
   display: grid;
   width: 100%;
   place-items: center;
@@ -57,7 +57,7 @@ const SummaryCardDiv = styled.div`
   margin-top: 1.5rem;
 `;
 
-const SummaryCard = styled(Card)<{linearcolor: 'primary' | 'secondary' | 'error' | 'success'}>`
+const HistoryCard = styled(Card)<{linearcolor: 'primary' | 'secondary' | 'error' | 'success'}>`
   display: flex;
   flex-direction: row;
   align-items: center;
