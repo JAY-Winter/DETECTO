@@ -5,5 +5,6 @@ declare module "UserTypes" {
     name?: string,
     division?: string
     img?: string,
+    theme?: 'light' | 'dark'
 	}
 }
