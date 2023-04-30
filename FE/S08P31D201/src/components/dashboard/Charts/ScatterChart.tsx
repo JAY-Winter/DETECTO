@@ -180,7 +180,7 @@ function ScatterChart() {
           .style('fill', color(selected_specie) as string)
           .attr('r', 7);
       };
-      // d에서 정확한 타입지정이 안된다...
+      
       // Highlight the specie that is hovered
       const doNotHighlight = function (
         event: MouseEvent,

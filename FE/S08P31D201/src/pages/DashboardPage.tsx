@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 import { SpaceDashboard } from '@mui/icons-material';
 import DashboardCards from '@components/dashboard/DashboardCards';
 import ZoomChart from '@components/dashboard/Charts/ZoomChart';
+import PieChart from '@components/dashboard/Charts/PieChart';
 
 function DashboardPage() {
   const data = [
@@ -29,9 +30,14 @@ function DashboardPage() {
       <DashboardContent>
         <Card sx={{ height: '3rem', marginBottom: '1rme' }}>날짜선택기</Card>
         <DashboardCards />
-        <Card sx={{width: 800}}>
-          <ZoomChart />
-        </Card>
+        <HistoryCardDiv>
+          <Card sx={{width: '100%', height: '100%'}}>
+            <ZoomChart />
+          </Card>
+          <Card sx={{width: '100%', height: '100%'}}>
+            <PieChart />
+          </Card>
+        </HistoryCardDiv>
       </DashboardContent>
     </DashboardContainer>
   );
@@ -69,4 +75,15 @@ const DashboardContent = styled.div`
   flex-direction: column;
   width: calc(100% - 4rem);
   margin: 2rem;
+`;
+
+const HistoryCardDiv = styled.div`
+  display: grid;
+  width: 100%;
+  place-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  grid-template-columns:2fr 1fr;
+  column-gap: 1rem;
+  row-gap: 1rem;
+  margin-top: 1.5rem;
 `;
