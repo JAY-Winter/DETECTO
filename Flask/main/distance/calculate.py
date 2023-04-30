@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import time
 import math
-
+from main.tools.cloud import cloud
 real_object_height = 23.6
 focal_length = 800
 pro = set({1,2,3,6,7})
@@ -18,6 +18,8 @@ def calculate(imglist, model):
         img = cv2.resize(img,(640,640))
         results = model(img, conf=0.5)
         annotated_frame = results[0].plot()
+        a = cloud()
+        # a.client
         i = 0
         h = 0
         for classs in results[0].boxes.cls:

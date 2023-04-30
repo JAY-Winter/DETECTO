@@ -2,12 +2,18 @@ from flask import Flask, render_template, request
 from ultralytics import YOLO
 from .stream.receive import upload_image
 from .stream.send import video_feed
+from main.tools.cloud import cloud
 
 def create_app():
   app = Flask(__name__)
   cctv_list = {}
   model = YOLO('model/best.pt')
-
+  a = cloud()
+  response = a.client.list_buckets()
+    
+  for bucket in response.get('Buckets', []):
+      print(bucket.get('Name'))
+      
   @app.route('/', defaults={'cctv_id': '0'})
   @app.route('/<cctv_id>')
   def index(cctv_id):
