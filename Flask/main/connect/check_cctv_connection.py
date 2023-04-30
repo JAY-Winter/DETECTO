@@ -7,7 +7,7 @@ from ..constants.constant import CCTV_MAX
 def check_connection(request, cctv_list):
     id = request.form['id']
     cctv_list.add(id)
-    print(f'cctv {id} connected')
+    print(f'[O] CCTV {id} connected')
 
     # cctv 4대 연결 됐으면 트리거 시작
     if (check_connect_full(cctv_list)):

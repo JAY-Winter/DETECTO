@@ -11,10 +11,10 @@ def upload_image(request, model, cctv_images):
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
     cctv_id = int(request.form['id'])
-    time = float(request.form['time'])
-    print(f'[IMAGE] {cctv_id} - {time}')
+    print(f'[O] Received CCTV NUM: {cctv_id}')
 
     results = model(img)  # YOLO
     cctv_images[cctv_id] = results[0].plot()
+    # print(f'     [-] image {cctv_images[cctv_id]}')
 
     return {"result": "이미지 업로드 성공"}

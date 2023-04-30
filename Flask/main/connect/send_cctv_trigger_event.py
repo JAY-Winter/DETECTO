@@ -43,7 +43,7 @@ class trigger_mq():
         [connection, channel] = self.connect_pika()
 
         # set schedule to publish per 1 second
-        schedule.every(1).seconds.do(self.publish, channel)
+        schedule.every(CCTV_TRIGGER_TIME).seconds.do(self.publish, channel)
 
         try:
             # publish per 1 second

@@ -1,37 +1,37 @@
 import cv2
 import requests
-from constants.constant import FLASK_URL, CAMERA_INDEX, CCTV_NUMBER
-import time
+
+from multiprocessing import Value
 
 
 class Camera():
-    def __init__(self):
-        self.__camera_index = int(CAMERA_INDEX)
-        self.__cctvNum = CCTV_NUMBER
-        self.__flaskUrl = FLASK_URL
+    def __init__(self, cctvNum, flaskUrl, shared_signal):
+        self.__camera_index = 0
+        self.__cap = None
+        self.__cctvNum = cctvNum
+        self.__flaskUrl = flaskUrl
+        self.__signal = shared_signal
 
-    # open camera
-    def open_camera(self):
-        return cv2.VideoCapture(self.__camera_index)
+    @property
+    def signal(self):
+        return self.__signal
 
     # close camera
-    def close_camera(self, cap):
+    def close_camera(self):
         print('[X] cam closed')
-        cap.release()
+        self.__cap.release()
         cv2.destroyAllWindows()
 
     # open camera
-    def capture(self, cap):
-        # 웹캠에서 프레임 읽기
-        print('capcap', cap)
-
-        if cap != None and cap.isOpened():
-            ret, frame = cap.read()
+    def capture(self):
+        cam = cv2.VideoCapture(0)
+        if cam.isOpened():
+            ret, frame = cam.read()
             if not ret:
                 print('[X] no ret!')
                 return
 
-            print('  [O]', time, cap)
+            print('[+] capture!! ')
 
             frame = cv2.resize(frame, (640, 480))
 
@@ -39,27 +39,29 @@ class Camera():
             _, img_encoded = cv2.imencode('.jpg', frame)
             img_bytes = img_encoded.tobytes()
             files = {'file': ('image.jpg', img_bytes, 'image/jpeg')}
-            data = {'id': self.__cctvNum, 'time': time}
+            data = {'id': self.__cctvNum}
             response = requests.post(
                 self.__flaskUrl + '/upload', files=files, data=data)
 
-            print('---------> ', response.status_code)
+            # print(response)
 
             if response.status_code == 200:
                 print('[O] 이미지 업로드 성공')
             else:
                 print('[X] 이미지 업로드 실패', response.status_code)
 
-    def run_camera(self, cap):
-        try:
-            print('[*] Open camera', cap)
-            while True:
-                time.sleep(3)
-                print(cap)
-                # if self.__cap.isOpened():
-                #     ret, frame = self.__cap.read()
-                # if not ret:
-                # print('[XX] no ret!')
-
-        finally:
-            self.close_camera(cap)
+    def main(self):
+        cam = cv2.VideoCapture(self.__camera_index)
+        print('[*] Open camera', cam)
+        while cam.isOpened():
+            ret, frame = cam.read()
+            if not ret:
+                print('[X] no ret!')
+            cv2.imshow('title', frame)
+            cv2.waitKey(0)
+            with self.__signal.get_lock():  # Acquire the lock before accessing the value
+                if self.__signal.value:
+                    # 이미지 전송 또는 다른 작업 수행
+                    self.capture()
+                    self.__signal.value = False
+                    # print(frame)
