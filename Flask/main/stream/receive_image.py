@@ -3,10 +3,10 @@ import cv2
 
 # CCTV로부터 영상(이미지)를 받아오기
 
-
 def upload_image(request, model, cctv_images):
     file = request.files['file']
     contents = file.read()
+    signal = True
     nparr = np.frombuffer(contents, np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
