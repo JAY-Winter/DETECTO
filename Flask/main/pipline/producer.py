@@ -3,7 +3,7 @@ import base64
 from kafka import KafkaProducer
 
 # Kafka broker 정보
-bootstrap_servers = 'k8d201.p.ssafy.io:9092'
+bootstrap_servers = ['k8d201.p.ssafy.io:9092']
 
 # Kafka topic 이름
 topic = 'records'
@@ -27,5 +27,10 @@ def send_message(img, cctv_number):
     partition = (cctv_number - 1) % cctv_total_number
     encoding_key = f'cctv.{cctv_number}'.encode('utf-8')
     producer.send(topic=topic, key=encoding_key, value=encoding_img, partition=partition)
-img = cv2.imread('/Users/heyon/Desktop/SAMSUNG/S08P31D201/Flask/main/pipline/test.jpg')
-send_message(img, 1)
+    producer.flush()
+
+######### 아래는 예제 
+# file_path = '/Users/heyon/Desktop/SAMSUNG/S08P31D201/Flask/main/pipline/test.jpg'
+# img = cv2.imread(file_path)
+
+# send_message(img, 1)
