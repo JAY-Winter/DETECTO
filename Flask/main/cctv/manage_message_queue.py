@@ -1,21 +1,20 @@
 import pika
-from camera import Camera
-from multiprocessing import Process
-from multiprocessing import Value
+from main.cctv.camera import Camera
+from multiprocessing import Process, Value
+from main.constants.constant import FLASK_URL, CCTV_NUMBER, MESSAGE_QUEUE
 
 
 class message_queue():
-    def __init__(self, cctvNum, flaskUrl):
-        self.__url = 'k8d201.p.ssafy.io'
-        # self.__url = '192.168.100.210'
-        # self.__url = '192.168.35.234'
-        self.__port = 5672
-        self.__vhost = '/'
-        self.__cred = pika.PlainCredentials('guest', 'guest')
-        self.__queue = 'hello'
+    def __init__(self):
+        self.__url = MESSAGE_QUEUE['URL']
+        self.__port = MESSAGE_QUEUE['PORT']
+        self.__vhost = MESSAGE_QUEUE['VHOST']
+        self.__cred = pika.PlainCredentials(
+            MESSAGE_QUEUE['ID'], MESSAGE_QUEUE['PW'])
+        self.__queue = MESSAGE_QUEUE['NAME']
         self.__camera = None
-        self.__cctvNum = cctvNum
-        self.__flaskUrl = flaskUrl
+        self.__cctvNum = CCTV_NUMBER
+        self.__flaskUrl = FLASK_URL
 
     def connect_pika(self):
         connection = pika.BlockingConnection(pika.ConnectionParameters(
@@ -44,8 +43,7 @@ class message_queue():
         try:
             print('[*] Waiting for messages. To exit press CTRL+C')
             shared_signal = Value('b', False)
-            self.__camera = Camera(
-                self.__cctvNum, self.__flaskUrl, shared_signal)
+            self.__camera = Camera(shared_signal)
 
             camera_process = Process(target=self.__camera.main)
             camera_process.start()

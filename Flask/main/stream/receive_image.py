@@ -13,12 +13,10 @@ def upload_image(request, model, cctv_images):
 
     # CCTV id
     cctv_id = int(request.form['id'])
-    print(f'[O] Received CCTV NUM: {cctv_id}')
 
     # 이미지 분석
     results = model(img)  # YOLO
     cctv_images[cctv_id] = results[0].plot()
-    # print(f'     [-] image {cctv_images[cctv_id]}')
-    print(f'[O] ANOTATE: {cctv_id}')
+    print(f'[O] Received CCTV NUM: {cctv_id}')
 
     return {"result": "이미지 업로드 성공"}

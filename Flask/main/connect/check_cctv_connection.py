@@ -12,7 +12,7 @@ def check_connection(request, cctv_list):
 
     # cctv 4대 연결 됐으면 트리거 시작
     if (check_connect_full(cctv_list)):
-        print('full', cctv_list)
+        print('[*] FULL CCTV ', cctv_list)
         time.sleep(10)  # 카메라 켜질 때까지 5초 대기
         thread = Process(target=trigger_mq)
         thread.start()

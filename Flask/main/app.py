@@ -14,10 +14,13 @@ def create_app():
     cctv_list = set()  # 연결된 cctv 목록
     cctv_images = {}
 
-    @app.route('/', defaults={'cctv_id': '1'})
-    @app.route('/<cctv_id>')
-    def index(cctv_id):
+    @app.route('/cctv/<cctv_id>')
+    def image(cctv_id):
         return render_template('index.html', cctv_id=cctv_id)
+
+    @app.route('/')
+    def index():
+        return render_template("init.html")
 
     @app.route('/connect', methods=['POST'])
     def connect():

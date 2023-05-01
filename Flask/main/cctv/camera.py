@@ -1,15 +1,14 @@
 import cv2
 import requests
-
-from multiprocessing import Value
+from main.constants.constant import FLASK_URL, CCTV_NUMBER, CAMERA_INDEX
 
 
 class Camera():
-    def __init__(self, cctvNum, flaskUrl, shared_signal):
-        self.__camera_index = 0
+    def __init__(self, shared_signal):
+        self.__camera_index = CAMERA_INDEX
         self.__cap = None
-        self.__cctvNum = cctvNum
-        self.__flaskUrl = flaskUrl
+        self.__cctvNum = CCTV_NUMBER
+        self.__flaskUrl = FLASK_URL
         self.__signal = shared_signal
 
     @property

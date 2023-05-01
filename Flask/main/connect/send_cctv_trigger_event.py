@@ -31,7 +31,7 @@ class trigger_mq():
                               routing_key=self.__queue,     # routing key는 큐 이름
                               body=str(now))                # 전송 내역
 
-        print(f" [x] Sent {now}")
+        print(f"[x] Sent {now}")
 
     # connect close
     def connect_close(self, connection):

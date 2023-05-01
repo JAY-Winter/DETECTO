@@ -1,11 +1,12 @@
 import requests
-from manage_message_queue import message_queue
+from main.cctv.manage_message_queue import message_queue
+from main.constants.constant import FLASK_URL, CCTV_NUMBER
 
 
 class CCTV():
     def __init__(self):
-        self.__cctvNum = 1
-        self.__flaskUrl = "http://127.0.0.1:5000"
+        self.__cctvNum = CCTV_NUMBER
+        self.__flaskUrl = FLASK_URL
 
     def startRequest(self):
         data = {'id': self.__cctvNum}
@@ -13,7 +14,7 @@ class CCTV():
         if (response.status_code == 200):
             print('서버 연결 성공', response)
             # mq 대기
-            mq = message_queue(self.__cctvNum, self.__flaskUrl)
+            mq = message_queue()
             mq.main()
         else:
             print('서버 연결 실패', response.status_code)
