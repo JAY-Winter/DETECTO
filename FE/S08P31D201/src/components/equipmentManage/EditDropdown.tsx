@@ -1,7 +1,6 @@
-import { css, keyframes } from '@emotion/react'
+import { keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
-import React, { useEffect, useRef } from 'react'
-// import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import React, { useRef } from 'react'
 
 type EditDropdown = {
   id: number,

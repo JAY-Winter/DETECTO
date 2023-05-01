@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>STOMP Subscriber</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+<img id="receivedImage" style="max-width: 100%;"/>
+<ul id="messages"></ul>
+
+<script>
+    var socket = new WebSocket("ws://k8d201.p.ssafy.io:15674/ws");
+    var client = Stomp.over(socket);
+
+    client.connect("guest", "guest", function () {
+        console.log("Connected to STOMP server");
+        client.subscribe("/queue/record.1", function (message) {
+            console.log(message.body);
+            updateImage(message.body);
+        });
+    }, function (error) {
+        console.error("Failed to connect to STOMP server:", error);
+    });
+
+    function updateImage(base64ImageData) {
+        var imgElement = document.getElementById("receivedImage");
+        imgElement.src = "data:image/png;base64," + base64ImageData;
+    }
+</script>
+</body>
+</html>

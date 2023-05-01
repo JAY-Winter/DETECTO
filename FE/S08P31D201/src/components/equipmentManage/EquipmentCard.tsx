@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import { CardMedia, Switch, Button, css } from '@mui/material';
+import { Switch, css } from '@mui/material';
 import React from 'react';
 import { EquipmentType } from 'EquipmentTypes';
 import MoreVertIcon from '@mui/icons-material/MoreVert';

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { TbottomSheetHandler } from '@components/dashboard/Issue/IssueBottomSheet';
+import { TbottomSheetHandler } from '@components/history/Issue/IssueBottomSheet';
 
 function useBottomSheet(): {
   bottomSheetHandler: TbottomSheetHandler;

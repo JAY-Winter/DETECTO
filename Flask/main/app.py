@@ -4,7 +4,7 @@ from .stream.send_to_client import video_feed
 from .connect.check_cctv_connection import check_connection
 from ultralytics import YOLO
 from .constants.constant import MODEL_PATH
-import time
+from main.tools.database  import db
 
 app = Flask(__name__)
 model = YOLO(MODEL_PATH)
@@ -13,7 +13,11 @@ model = YOLO(MODEL_PATH)
 def create_app():
     cctv_list = set()  # 연결된 cctv 목록
     cctv_images = {}
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://wogus:wogus@k8d201.p.ssafy.io/detecto'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    db.init_app(app)
+    
     @app.route('/cctv/<cctv_id>')
     def image(cctv_id):
         return render_template('index.html', cctv_id=cctv_id)

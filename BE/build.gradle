@@ -15,6 +15,21 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compileOnly 'org.projectlombok:lombok'
+
+	// MYSQL
+	implementation 'mysql:mysql-connector-java:8.0.27'
+	// JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// Test
+	implementation 'com.google.code.gson:gson:2.8.9'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	// Kafka
+	implementation 'org.springframework.kafka:spring-kafka'
+	// RabbitMQ
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	// WebSocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 tasks.named('test') {
