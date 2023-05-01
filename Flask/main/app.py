@@ -1,16 +1,18 @@
 from flask import Flask, render_template, request
-from ultralytics import YOLO
 from .stream.receive_image import upload_image
 from .stream.send_to_client import video_feed
 from .connect.check_cctv_connection import check_connection
+from ultralytics import YOLO
 from .constants.constant import MODEL_PATH
+import time
+
+app = Flask(__name__)
+model = YOLO(MODEL_PATH)
 
 
 def create_app():
-    app = Flask(__name__)
     cctv_list = set()  # 연결된 cctv 목록
     cctv_images = {}
-    model = YOLO(MODEL_PATH)
 
     @app.route('/', defaults={'cctv_id': '1'})
     @app.route('/<cctv_id>')

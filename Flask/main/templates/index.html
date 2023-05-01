@@ -5,6 +5,15 @@
     <link rel="shortcut icon" href="#" />
   </head>
   <body>
-    <img id="image_feed" src="{{ url_for('stream', cctv_id=cctv_id) }}" />
+    <img id="video" src="{{ url_for('stream', cctv_id=cctv_id) }}" />
+    <script>
+      function updateImage() {
+        var video = document.getElementById("video");
+        video.src =
+          "{{ url_for('stream', cctv_id=cctv_id) }}" + "?rand=" + Math.random();
+      }
+
+      setInterval(updateImage, 1000);
+    </script>
   </body>
 </html>
