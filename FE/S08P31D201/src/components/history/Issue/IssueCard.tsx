@@ -10,6 +10,8 @@ import useBottomSheet from '@/hooks/useBottomSheet';
 import IssueBottomSheet from './IssueBottomSheet';
 import MemberCard from './MemberCard';
 import IssueImage from './IssueImage';
+import styled from '@emotion/styled';
+import ScatterChart from '@components/dashboard/Charts/ScatterChart';
 
 function IssueCard(issue: TtableData) {
   const { bottomSheetHandler, isOpen, open } = useBottomSheet();
@@ -49,13 +51,28 @@ function IssueCard(issue: TtableData) {
       <ModalPortal>
         {isOpen && (
           <IssueBottomSheet handler={bottomSheetHandler}>
-            <p>위반 사항</p>
-            <p>뭐라도 쓰지 않을까요?</p>
-            <IssueImage violate_img={issue.violate_img} />
-            <MemberCard
-              teamList={issue.teamList}
-              violate_member={issue.violate_member}
-            />
+            <MobileCard>
+              <h1>상세 정보</h1>
+              <h4>위반 날짜</h4>
+              <p>{issue.date}</p>
+              <h4>위반 팀</h4>
+              <p>{issue.team}팀</p>
+              <h4>위반 사항</h4>
+              <p>{issue.issue.toString()}</p>
+            </MobileCard>
+            <MobileCard>
+              <IssueImage violate_img={issue.violate_img} />
+            </MobileCard>
+            <MobileCard>
+              <MemberCard
+                teamList={issue.teamList}
+                violate_member={issue.violate_member}
+              />
+            </MobileCard>
+            <MobileCard>
+              <h2>위치</h2>
+              <ScatterChart />
+            </MobileCard>
           </IssueBottomSheet>
         )}
       </ModalPortal>
@@ -64,3 +81,10 @@ function IssueCard(issue: TtableData) {
 }
 
 export default IssueCard;
+
+const MobileCard = styled(Card)`
+  padding: 1rem;
+  margin: 1rem;
+
+  line-height: 2rem;
+`;

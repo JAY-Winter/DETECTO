@@ -1,11 +1,15 @@
 import styled from '@emotion/styled';
-import { Card } from '@mui/material';
+import { Button, Card } from '@mui/material';
 import * as d3 from 'd3';
 
 import { SpaceDashboard } from '@mui/icons-material';
 import DashboardCards from '@components/dashboard/DashboardCards';
 import ZoomChart from '@components/dashboard/Charts/ZoomChart';
 import PieChart from '@components/dashboard/Charts/PieChart';
+import ScatterChart from '@components/dashboard/Charts/ScatterChart';
+import { mobileV, tabletV } from '@/utils/Mixin';
+
+// 클립의 공통적용
 
 function DashboardPage() {
   const data = [
@@ -28,16 +32,58 @@ function DashboardPage() {
         <h1>대시보드</h1>
       </DashboardHeader>
       <DashboardContent>
-        <Card sx={{ height: '3rem', marginBottom: '1rme' }}>날짜선택기</Card>
+        <Card sx={{ height: '3rem', marginBottom: '1rem' }}>날짜선택기</Card>
         <DashboardCards />
-        <HistoryCardDiv>
-          <Card sx={{width: '100%', height: '100%'}}>
-            <ZoomChart />
-          </Card>
-          <Card sx={{width: '100%', height: '100%'}}>
-            <PieChart />
-          </Card>
-        </HistoryCardDiv>
+        <ChartCardDiv>
+          <TotalChartDiv>
+            <ZoomCard>
+              <h1>전체 기간 차트</h1>
+              <ZoomChart name='allDay'/>
+            </ZoomCard>
+            <PieCard>
+              <h1>파이차트</h1>
+              <PieChart />
+            </PieCard>
+          </TotalChartDiv>
+          <EQChartDiv>
+            <EQCard>
+            <h1>안전모</h1>
+            <ZoomChart name='eq'/>
+          </EQCard>
+          <EQCard>
+            <h1>장갑</h1>
+            <ZoomChart name='eq'/>
+          </EQCard>
+          <EQCard>
+            <h1>앞치마</h1>
+            <ZoomChart name='eq'/>
+          </EQCard>
+          <EQCard>
+            <h1>보안경</h1>
+            <ZoomChart name='eq'/>
+          </EQCard>
+          <EQCard>
+            <h1>팔토시</h1>
+            <ZoomChart name='eq'/>
+          </EQCard>
+          </EQChartDiv>
+          
+          <ScatterCard>
+            <h1>위치</h1>
+            <ScatterChart />
+          </ScatterCard>
+          <TeamZoomCard>
+            <h1>팀 별 기간 차트</h1>
+            <div>
+              <Button>전체</Button>
+              <Button>1팀</Button>
+              <Button>2팀</Button>
+              <Button>3팀</Button>
+              <Button>4팀</Button>
+            </div>
+            <ZoomChart name='team'/>
+          </TeamZoomCard>
+        </ChartCardDiv>
       </DashboardContent>
     </DashboardContainer>
   );
@@ -70,6 +116,18 @@ const DashboardHeader = styled.div`
   }
 `;
 
+const ChartCard = styled(Card)`
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 1rem;
+  box-shadow: 5px 5px 10px 5px ${props => props.theme.palette.neutral.cardHover};
+
+  ${tabletV} {
+    margin-left: 0;
+    margin-right: 0;
+  }
+`
+
 const DashboardContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -77,13 +135,61 @@ const DashboardContent = styled.div`
   margin: 2rem;
 `;
 
-const HistoryCardDiv = styled.div`
-  display: grid;
-  width: 100%;
-  place-items: center;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
-  grid-template-columns:2fr 1fr;
-  column-gap: 1rem;
-  row-gap: 1rem;
-  margin-top: 1.5rem;
+const ChartCardDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const TotalChartDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-around;
+`
+
+const ZoomCard = styled(ChartCard)`
+  width: 60%;
+
+  ${tabletV} {
+    width: 100%;
+
+  }
+`;
+
+const PieCard = styled(ChartCard)`
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  height: 25rem;
+
+  justify-content: center;
+  align-items: center;
+
+  ${tabletV} {
+    width: 100%;
+    height: 25rem;
+  }
+`;
+
+const EQChartDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+`
+
+const EQCard = styled(ChartCard)`
+  width: calc(33% - 2rem);
+
+  ${tabletV} {
+    width: 100%;
+  }
+`;
+
+const ScatterCard = styled(ChartCard)`
+`;
+
+const TeamZoomCard = styled(ChartCard)`
 `;

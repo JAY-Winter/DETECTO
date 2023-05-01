@@ -19,22 +19,20 @@ function PieChart() {
     data: { name: string; value: number };
   } | null>(null);
 
-  console.log(selected);
-
   useEffect(() => {
     d3.select(svgRef.current).selectAll('tspan').remove();
 
-    const { width } = size;
-    const height = width - 60;
-    const radius = height / 2 - 50;
+    const { width, height } = size;
+    // const height = width * 0.75;
+    const radius = Math.min(height, width) / 2 - 60;
 
     const svg = d3
       .select(svgRef.current)
       .attr('width', width)
-      .attr('height', height);
+      .attr('height', height- 10);
 
     const pie = d3
-      .pie()
+      .pie<{name: string, value: number}>()
       .value(d => d.value)
       .sort(null);
 
@@ -50,7 +48,7 @@ function PieChart() {
       .data(arcs)
       .join('path')
       .attr('class', 'arc')
-      .attr('transform', `translate(${width / 2}, ${height / 2})`)
+      .attr('transform', `translate(${width / 2 - 50}, ${height / 2})`)
       .attr('fill', (d, i) => {
         return d3.schemeCategory10[i % 10];
       })
@@ -105,16 +103,17 @@ function PieChart() {
     const innerText = svg
       .append('text')
       .attr('text-anchor', 'middle')
-      .attr('x', width / 2)
+      .attr('x', width / 2 - 50)
       .attr('y', height / 2);
 
     innerText
       .append('tspan')
       .text(selected ? `${selected.data.name}` : `전체`)
-      .attr('x', width / 2)
+      .attr('x', width / 2 - 50)
       .attr('dy', '-0.2em')
       .attr('font-weight', 'bold')
-      .attr('font-size', '1.3rem');
+      .attr('font-size', '1.3rem')
+      .style('fill', 'currentColor');
 
     innerText
       .append('tspan')
@@ -126,16 +125,17 @@ function PieChart() {
               0
             )}건`
       )
-      .attr('x', width / 2)
+      .attr('x', width / 2 - 50)
       .attr('dy', '1em')
-      .attr('font-size', '1rem');
+      .attr('font-size', '1rem')
+      .style('fill', 'currentColor');
 
     updateInnerText();
 
     const marksGroup = svg
       .selectAll('g.marks')
       .data([null])
-      .attr('transform', `translate(0,${height - 40})`);
+      .attr('transform', `translate(${width - 90}, 10)`);
 
     const marksGroupEnter = marksGroup
       .enter()
@@ -145,7 +145,7 @@ function PieChart() {
 
     marksGroup.exit().remove();
 
-    const marksUpdate = marksGroupEnter.merge(marksGroup);
+    const marksUpdate = marksGroupEnter.merge(marksGroup as any);
 
     const mark = marksUpdate
       .selectAll('g.mark')
@@ -164,7 +164,7 @@ function PieChart() {
         update => update,
         exit => exit.remove()
       )
-      .attr('transform', (d, i) => `translate(${i * width * 0.2}, 0)`)
+      .attr('transform', (d, i) => `translate(0, ${i * 30})`)
       .attr('fill', (d, i) => {
         return d3.schemeCategory10[i % 10];
       });
@@ -176,9 +176,9 @@ function PieChart() {
     marksUpdate
       .selectAll('.mark')
       .select('text')
-      .text(d => d.data.name);
+      .text((d: any) => d.data.name);
 
-    function onHighlight(e, d) {
+    function onHighlight(e: any, d: any) {
       d3.select(svgRef.current).selectAll('tspan').remove();
       setSelected(d as any);
 
@@ -201,7 +201,7 @@ function PieChart() {
         );
     }
 
-    function offHighlight(e, d) {
+    function offHighlight(e: any, d: any) {
       d3.select(svgRef.current).selectAll('tspan').remove();
       setSelected(null);
       const i = e ? mark.nodes().indexOf(e.currentTarget) : -1;
@@ -220,7 +220,7 @@ function PieChart() {
   }, [size, selected]);
 
   return (
-    <div ref={rootRef}>
+    <div ref={rootRef} style={{width: '100%', height: '100%'}}>
       <svg ref={svgRef}></svg>
     </div>
   );

@@ -5,7 +5,7 @@ import useResize from '@/hooks/useResize';
 // const width = 800;
 const margin = { top: 60, right: 30, bottom: 60, left: 60 };
 
-function ZoomChart() {
+function ZoomChart({ name }: { name: string }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const size = useResize(rootRef);
@@ -14,8 +14,10 @@ function ZoomChart() {
     d3.select(svgRef.current).selectAll('*').remove();
     // 차트 밑바탕 도화지 작업
     // svg를 지정
-    const { width } = size
-    const height = Math.max(width * 0.5, 300)
+    const { width } = size;
+    const height = Math.max(width * 0.5, 300);
+
+    console.log(width);
 
     const svg = d3
       .select(svgRef.current)
@@ -27,7 +29,7 @@ function ZoomChart() {
     // g바깥으로 나가는 요소들은 안보이게 처리
     defs
       .append('clipPath')
-      .attr('id', 'clip')
+      .attr('id', `clip${name}`)
       .append('rect')
       .attr('x', 0)
       .attr('y', 0)
@@ -41,7 +43,7 @@ function ZoomChart() {
     const g = svg
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`)
-      .attr('clip-path', 'url(#clip)');
+      .attr('clip-path', `url(#clip${name})`);
     // 그룹 안에서 터치 이벤트를 담당하는 투명한 사각형
     g.append('rect')
       .attr('fill', 'none')
@@ -49,10 +51,10 @@ function ZoomChart() {
       .attr('width', width - margin.left - margin.right)
       .attr('height', height - margin.top - margin.bottom);
 
-      const ClipPathG = svg
+    const ClipPathG = svg
       .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`)
-    
+      .attr('transform', `translate(${margin.left},${margin.top})`);
+
     // 데이터를 불러오고 차트 그리기 시작
     d3.csv(
       'https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv',
@@ -83,13 +85,16 @@ function ZoomChart() {
         )
         // Date타입을 변경해서 x축에 지정
         .call(
-          d3.axisBottom(xScale).tickFormat((d: any) => {
-            const date = new Date(d);
-            const month = date.getMonth() + 1;
-            const year = date.getFullYear().toString().slice(2, 4);
-            const day = date.getDate();
-            return `${year}-${month}-${day}`;
-          }).ticks(5)
+          d3
+            .axisBottom(xScale)
+            .tickFormat((d: any) => {
+              const date = new Date(d);
+              const month = date.getMonth() + 1;
+              const year = date.getFullYear().toString().slice(2, 4);
+              const day = date.getDate();
+              return `${year}-${month}-${day}`;
+            })
+            .ticks(5)
         );
 
       // Y 축은 값(value)를 기점으로 리니어하게 지정
@@ -147,17 +152,20 @@ function ZoomChart() {
         );
         // X축 g를 다시 지정
         xAxis.call(
-          d3.axisBottom(newXScale).tickFormat((d: any) => {
-            const date = new Date(d);
-            const month = date.getMonth() + 1;
-            const year = date.getFullYear().toString().slice(2, 4);
-            const day = date.getDate();
-            return `${year}-${month}-${day}`;
-          }).ticks(4)
+          d3
+            .axisBottom(newXScale)
+            .tickFormat((d: any) => {
+              const date = new Date(d);
+              const month = date.getMonth() + 1;
+              const year = date.getFullYear().toString().slice(2, 4);
+              const day = date.getDate();
+              return `${year}-${month}-${day}`;
+            })
+            .ticks(4)
         );
-        
+
         // 툴팁 함수 재지정
-        g.on('pointerenter pointermove', e => pointermoved(e, newXScale))
+        g.on('pointerenter pointermove', e => pointermoved(e, newXScale));
       };
 
       // zoom함수 할당
@@ -196,7 +204,8 @@ function ZoomChart() {
 
       const formatDate = xScale.tickFormat(undefined, '%b %-d, %Y');
       const formatValue = yScale.tickFormat(100);
-      const title = (i: number) => `${formatDate(new Date(X[i]))}\n${formatValue(+(Y[i] as string))}`;
+      const title = (i: number) =>
+        `${formatDate(new Date(X[i]))}\n${formatValue(+(Y[i] as string))}`;
       const T = title;
 
       // 마우스 포인트 움직임 함수
@@ -220,6 +229,14 @@ function ZoomChart() {
           .attr('fill', 'white')
           .attr('stroke', 'black');
 
+        const tooltipCircle = tooltip
+          .selectAll('circle')
+          .data([null])
+          .join('circle')
+          .attr('r', '5')
+          .attr('fill', '#5688c1')
+          .attr('stroke', 'white');
+
         const text: any = tooltip
           .selectAll('text')
           .data([null])
@@ -234,9 +251,9 @@ function ZoomChart() {
               .attr('font-weight', (_, i) => (i ? null : 'bold'))
               .text(d => d)
           );
-        
-        const { x: tx, y, width: w, height: h } = text.node().getBBox();
 
+        const { x: tx, y, width: w, height: h } = text.node().getBBox();
+        tooltipCircle.attr('transform', `translate(${0},${y + 15})`);
         text.attr('transform', `translate(${-w / 2},${15 - y})`);
         tooltipPath.attr(
           'd',
@@ -248,7 +265,7 @@ function ZoomChart() {
       function pointerleft() {
         tooltip.style('display', 'none');
         const svgNode = svg.node() as any;
-        svgNode.values = null
+        svgNode.values = null;
         svg.dispatch('input');
       }
 
@@ -258,7 +275,11 @@ function ZoomChart() {
     });
   }, [size]);
 
-  return <div ref={rootRef}><svg ref={svgRef}></svg></div>;
+  return (
+    <div ref={rootRef}>
+      <svg ref={svgRef}></svg>
+    </div>
+  );
 }
 
 export default ZoomChart;
