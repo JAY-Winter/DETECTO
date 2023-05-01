@@ -2,12 +2,18 @@ from flask import Flask, render_template, request
 from ultralytics import YOLO
 from .stream.receive import upload_image
 from .stream.send import video_feed
+from main.tools.database  import db
 
+app = Flask(__name__)
 
 def create_app():
-    app = Flask(__name__)
     cctv_list = {}
     model = YOLO("model/best.pt")
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://wogus:wogus@k8d201.p.ssafy.io/detecto'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    db.init_app(app)
+    
 
     @app.route("/", defaults={"cctv_id": "0"})
     @app.route("/<cctv_id>")
