@@ -9,8 +9,9 @@ app = Flask(__name__)
 def create_app():
     cctv_list = {}
     model = YOLO("model/best.pt")
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost/flask'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://wogus:wogus@k8d201.p.ssafy.io/detecto'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
     db.init_app(app)
     
 
