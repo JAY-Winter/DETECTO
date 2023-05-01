@@ -16,7 +16,10 @@ def upload_image(request, model, cctv_images):
     cctv_id = int(request.form['id'])
     cctv_images[cctv_id] = img
     print(f'[O] Received CCTV NUM: {cctv_id}')
+
+    # 4대 이상이면 검출 후 비워주기
     if len(cctv_images) == CCTV_MAX:
-        calculate(cctv_images,model)
+        calculate(cctv_images, model)
         cctv_images = {}
+
     return {"result": "이미지 업로드 성공"}

@@ -7,9 +7,9 @@ from ..tools.database import db
 from datetime import datetime
 import os
 
-real_object_height = 23.6
-focal_length = 800
-pro = set({1, 2, 3, 6, 7})
+real_object_height = 23.6   # 사람 머리 평균
+focal_length = 800          # 초점 거리
+pro = set({1, 2, 3, 6, 7})  # 미착용 클래스 번호
 
 
 def calculate_distance(real_height, focal_length, image_height):
@@ -30,16 +30,17 @@ def calculate(imglist, model):
             if int(classs.item()) in pro:
                 person.add(int(classs.item()))
         
+            # 7:머리, 9:헬멧
             if int(classs.item()) == 7 or int(classs.item()) == 9:
-                h = (results[0].boxes.boxes[i][3] - results[0].boxes.boxes[i][1]).item()
-                distance[j] = calculate_distance(real_object_height, focal_length, h)
+                h = (results[0].boxes.boxes[i][3] - results[0].boxes.boxes[i][1]).item()    # 사람 머리 높이
+                distance[j] = calculate_distance(real_object_height, focal_length, h)       # 사람 - 카메라 거리
                 continue
             i = i + 1
 
     current_time = datetime.utcnow()
     
-    print("ddddddd")
     print(person)
+    # 맵 그리기
     arr = np.zeros((100, 83), dtype=np.int32)
     for i in range(16,27):
         for j in range(19,48):
@@ -54,6 +55,7 @@ def calculate(imglist, model):
     center_x = [0,0,0,99,99,0]
     center_y = [0,0,82,11,82,0]
     
+    # 겹치는 수
     i, j = np.meshgrid(np.arange(100), np.arange(83), indexing="ij")
     for k in range(1, 5):
         if distance[k] == 0:
@@ -65,6 +67,7 @@ def calculate(imglist, model):
         arr[mask] = arr[mask] + 1
     visualize_arr = np.zeros((100, 83, 3), dtype=np.uint8)
 
+    # 겹친 수대로 색칠
     mask_1 = arr == 1
     mask_2 = arr == 2
     mask_3 = arr == 3
@@ -74,6 +77,7 @@ def calculate(imglist, model):
     visualize_arr[mask_3] = (175, 175, 175)
     visualize_arr[mask_4] = (255, 255, 255)
 
+    # 평균 좌표 구하기
     coords = np.argwhere(arr == 4)
     mean_coord = np.mean(coords, axis=0)
     if math.isnan(mean_coord[0]):
@@ -86,13 +90,16 @@ def calculate(imglist, model):
         coords = np.argwhere(arr == 1)
         mean_coord = np.mean(coords, axis=0)
     if math.isnan(mean_coord[0]):
-        mean_coord = [50,42]    
+        mean_coord = [50, 42]
+    
+    # 디버그 이미지
     scale = 5
     resized_visualize_arr = cv2.resize(
         visualize_arr, (83 * scale, 100 * scale), interpolation=cv2.INTER_NEAREST
     )
     cv2.imwrite("debug.jpg", resized_visualize_arr)
 
+    # 미착용자 DB에 저장
     if len(person) != 0:
         id = 0
         new_report = Report(user_id=-1, time=current_time, x=int(mean_coord[0]), y=int(mean_coord[1]))
@@ -103,6 +110,7 @@ def calculate(imglist, model):
     
         object_storage = cloud().client
         object_storage.put_bucket_acl(Bucket="detec", ACL='public-read')
+
         i = 1
         for img in imglist:
             filename = f"{current_time.second}_{i}.jpg"
@@ -114,4 +122,5 @@ def calculate(imglist, model):
             new_report = ReportItem(equipment_id=thing,report_id=id)
             db.session.add(new_report)
         db.session.commit()
+        
     return
