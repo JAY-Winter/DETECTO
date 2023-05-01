@@ -41,7 +41,7 @@ class Camera():
             print('[X] 이미지 업로드 실패', response.status_code)
 
     def main(self):
-        cam = cv2.VideoCapture(self.__camera_index)
+        cam = cv2.VideoCapture(cv2.CAP_DSHOW + CAMERA_INDEX)
         print('[*] Open camera', cam)
         while cam.isOpened():
             ret, frame = cam.read()
