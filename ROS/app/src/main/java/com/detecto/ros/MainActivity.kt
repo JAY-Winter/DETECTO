@@ -27,6 +27,9 @@ import android.Manifest
 import android.graphics.ImageFormat
 import android.graphics.Rect
 import android.graphics.YuvImage
+import android.widget.Toast
+import com.felhr.usbserial.UsbSerialDevice
+import com.felhr.usbserial.UsbSerialInterface
 import java.io.ByteArrayOutputStream
 import java.util.*
 
@@ -38,7 +41,9 @@ class MainActivity : AppCompatActivity() {
     private var usbEndpointOut: UsbEndpoint? = null
     private val ACTION_USB_PERMISSION = "com.detecto.ros.USB_PERMISSION"
     private lateinit var binding: ActivityMainBinding
-
+    private var usbManager: UsbManager? = null
+    private var usbDevice: UsbDevice? = null
+    private var usbSerialDevice: UsbSerialDevice? = null
     private val previewCallback = Camera.PreviewCallback { data, _ ->
         sendFrameToServer(data)
     }
@@ -46,14 +51,33 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val CAMERA_PERMISSION_REQUEST_CODE = 100
     }
+
+    private val usbPermissionReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == ACTION_USB_PERMISSION) {
+                synchronized(this) {
+                    val device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
+                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        device?.apply {
+                            setupUsbConnection()
+                        }
+                    } else {
+                        Toast.makeText(context, "USB Permission denied", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val filter = IntentFilter()
-        filter.addAction(ACTION_USB_PERMISSION)
-        registerReceiver(usbReceiver, filter)
+        usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
+        Log.d(TAG, "usbManager oncreate: ${usbManager}")
+        val filter = IntentFilter(ACTION_USB_PERMISSION)
+        registerReceiver(usbPermissionReceiver, filter)
+        setupUsbPermission()
         binding.surfaceView.holder.addCallback(surfaceHolderCallback)
         // USB 디바이스 연결 권한 요청
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -63,14 +87,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        val usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
-        for (device in usbManager.deviceList.values) {
-            if (device.vendorId == 0x2341 && device.productId == 0x0043) {
-                val permissionIntent = PendingIntent.getBroadcast(this, 0, Intent(ACTION_USB_PERMISSION), 0)
-                usbManager.requestPermission(device, permissionIntent)
-                break
-            }
-        }
+        // Find Arduino Uno device
+
+
 
         CoroutineScope(Dispatchers.IO).launch {
             RabbitConfig.setupConnectionFactory()
@@ -84,8 +103,9 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     try {
                         val command = String(body)
-                        Log.i(TAG, "${command}")
-                        sendDataToArduino(command)
+//                        Toast.makeText(this@MainActivity,"${command}",Toast.LENGTH_SHORT).show()
+                        Log.i(TAG, "command @@@@@@ ${command}")
+                        sendData(command)
                     } catch (e: Exception) {
                         Log.e(TAG, "handleDelivery: ${e.message}")
                     }
@@ -101,7 +121,6 @@ class MainActivity : AppCompatActivity() {
                 if (granted) {
                     val usbDevice: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
                     usbDevice?.apply {
-                        // USB 디바이스에 대한 권한이 부여되면 시리얼 통신을 시작합니다.
                         startUsbConnection(this)
                     }
                 }
@@ -127,6 +146,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun sendDataToArduino(data: String) {
+        Log.i(TAG, "sendDataToArduino: @@@@@@@@@ ${usbEndpointOut}")
+
         usbConnection?.bulkTransfer(usbEndpointOut, data.toByteArray(), data.length, 0)
     }
 
@@ -167,6 +188,12 @@ class MainActivity : AppCompatActivity() {
             camera = null
         }
     }
+
+    fun sendData(data: String) {
+        Log.d(TAG, "sendData: ${usbSerialDevice?.deviceId} ${data}")
+        usbSerialDevice?.write(data.toByteArray())
+    }
+
     fun sendFrameToServer(yuvData: ByteArray) {
         // 카메라 프레임을 JPEG로 인코딩
         val yuvImage = YuvImage(yuvData, ImageFormat.NV21, 640, 640, null)
@@ -175,5 +202,39 @@ class MainActivity : AppCompatActivity() {
         val jpegData = outputStream.toByteArray()
         //TODO!! 이미지 전송해야함
 
+    }
+
+    private fun setupUsbPermission() {
+        val deviceList: HashMap<String, UsbDevice> = usbManager!!.deviceList
+        for (device in deviceList.values) {
+            val permissionIntent = PendingIntent.getBroadcast(this, 0, Intent(ACTION_USB_PERMISSION), 0)
+            usbManager!!.requestPermission(device, permissionIntent)
+            break
+            if (device.deviceClass == UsbConstants.USB_CLASS_CDC_DATA) {
+                // ch340 칩을 사용하는 장치를 찾음
+            }
+        }
+    }
+
+    private fun setupUsbConnection() {
+        Log.d(TAG, "setupUsbConnection: ${usbDevice}")
+        for (device in usbManager!!.deviceList.values) {
+            usbDevice = device
+            break
+        }
+
+        if (usbDevice != null) {
+            val connection = usbManager!!.openDevice(usbDevice)
+            usbSerialDevice = UsbSerialDevice.createUsbSerialDevice(usbDevice, connection)
+            if (usbSerialDevice != null) {
+                if (usbSerialDevice!!.open()) {
+                    usbSerialDevice!!.setBaudRate(9600)
+                    usbSerialDevice!!.setDataBits(UsbSerialInterface.DATA_BITS_8)
+                    usbSerialDevice!!.setStopBits(UsbSerialInterface.STOP_BITS_1)
+                    usbSerialDevice!!.setParity(UsbSerialInterface.PARITY_NONE)
+                    usbSerialDevice!!.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF)
+                }
+            }
+        }
     }
 }
