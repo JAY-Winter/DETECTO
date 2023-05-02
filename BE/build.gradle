@@ -71,9 +71,8 @@ clean {
 
 //querydsl 추가 끝
 
-bootJar {
-	archiveBaseName = 'detecto'
-	archiveVersion = null
-	archiveClassifier = ''
-	archiveExtension = 'jar'
+bootJar{
+	archivesBaseName = 'detecto'
+	archiveFileName = 'detecto.jar'
+	archiveVersion = "0.0.0"
 }
