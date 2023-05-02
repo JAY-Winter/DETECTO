@@ -73,5 +73,7 @@ clean {
 
 bootJar {
 	archiveBaseName = 'detecto'
-	archiveVersion = ''
+	archiveVersion = null
+	archiveClassifier = ''
+	archiveExtension = 'jar'
 }
