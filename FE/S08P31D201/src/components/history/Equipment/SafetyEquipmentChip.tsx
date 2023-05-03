@@ -38,6 +38,7 @@ function EquipmentChips({equipments}: {equipments: EquipmentType[]}) {
   return (
     <>
       {equipments.map(equipment => {
+        if (equipment.isActive)
         return (
           <SafetyEquipmentChip eqLabel={equipment.name} key={equipment.id} />
         );

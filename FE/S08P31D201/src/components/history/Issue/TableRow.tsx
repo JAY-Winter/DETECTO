@@ -5,6 +5,7 @@ import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { TtableData, TteamMember } from '@/store/HistoryIssue';
 import MemberCard from './MemberCard';
 import IssueImage from './IssueImage';
+import ScatterChart from '@components/dashboard/Charts/ScatterChart';
 
 const nullMember: TteamMember = {
   memberId: 0,
@@ -27,8 +28,9 @@ const TableCollapseCard = ({
       sx={{
         margin: 1,
         display: 'flex',
+        flexWrap: 'wrap',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
       }}
     >
@@ -50,6 +52,14 @@ const TableCollapseCard = ({
       >
         <MemberCard teamList={teamList} violate_member={violate_member} />
       </div>
+      <div
+        style={{
+          width: '50%',
+        }}
+      >
+        <h2>위치</h2>
+        <ScatterChart />
+      </div>
     </Box>
   );
 };
@@ -69,7 +79,7 @@ function Row(props: { row: TtableData }) {
         </TableCell>
         <TableCell align="left">{row.issue.toString()}</TableCell>
         <TableCell align="left">{row.team}팀</TableCell>
-        <TableCell align="right" padding='checkbox'>
+        <TableCell align="right" padding="checkbox">
           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
         </TableCell>
       </IssueTableRow>
