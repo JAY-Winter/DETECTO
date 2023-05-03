@@ -5,7 +5,6 @@ from main.constants.constant import FLASK_URL, CCTV_NUMBER, CAMERA_INDEX
 
 class Camera():
     def __init__(self, shared_signal):
-        self.__camera_index = CAMERA_INDEX
         self.__cap = None
         self.__cctvNum = CCTV_NUMBER
         self.__flaskUrl = FLASK_URL
@@ -41,7 +40,7 @@ class Camera():
             print('[X] 이미지 업로드 실패', response.status_code)
 
     def main(self):
-        cam = cv2.VideoCapture(self.__camera_index)
+        cam = cv2.VideoCapture(cv2.CAP_DSHOW + CAMERA_INDEX)
         print('[*] Open camera', cam)
         while cam.isOpened():
             ret, frame = cam.read()

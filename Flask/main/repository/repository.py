@@ -11,5 +11,18 @@ class Report(db.Model):
 class ReportItem(db.Model):
     __tablename__ = "report_item"
     id = db.Column(db.Integer, primary_key=True)
-    item = db.Column(db.Integer, nullable=False)
+    equipment_id = db.Column(db.Integer,db.ForeignKey('equipment.id'), nullable=False)
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
+
+class User(db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    password = db.Column(db.String(255), nullable=True)
+    user_image = db.Column(db.String(255), nullable=True)
+    user_name = db.Column(db.String(255), nullable=True)
+    user_team = db.Column(db.Integer, nullable=True)
+
+class Equipment(db.Model):
+    __tablename__ = 'equipment'
+    id = db.Column(db.Integer, primary_key=True)
+    equipment_name = db.Column(db.String(255), nullable=True)
