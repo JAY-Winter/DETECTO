@@ -5,7 +5,6 @@ from main.constants.constant import FLASK_URL, CCTV_NUMBER, CAMERA_INDEX
 
 class Camera():
     def __init__(self, shared_signal):
-        self.__camera_index = CAMERA_INDEX
         self.__cap = None
         self.__cctvNum = CCTV_NUMBER
         self.__flaskUrl = FLASK_URL

@@ -1,7 +1,7 @@
 import pika
 from main.cctv.camera import Camera
 from multiprocessing import Process, Value
-from main.constants.constant import FLASK_URL, CCTV_NUMBER, MESSAGE_QUEUE
+from main.constants.constant import MESSAGE_QUEUE
 
 
 class message_queue():
@@ -13,8 +13,6 @@ class message_queue():
             MESSAGE_QUEUE['ID'], MESSAGE_QUEUE['PW'])
         self.__queue = MESSAGE_QUEUE['NAME']
         self.__camera = None
-        self.__cctvNum = CCTV_NUMBER
-        self.__flaskUrl = FLASK_URL
 
     def connect_pika(self):
         connection = pika.BlockingConnection(pika.ConnectionParameters(
