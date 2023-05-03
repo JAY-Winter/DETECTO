@@ -18,14 +18,12 @@ function MorePage({ setMode }: MorePageProps) {
   const userInfo = useRecoilValue(UserInfo);
   const setIsAuthenticated = useSetRecoilState(authState);
 
-  const selectTheme = (theme: 'light' | 'dark') => {
-    setMode(theme);
-  }
-
   // 로그아웃 핸들러
   const handleClickLogout = () => {
-    confirm("로그아웃 하시겠습니까??");
-    setIsAuthenticated(false);
+    const isConfirmToLogout = confirm("로그아웃 하시겠습니까??");
+    if (isConfirmToLogout) {
+      setIsAuthenticated(false);
+    }
   }
 
   return (
@@ -33,8 +31,6 @@ function MorePage({ setMode }: MorePageProps) {
       <h1>더보기</h1>
       {/* 프로필 카드 */}
       <ProfileCardDiv>
-      
-        
         <img css={profileImageStyle} src={userInfo.img ?? DefaultProfile} alt="" />
         <div style={{marginLeft: "10px"}}>
           <p>{userInfo.name ?? "Unknown"} Pro</p>
@@ -51,7 +47,7 @@ function MorePage({ setMode }: MorePageProps) {
                 <img src={lightPreview} alt="" />
                 <p>라이트 모드</p>
               </div>
-              <input type="radio" name='tico' checked={theme.palette.mode === 'light'} onChange={() => selectTheme('light')}/>
+              <input type="radio" name='tico' checked={theme.palette.mode === 'light'} onChange={() => setMode('light')}/>
             </ThemeCardDiv>
           </label>
           <label>
@@ -60,7 +56,7 @@ function MorePage({ setMode }: MorePageProps) {
                 <img src={darkPreview} alt="" />
                 <p>다크 모드</p>
               </div>
-              <input type="radio" name='tico' checked={theme.palette.mode === 'dark'} onChange={() => selectTheme('dark')}/>
+              <input type="radio" name='tico' checked={theme.palette.mode === 'dark'} onChange={() => setMode('dark')}/>
             </ThemeCardDiv>
           </label>
         </ThemeSelectDiv>

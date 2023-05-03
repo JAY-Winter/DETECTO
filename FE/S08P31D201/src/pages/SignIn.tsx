@@ -1,12 +1,11 @@
 import { css, useTheme, keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Button, CircularProgress, TextField } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { tabletV } from '@/utils/Mixin';
 import { useSetRecoilState } from 'recoil';
 import authState from '@/store/authState';
-import backBlue from '@/assets/img/back-blue.jpg';
 import useAxios from '@/hooks/useAxios';
 import { UserInfo } from '@/store/userInfoStroe';
 import { AxiosError } from 'axios';
@@ -33,10 +32,6 @@ function SignIn() {
     setInputPW(e.target.value.trim());
   }
 
-  useEffect(() => {
-    console.log(theme.palette.mode);
-  }, [])
-
   // 서버에게 ID, PW 정보 보내서 로그인 처리한다
   const submitSignInfo = async () => {
     try {
@@ -52,14 +47,16 @@ function SignIn() {
       // 인증 성공
       if (response.status === 200) {
         setIsAuthenticated(true);
-        //유저 정보 입력
+        // 세션 값은 여기서 처리한다: 받은 세션값을 가지고 다시 한번 요청 보내서 유저 정보 가져오기??
+        
+        // 유저 정보 업데이트
         if (response.data) {
           setUserInfo(response.data);
         }
       }
     } catch(error) {  // 인증 실패
       setIsAuthenticated(false);
-      // 에러 코드에 따라 다르게 대처하기
+      // 에러 코드에 따라 다르게 처리하기
       const axiosError = error as AxiosError;
       switch (axiosError.response?.status) {
         case 400:
@@ -136,7 +133,7 @@ const LeftContainerDiv = styled.div`
   overflow: hidden;
 
   width: 60%;
-  background: ${props => `radial-gradient(white, ${props.theme.palette.primary.light})`};
+  background: ${props => `radial-gradient(white, ${props.theme.palette.primary.main})`};
   ${tabletV} {
     display: none;
   }
@@ -161,7 +158,7 @@ const swell = keyframes`
 `
 
 const WavemainDiv = styled.div`
-  background: url('/src/assets/img/wavemain.svg') repeat-x;
+  background: url(${wavemainSVG}) repeat-x;
   position: absolute;
   bottom: 0;
   width: 6400px;
@@ -171,7 +168,7 @@ const WavemainDiv = styled.div`
   opacity: 1;
 `
 const WavedarkDiv = styled.div`
-  background: url('/src/assets/img/wavedark.svg') repeat-x;
+  background: url(${wavedarkSVG}) repeat-x;
   position: absolute;
   bottom: 0px;
   width: 6400px;
@@ -180,7 +177,7 @@ const WavedarkDiv = styled.div`
   animation: ${wave} 7s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.155s infinite;
 `
 const WavelightDiv = styled.div`
-background: url('/src/assets/img/wavelight.svg') repeat-x;
+background: url(${wavelightSVG}) repeat-x;
   position: absolute;
   bottom: -25px;
   width: 6400px;
@@ -200,6 +197,7 @@ const RightContainerDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: ${props => props.theme.palette.text.primary};
   padding: 4rem 2rem;
   ${tabletV} {
     width: 100%;
