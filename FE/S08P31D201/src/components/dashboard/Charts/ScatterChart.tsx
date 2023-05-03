@@ -175,7 +175,7 @@ function ScatterChart({data}: {data: {reportItem: string, x: number, y: number}[
         .domain(uniqueDomains)
         .range(uniqueDomains.map((_, i) => {
           const baseColor = rgb(d3.schemeCategory10[i % 10]);
-          return `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0.7)`;
+          return `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0.6)`;
         }));
 
       // Highlight the specie that is hovered
@@ -285,7 +285,8 @@ function ScatterChart({data}: {data: {reportItem: string, x: number, y: number}[
         marksUpdate
           .selectAll('.mapmarks')
           .select('text')
-          .text((d: any) => d[0]);
+          .text((d: any) => d[0])
+          .attr('fill', "currentColor");
 
     // });
       }

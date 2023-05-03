@@ -7,16 +7,15 @@ import DashboardCards from '@components/dashboard/DashboardCards';
 import ZoomChart from '@components/dashboard/Charts/ZoomChart';
 import PieChart from '@components/dashboard/Charts/PieChart';
 import ScatterChart from '@components/dashboard/Charts/ScatterChart';
-import { mobileV, tabletV } from '@/utils/Mixin';
+import { tabletV } from '@/utils/Mixin';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-// 클립의 공통적용
 
 function DashboardPage() {
   const [data, setData] = useState();
   const [eqdata, seteqData] = useState();
   const [codata, setCoData] = useState();
+  const [ctidata, setCtiData] = useState<{ reportItem: any; value: any; }[]>();
 
   // time => Date
   function processData(data) {
@@ -40,27 +39,48 @@ function DashboardPage() {
       group => group.length,
       d => d.time // Group by date only (ignoring time)
     );
-  
+
     return Array.from(counts, ([date, value]) => ({
       date: date,
-      value: value.toString()
-    })).sort((a, b) => a.date - b.date );
+      value: value.toString(),
+    })).sort((a, b) => a.date - b.date);
   }
 
   // 안전 장구별로 count
   function countByReportItems(data) {
     const counts = d3.rollup(
-      data.flatMap(d => d.reportItems.map(reportItem => ({ ...d, reportItem }))),
+      data.flatMap(d =>
+        d.reportItems.map(reportItem => ({ ...d, reportItem }))
+      ),
       group => group.length,
       d => d.reportItem
     );
 
     return Array.from(counts, ([reportItem, count]) => ({
       reportItem,
-      count
+      count,
     }));
   }
-  
+
+  // 안전 장구별로 날짜 순 정리
+  function countByTimeByReportItems(data) {
+    // 장구 별로 그룹화
+    const groupedData = d3.group(
+      data.flatMap(d =>
+        d.reportItems.map(reportItem => ({ ...d, reportItem }))
+      ),
+      d => d.reportItem
+    );
+    console.log(groupedData);
+
+    const countTimeItemData = new Map();
+
+    groupedData.forEach((values, key) => {
+      countTimeItemData.set(key, countByTime(values));
+    });
+
+    return countTimeItemData;
+  }
 
   useEffect(() => {
     axios({
@@ -69,14 +89,25 @@ function DashboardPage() {
     }).then(res => {
       const transformedData = processData(res.data.data);
 
+      // 시간대별로 데이터 그룹화
       const dayData = countByTime(transformedData);
-      setData(dayData)
+      setData(dayData);
+
+      // 장구별로 횟수 그룹화
       const eqData = countByReportItems(transformedData);
-      seteqData(eqData)
+      seteqData(eqData);
 
       // 안전장구별로 위치
-      const coData = transformedData.flatMap(d => d.reportItems.map(reportItem => ({ reportItem, x: d.x, y: d.y })))
-      setCoData(coData)
+      const coData = transformedData.flatMap(d =>
+        d.reportItems.map(reportItem => ({ reportItem, x: d.x, y: d.y }))
+      );
+      setCoData(coData);
+
+      // 안전 장구별 날짜 데이터
+      const ctiData = Array.from(countByTimeByReportItems(transformedData), ([key, value]) => {
+        return { reportItem: key, value };
+      });
+      setCtiData(ctiData);
     });
   }, []);
 
@@ -90,7 +121,7 @@ function DashboardPage() {
       </DashboardHeader>
       <DashboardContent>
         <Card sx={{ height: '3rem', marginBottom: '1rem' }}>날짜선택기</Card>
-        <DashboardCards />
+        <DashboardCards eqData={eqdata}/>
         <ChartCardDiv>
           <TotalChartDiv>
             <ZoomCard>
@@ -99,32 +130,15 @@ function DashboardPage() {
             </ZoomCard>
             <PieCard>
               <h1>파이차트</h1>
-              <PieChart data={eqdata}/>
+              <PieChart data={eqdata} />
             </PieCard>
           </TotalChartDiv>
           <EQChartDiv>
-            <EQCard>
-              <h1>안전모</h1>
-              <ZoomChart name="ha" data={data} color={'blue'} />
-            </EQCard>
-            <EQCard>
-              <h1>장갑</h1>
-              <ZoomChart name="hand" data={data} color={'orange'} />
-            </EQCard>
-            <EQCard>
-              <h1>앞치마</h1>
-              <ZoomChart name="ap" data={data} color={'green'} />
-            </EQCard>
-            <EQCard>
-              <h1>보안경</h1>
-              <ZoomChart name="gl" data={data} color={'red'} />
-            </EQCard>
-            <EQCard>
-              <h1>팔토시</h1>
-              <ZoomChart name="to" data={data} color={'purple'} />
-            </EQCard>
+            {ctidata && ctidata.map((d, index) => (<EQCard>
+              <h1>{d.reportItem}</h1>
+              <ZoomChart name={d.reportItem + "def"} data={d.value} color={d3.schemeCategory10[index % 10]} key={d.reportItem + "zoomChart"}/>
+            </EQCard>))}
           </EQChartDiv>
-
           <ScatterCard>
             <h1>위치</h1>
             <ScatterChart data={codata} />

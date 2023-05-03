@@ -1,50 +1,61 @@
 import styled from '@emotion/styled';
 import { Card } from '@mui/material';
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 
-function HistoryCards() {
+function HistoryCards({ eqData }) {
+  const [topEq, setTopEq] = useState();
+
+  useEffect(() => {
+    if (eqData) {
+      const highestValueKey = eqData.reduce((maxItem, currentItem) => {
+        return currentItem.count > maxItem.count ? currentItem : maxItem;
+      }).reportItem;
+
+      setTopEq(highestValueKey);
+    }
+  }, [eqData]);
+
   return (
     <HistoryCardDiv>
-          <HistoryCard linearcolor="primary">
-            <div className="content-main">
-              <div>안전모</div>
-            </div>
-            <div className="content-sub">
-              <h1>안전모</h1>
-              <h4>위반 보호구 1위</h4>
-            </div>
-          </HistoryCard>
-          <HistoryCard linearcolor="error">
-            <div className="content-main">
-              <div>1팀</div>
-            </div>
-            <div className="content-sub">
-              <h1>1팀</h1>
-              <h4>위반 팀 1위</h4>
-            </div>
-          </HistoryCard>
-          <HistoryCard linearcolor="secondary">
-            <div className="content-main">
-              <div>+20%</div>
-            </div>
-            <div className="content-sub">
-            <h1>이전달 대비 증가폭</h1>
-            </div>
-          </HistoryCard>
-          <HistoryCard linearcolor="success">
-            <div className="content-main">
-              <div>통계치</div>
-            </div>
-            <div className="content-sub">
-              <h1>통계수치</h1>
-            </div>
-          </HistoryCard>
-        </HistoryCardDiv>
-  )
+      <HistoryCard linearcolor="primary">
+        <div className="content-main">
+          <div>{topEq}</div>
+        </div>
+        <div className="content-sub">
+          <h1>{topEq}</h1>
+          <h4>위반 보호구 1위</h4>
+        </div>
+      </HistoryCard>
+      <HistoryCard linearcolor="error">
+        <div className="content-main">
+          <div>1팀</div>
+        </div>
+        <div className="content-sub">
+          <h1>1팀</h1>
+          <h4>위반 팀 1위</h4>
+        </div>
+      </HistoryCard>
+      <HistoryCard linearcolor="secondary">
+        <div className="content-main">
+          <div>+20%</div>
+        </div>
+        <div className="content-sub">
+          <h1>이전달 대비 증가폭</h1>
+        </div>
+      </HistoryCard>
+      <HistoryCard linearcolor="success">
+        <div className="content-main">
+          <div>통계치</div>
+        </div>
+        <div className="content-sub">
+          <h1>통계수치</h1>
+        </div>
+      </HistoryCard>
+    </HistoryCardDiv>
+  );
 }
 
-export default HistoryCards
-
+export default HistoryCards;
 
 const HistoryCardDiv = styled.div`
   display: grid;
@@ -57,12 +68,13 @@ const HistoryCardDiv = styled.div`
   margin-top: 1.5rem;
 `;
 
-const HistoryCard = styled(Card)<{linearcolor: 'primary' | 'secondary' | 'error' | 'success'}>`
+const HistoryCard = styled(Card)<{
+  linearcolor: 'primary' | 'secondary' | 'error' | 'success';
+}>`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: start;
-
 
   position: relative;
   height: 20vh;
