@@ -14,40 +14,71 @@ import axios from 'axios';
 // 클립의 공통적용
 
 function DashboardPage() {
-  // const data = [
-  //   { name: ['a', 'b'] },
-  //   { name: ['a', 'd'] },
-  //   { name: ['a', 'c'] },
-  // ];
-  // const groupedData = d3.group(
-  //   [...data.flatMap(d => d.name.map(n => ({ name: n, data: d })))],
-  //   d => d.name
-  // );
-  // console.log(groupedData);
+  const [data, setData] = useState();
+  const [eqdata, seteqData] = useState();
+  const [codata, setCoData] = useState();
 
-  const [data, setData] = useState<d3.DSVParsedArray<{
-    date: Date | null;
-    value: string | undefined;
-  }>>();
+  // time => Date
+  function processData(data) {
+    return data.map(d => {
+      return {
+        id: d.id,
+        reportItems: d.reportItems,
+        team: d.team,
+        time: d3.timeParse('%Y-%m-%dT%H:%M:%S')(d.time),
+        user: d.user,
+        x: d.x,
+        y: d.y,
+      };
+    });
+  }
+
+  // 시간 별로 count
+  function countByTime(data) {
+    const counts = d3.rollup(
+      data,
+      group => group.length,
+      d => d.time // Group by date only (ignoring time)
+    );
+  
+    return Array.from(counts, ([date, value]) => ({
+      date: date,
+      value: value.toString()
+    })).sort((a, b) => a.date - b.date );
+  }
+
+  // 안전 장구별로 count
+  function countByReportItems(data) {
+    const counts = d3.rollup(
+      data.flatMap(d => d.reportItems.map(reportItem => ({ ...d, reportItem }))),
+      group => group.length,
+      d => d.reportItem
+    );
+
+    return Array.from(counts, ([reportItem, count]) => ({
+      reportItem,
+      count
+    }));
+  }
+  
 
   useEffect(() => {
-    d3.csv(
-      'https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv',
-      function (d) {
-        return {
-          date: d3.timeParse('%Y-%m-%d')(d.date as string),
-          value: d.value,
-        };
-      }
-    ).then(d => setData(d));
-  }, []);
-
-  useEffect(() => {
-
-      axios({
+    axios({
       method: 'GET',
-      url: 'http://k8d201.p.ssafy.io:8000/report?startDate=2023-04-01&endDate=2023-05-05&equipments='
-    }).then(data => console.log(data))}, [])
+      url: 'http://k8d201.p.ssafy.io:8000/report?startDate=2023-04-01&endDate=2023-05-05&equipments=',
+    }).then(res => {
+      const transformedData = processData(res.data.data);
+
+      const dayData = countByTime(transformedData);
+      setData(dayData)
+      const eqData = countByReportItems(transformedData);
+      seteqData(eqData)
+
+      // 안전장구별로 위치
+      const coData = transformedData.flatMap(d => d.reportItems.map(reportItem => ({ reportItem, x: d.x, y: d.y })))
+      setCoData(coData)
+    });
+  }, []);
 
   return (
     <DashboardContainer>
@@ -68,13 +99,13 @@ function DashboardPage() {
             </ZoomCard>
             <PieCard>
               <h1>파이차트</h1>
-              <PieChart />
+              <PieChart data={eqdata}/>
             </PieCard>
           </TotalChartDiv>
           <EQChartDiv>
             <EQCard>
               <h1>안전모</h1>
-              <ZoomChart name="ha" data={data} color={'blue'}/>
+              <ZoomChart name="ha" data={data} color={'blue'} />
             </EQCard>
             <EQCard>
               <h1>장갑</h1>
@@ -82,21 +113,21 @@ function DashboardPage() {
             </EQCard>
             <EQCard>
               <h1>앞치마</h1>
-              <ZoomChart name="ap" data={data} color={'green'}/>
+              <ZoomChart name="ap" data={data} color={'green'} />
             </EQCard>
             <EQCard>
               <h1>보안경</h1>
-              <ZoomChart name="gl" data={data} color={'red'}/>
+              <ZoomChart name="gl" data={data} color={'red'} />
             </EQCard>
             <EQCard>
               <h1>팔토시</h1>
-              <ZoomChart name="to" data={data} color={'purple'}/>
+              <ZoomChart name="to" data={data} color={'purple'} />
             </EQCard>
           </EQChartDiv>
 
           <ScatterCard>
             <h1>위치</h1>
-            <ScatterChart />
+            <ScatterChart data={codata} />
           </ScatterCard>
           <TeamZoomCard>
             <h1>팀 별 기간 차트</h1>
@@ -107,7 +138,7 @@ function DashboardPage() {
               <Button>3팀</Button>
               <Button>4팀</Button>
             </div>
-            <ZoomChart name="team" data={data}/>
+            <ZoomChart name="team" data={data} />
           </TeamZoomCard>
         </ChartCardDiv>
       </DashboardContent>

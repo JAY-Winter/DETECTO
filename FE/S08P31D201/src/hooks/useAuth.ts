@@ -16,8 +16,8 @@ function useAuth() {
   const checkCookieAvailable = async () => {
     try {
       const response = await axios({
-        method: 'get',
-        url: 'auth'
+        method: 'post',
+        url: 'user/auth'
       })
       if (response.status === 200) {
         if (response.data) {

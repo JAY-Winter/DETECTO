@@ -30,8 +30,6 @@ function ZoomChart({
     const { width } = size;
     const height = Math.max(width * 0.5, 300);
 
-    console.log(width);
-
     const svg = d3
       .select(svgRef.current)
       .attr('width', width)

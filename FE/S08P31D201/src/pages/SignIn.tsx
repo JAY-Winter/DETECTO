@@ -41,8 +41,11 @@ function SignIn() {
         data: {
           id: Number(inputID),
           password: inputPW
-        }
+        },
+        withCredentials: true
       })
+        // setMutate(true)
+        // const response = responseData
 
       // 인증 성공
       if (response.status === 200) {

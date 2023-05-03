@@ -1,10 +1,10 @@
 import axios from 'axios'
-import React, { useEffect } from 'react'
 
 function useAxios() {
   const instance = axios.create({
-    baseURL: 'http://k8d201.p.ssafy.io:8000/',
+    baseURL: 'https://rmv8gk970l.execute-api.ap-northeast-2.amazonaws.com/',
     timeout: 5000,
+    withCredentials: true
   })
   
 
