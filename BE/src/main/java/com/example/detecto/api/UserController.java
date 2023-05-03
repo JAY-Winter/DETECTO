@@ -71,6 +71,7 @@ public class UserController {
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
+                System.out.println(cookie.getName());
                 if ("JSESSIONID".equals(cookie.getName())) {
                     myCookieValue = cookie.getValue();
                     break;
