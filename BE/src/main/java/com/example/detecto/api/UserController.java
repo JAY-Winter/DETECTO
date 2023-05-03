@@ -45,6 +45,8 @@ public class UserController {
             //sessionCookie.setDomain("https://k8d201.p.ssafy.io"); // 쿠키 도메인 설정
             //sessionCookie.setSecure(true); // 쿠키가 HTTPS 연결에서만 전송되도록 설정 (옵션)
             sessionCookie.setPath("/");
+
+            response.addHeader("Set-Cookie", sessionCookie.toString() + "; SameSite=None");
             response.addCookie(sessionCookie);
 
             RespData result = RespData.builder()
