@@ -6,11 +6,11 @@ from ..repository.repository import Report, ReportItem
 from ..tools.database import db
 from datetime import datetime
 import os
+from main.distance.is_detect import detect_non_wearing
 
 real_object_height = 23.6   # 사람 머리 평균
 focal_length = 800          # 초점 거리
 pro = set({1, 2, 3, 6, 7})  # 미착용 클래스 번호
-
 
 def calculate_distance(real_height, focal_length, image_height):
     return (real_height * focal_length) / image_height
@@ -19,10 +19,13 @@ def calculate_distance(real_height, focal_length, image_height):
 def calculate(imglist, model):
     distance = np.zeros((5))
     person = set([])
+    imglist_results = []
+
     for j in imglist:
         img = cv2.resize(imglist[j], (640, 640))
         results = model(img, conf=0.5)
         annotated_frame = results[0].plot()
+        imglist_results.append(results[0].boxes.cls)
         
         i = 0
         h = 0
@@ -36,6 +39,9 @@ def calculate(imglist, model):
                 distance[j] = calculate_distance(real_object_height, focal_length, h)       # 사람 - 카메라 거리
                 continue
             i = i + 1
+
+    # 4개 이미지에서 미착용자 찾기
+    detect_non_wearing(pro, imglist_results)
 
     current_time = datetime.utcnow()
     
@@ -122,5 +128,5 @@ def calculate(imglist, model):
             new_report = ReportItem(equipment_id=thing,report_id=id)
             db.session.add(new_report)
         db.session.commit()
-        
+
     return
