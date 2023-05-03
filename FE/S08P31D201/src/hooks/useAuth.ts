@@ -17,7 +17,8 @@ function useAuth() {
     try {
       const response = await axios({
         method: 'get',
-        url: 'auth'
+        url: '/user/auth',
+        withCredentials: true
       })
       if (response.status === 200) {
         if (response.data) {

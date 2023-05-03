@@ -14,6 +14,7 @@ import SamLogoDark from '@/assets/img/samlogoDark.svg'
 import wavemainSVG from '@/assets/img/wavemain.svg'
 import wavedarkSVG from '@/assets/img/wavedark.svg'
 import wavelightSVG from '@/assets/img/wavelight.svg'
+import { UserType } from 'UserTypes';
 
 function SignIn() {
   const theme = useTheme();
@@ -51,7 +52,16 @@ function SignIn() {
         
         // 유저 정보 업데이트
         if (response.data) {
-          setUserInfo(response.data);
+          const userInfo = response.data.data
+          const newUser: UserType = {
+            id: userInfo.id,
+            name: userInfo.userName,
+            division: userInfo.division,
+            img: userInfo.img,
+            theme: userInfo.theme
+          }
+          
+          setUserInfo(newUser);
         }
       }
     } catch(error) {  // 인증 실패
