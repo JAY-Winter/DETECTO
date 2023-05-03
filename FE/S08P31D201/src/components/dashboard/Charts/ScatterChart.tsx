@@ -283,7 +283,6 @@ function ScatterChart() {
   return (
     <div ref={mainDiv}>
       <svg ref={svgRef}>
-        <g />
       </svg>
     </div>
   );

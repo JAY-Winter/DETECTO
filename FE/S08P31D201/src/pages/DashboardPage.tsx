@@ -8,20 +8,46 @@ import ZoomChart from '@components/dashboard/Charts/ZoomChart';
 import PieChart from '@components/dashboard/Charts/PieChart';
 import ScatterChart from '@components/dashboard/Charts/ScatterChart';
 import { mobileV, tabletV } from '@/utils/Mixin';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 // 클립의 공통적용
 
 function DashboardPage() {
-  const data = [
-    { name: ['a', 'b'] },
-    { name: ['a', 'd'] },
-    { name: ['a', 'c'] },
-  ];
-  const groupedData = d3.group(
-    [...data.flatMap(d => d.name.map(n => ({ name: n, data: d })))],
-    d => d.name
-  );
-  console.log(groupedData);
+  // const data = [
+  //   { name: ['a', 'b'] },
+  //   { name: ['a', 'd'] },
+  //   { name: ['a', 'c'] },
+  // ];
+  // const groupedData = d3.group(
+  //   [...data.flatMap(d => d.name.map(n => ({ name: n, data: d })))],
+  //   d => d.name
+  // );
+  // console.log(groupedData);
+
+  const [data, setData] = useState<d3.DSVParsedArray<{
+    date: Date | null;
+    value: string | undefined;
+  }>>();
+
+  useEffect(() => {
+    d3.csv(
+      'https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv',
+      function (d) {
+        return {
+          date: d3.timeParse('%Y-%m-%d')(d.date as string),
+          value: d.value,
+        };
+      }
+    ).then(d => setData(d));
+  }, []);
+
+  useEffect(() => {
+
+      axios({
+      method: 'GET',
+      url: 'http://k8d201.p.ssafy.io:8000/report?startDate=2023-04-01&endDate=2023-05-05&equipments='
+    }).then(data => console.log(data))}, [])
 
   return (
     <DashboardContainer>
@@ -38,7 +64,7 @@ function DashboardPage() {
           <TotalChartDiv>
             <ZoomCard>
               <h1>전체 기간 차트</h1>
-              <ZoomChart name='allDay'/>
+              <ZoomChart name="allDay" data={data} />
             </ZoomCard>
             <PieCard>
               <h1>파이차트</h1>
@@ -47,27 +73,27 @@ function DashboardPage() {
           </TotalChartDiv>
           <EQChartDiv>
             <EQCard>
-            <h1>안전모</h1>
-            <ZoomChart name='eq'/>
-          </EQCard>
-          <EQCard>
-            <h1>장갑</h1>
-            <ZoomChart name='eq'/>
-          </EQCard>
-          <EQCard>
-            <h1>앞치마</h1>
-            <ZoomChart name='eq'/>
-          </EQCard>
-          <EQCard>
-            <h1>보안경</h1>
-            <ZoomChart name='eq'/>
-          </EQCard>
-          <EQCard>
-            <h1>팔토시</h1>
-            <ZoomChart name='eq'/>
-          </EQCard>
+              <h1>안전모</h1>
+              <ZoomChart name="ha" data={data} color={'blue'}/>
+            </EQCard>
+            <EQCard>
+              <h1>장갑</h1>
+              <ZoomChart name="hand" data={data} color={'orange'} />
+            </EQCard>
+            <EQCard>
+              <h1>앞치마</h1>
+              <ZoomChart name="ap" data={data} color={'green'}/>
+            </EQCard>
+            <EQCard>
+              <h1>보안경</h1>
+              <ZoomChart name="gl" data={data} color={'red'}/>
+            </EQCard>
+            <EQCard>
+              <h1>팔토시</h1>
+              <ZoomChart name="to" data={data} color={'purple'}/>
+            </EQCard>
           </EQChartDiv>
-          
+
           <ScatterCard>
             <h1>위치</h1>
             <ScatterChart />
@@ -81,7 +107,7 @@ function DashboardPage() {
               <Button>3팀</Button>
               <Button>4팀</Button>
             </div>
-            <ZoomChart name='team'/>
+            <ZoomChart name="team" data={data}/>
           </TeamZoomCard>
         </ChartCardDiv>
       </DashboardContent>
@@ -126,7 +152,7 @@ const ChartCard = styled(Card)`
     margin-left: 0;
     margin-right: 0;
   }
-`
+`;
 
 const DashboardContent = styled.div`
   display: flex;
@@ -146,14 +172,13 @@ const TotalChartDiv = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-around;
-`
+`;
 
 const ZoomCard = styled(ChartCard)`
   width: 60%;
 
   ${tabletV} {
     width: 100%;
-
   }
 `;
 
@@ -178,7 +203,7 @@ const EQChartDiv = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: start;
-`
+`;
 
 const EQCard = styled(ChartCard)`
   width: calc(33% - 2rem);
@@ -188,8 +213,6 @@ const EQCard = styled(ChartCard)`
   }
 `;
 
-const ScatterCard = styled(ChartCard)`
-`;
+const ScatterCard = styled(ChartCard)``;
 
-const TeamZoomCard = styled(ChartCard)`
-`;
+const TeamZoomCard = styled(ChartCard)``;

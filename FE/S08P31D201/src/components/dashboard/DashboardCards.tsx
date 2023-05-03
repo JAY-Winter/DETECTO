@@ -33,10 +33,10 @@ function HistoryCards() {
           </HistoryCard>
           <HistoryCard linearcolor="success">
             <div className="content-main">
-              <div>헴헴헴</div>
+              <div>통계치</div>
             </div>
             <div className="content-sub">
-              <h1>뭐넣을지 모르겠네요</h1>
+              <h1>통계수치</h1>
             </div>
           </HistoryCard>
         </HistoryCardDiv>

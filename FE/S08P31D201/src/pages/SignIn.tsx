@@ -37,10 +37,10 @@ function SignIn() {
     try {
       const response = await axios({
         method: 'post',
-        url: 'login',
+        url: 'http://k8d201.p.ssafy.io:8000/user/login',
         data: {
-          id: inputID,
-          pw: inputPW
+          id: Number(inputID),
+          password: inputPW
         }
       })
 
@@ -58,6 +58,7 @@ function SignIn() {
       setIsAuthenticated(false);
       // 에러 코드에 따라 다르게 처리하기
       const axiosError = error as AxiosError;
+      console.log(error)
       switch (axiosError.response?.status) {
         case 400:
           alert('아이디와 비밀번호를 확인해주세요');
@@ -109,7 +110,7 @@ function SignIn() {
         <p>로그인</p>
         <TextField label="아이디" margin="normal" required fullWidth value={inputID} onChange={handleChangeInputID} />
         <TextField label="비밀번호" margin="normal" required fullWidth type="password" value={inputPW} onChange={handleChangeInputPW} onKeyPress={handleOnKeyPress} />
-        <Button onClick={clickLogin} variant="contained" fullWidth style={{marginTop: "30px"}} disabled={inputID.length < 5 || inputPW.length < 6 || isRequested}>
+        <Button onClick={clickLogin} variant="contained" fullWidth style={{marginTop: "30px"}} disabled={inputID.length < 1 || inputPW.length < 3 || isRequested}>
           {isRequested ?
             <CircularProgress size="1.7rem"/> :
             "로그인"

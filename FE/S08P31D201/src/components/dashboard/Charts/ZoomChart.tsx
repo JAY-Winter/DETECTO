@@ -5,7 +5,20 @@ import useResize from '@/hooks/useResize';
 // const width = 800;
 const margin = { top: 60, right: 30, bottom: 60, left: 60 };
 
-function ZoomChart({ name }: { name: string }) {
+function ZoomChart({
+  name,
+  data,
+  color,
+}: {
+  name: string;
+  color?: string;
+  data:
+    | d3.DSVParsedArray<{
+        date: Date | null;
+        value: string | undefined;
+      }>
+    | undefined;
+}) {
   const svgRef = useRef<SVGSVGElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const size = useResize(rootRef);
@@ -35,6 +48,26 @@ function ZoomChart({ name }: { name: string }) {
       .attr('y', 0)
       .attr('width', width - margin.right - margin.left)
       .attr('height', height);
+
+    // fill graident
+    const gradient = defs
+      .append('linearGradient')
+      .attr('id', `gradient${name}`)
+      .attr('x1', '0%')
+      .attr('y1', '100%')
+      .attr('x2', '0%')
+      .attr('y2', '0%');
+
+    gradient
+      .append('stop')
+      .attr('offset', '0%')
+      .attr('style', `stop-color:${color ? color : '#5688c1'};stop-opacity:0.05`);
+
+    gradient
+      .append('stop')
+      .attr('offset', '100%')
+      .attr('style', `stop-color:${color ? color : '#5688c1'};stop-opacity:.5`);
+
     // 축을 그리는 그룹 지정
     const AxisG = svg
       .append('g')
@@ -55,19 +88,10 @@ function ZoomChart({ name }: { name: string }) {
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // 데이터를 불러오고 차트 그리기 시작
-    d3.csv(
-      'https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv',
-      function (d) {
-        return {
-          date: d3.timeParse('%Y-%m-%d')(d.date as string),
-          value: d.value,
-        };
-      }
-    ).then(function (data) {
-      // X, Y 각 축을 지정
+    // X, Y 각 축을 지정
 
-      // X 축은 시간을 기점으로 리니어하게 지정
+    // X 축은 시간을 기점으로 리니어하게 지정
+    if (data !== undefined) {
       const xScale = d3
         .scaleUtc()
         .domain(
@@ -92,7 +116,7 @@ function ZoomChart({ name }: { name: string }) {
               const month = date.getMonth() + 1;
               const year = date.getFullYear().toString().slice(2, 4);
               const day = date.getDate();
-              return `${year}-${month}-${day}`;
+              return `${year}.${month}.${day}`;
             })
             .ticks(5)
         );
@@ -112,24 +136,44 @@ function ZoomChart({ name }: { name: string }) {
       const yAxis = AxisG.append('g').call(d3.axisLeft(yScale));
 
       // 라인 그려주기
+      const line = (xScale: (value: d3.NumberValue) => number) =>
+        d3
+          .line<d3.DSVRowString<string>>()
+          .x(function (d) {
+            return xScale(d.date as any);
+          })
+          .y(function (d) {
+            return yScale(d.value as any);
+          })
+          .curve(d3.curveCatmullRom.alpha(0.5)) as any;
+
       const path = g
         .append('path')
         .datum(data)
-        .attr('fill', 'none')
-        .attr('stroke', '#5688c1')
+        .attr('stroke', `${color ? color : '#5688c1'}`)
         .attr('stroke-width', 2)
-        .attr(
-          'd',
-          d3
-            .line<d3.DSVRowString<string>>()
-            .x(function (d) {
-              return xScale(d.date as any);
-            })
-            .y(function (d) {
-              return yScale(d.value as any);
-            })
-            .curve(d3.curveCardinal) as any
-        );
+        .attr('d', line(xScale))
+        .style('fill', 'none');
+
+      // 아래쪽 채울 area 지정
+
+      const area = (xScale: (value: d3.NumberValue) => number) =>
+        d3
+          .area<d3.DSVRowString<string>>()
+          .x(function (d) {
+            return xScale(d.date as any);
+          })
+          .y0(yScale(0))
+          .y1(function (d) {
+            return yScale(d.value as any);
+          })
+          .curve(d3.curveCatmullRom.alpha(0.5)) as any;
+
+      const fillArea = g
+        .append('path')
+        .datum(data)
+        .attr('fill', `url(#gradient${name})`)
+        .attr('d', area(xScale));
 
       // zoom / 줌 할 때마다 x축을 업데이트 해서 툴팁 위치 초기화 시켜주기
       const zoomed = (event: any) => {
@@ -138,18 +182,10 @@ function ZoomChart({ name }: { name: string }) {
         // 도메인도 다시 지정
         xScale.copy().domain(newXScale.domain());
         // 라인 위치도 다시 지정
-        path.attr(
-          'd',
-          d3
-            .line<d3.DSVRowString<string>>()
-            .x(function (d) {
-              return newXScale(d.date as any);
-            })
-            .y(function (d) {
-              return yScale(d.value as any);
-            })
-            .curve(d3.curveCardinal) as any
-        );
+        path.attr('d', line(newXScale));
+
+        fillArea.attr('d', area(newXScale));
+
         // X축 g를 다시 지정
         xAxis.call(
           d3
@@ -159,7 +195,7 @@ function ZoomChart({ name }: { name: string }) {
               const month = date.getMonth() + 1;
               const year = date.getFullYear().toString().slice(2, 4);
               const day = date.getDate();
-              return `${year}-${month}-${day}`;
+              return `${year}.${month}.${day}`;
             })
             .ticks(4)
         );
@@ -210,56 +246,58 @@ function ZoomChart({ name }: { name: string }) {
 
       // 마우스 포인트 움직임 함수
       function pointermoved(event: any, xpoint: any) {
-        const x = d3.pointer(event)[0];
-        const i = d3.bisectCenter(
-          data.map(d => d.date as Date),
-          xpoint.invert(x) as Date
-        );
-        const d = data[i];
-        const xPosition = xpoint(d.date as Date);
-        const yPosition = yScale(+(d.value as string));
-
-        tooltip.style('display', null);
-        tooltip.attr('transform', `translate(${xPosition},${yPosition})`);
-
-        const tooltipPath = tooltip
-          .selectAll('path')
-          .data([null])
-          .join('path')
-          .attr('fill', 'white')
-          .attr('stroke', 'black');
-
-        const tooltipCircle = tooltip
-          .selectAll('circle')
-          .data([null])
-          .join('circle')
-          .attr('r', '5')
-          .attr('fill', '#5688c1')
-          .attr('stroke', 'white');
-
-        const text: any = tooltip
-          .selectAll('text')
-          .data([null])
-          .join('text')
-          .call(text =>
-            text
-              .selectAll('tspan')
-              .data(`${title(i)}`.split(/\n/))
-              .join('tspan')
-              .attr('x', 0)
-              .attr('y', (_, i) => `${i * 1.1}em`)
-              .attr('font-weight', (_, i) => (i ? null : 'bold'))
-              .text(d => d)
+        if (data !== undefined) {
+          const x = d3.pointer(event)[0];
+          const i = d3.bisectCenter(
+            data.map(d => d.date as Date),
+            xpoint.invert(x) as Date
           );
+          const d = data[i];
+          const xPosition = xpoint(d.date as Date);
+          const yPosition = yScale(+(d.value as string));
 
-        const { x: tx, y, width: w, height: h } = text.node().getBBox();
-        tooltipCircle.attr('transform', `translate(${0},${y + 15})`);
-        text.attr('transform', `translate(${-w / 2},${15 - y})`);
-        tooltipPath.attr(
-          'd',
-          `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`
-        );
-        svg.property('value', O[i]).dispatch('input');
+          tooltip.style('display', null);
+          tooltip.attr('transform', `translate(${xPosition},${yPosition})`);
+
+          const tooltipPath = tooltip
+            .selectAll('path')
+            .data([null])
+            .join('path')
+            .attr('fill', 'white')
+            .attr('stroke', 'black');
+
+          const tooltipCircle = tooltip
+            .selectAll('circle')
+            .data([null])
+            .join('circle')
+            .attr('r', '5')
+            .attr('fill', `${color ? color : '#5688c1'}`)
+            .attr('stroke', 'white');
+
+          const text: any = tooltip
+            .selectAll('text')
+            .data([null])
+            .join('text')
+            .call(text =>
+              text
+                .selectAll('tspan')
+                .data(`${title(i)}`.split(/\n/))
+                .join('tspan')
+                .attr('x', 0)
+                .attr('y', (_, i) => `${i * 1.1}em`)
+                .attr('font-weight', (_, i) => (i ? null : 'bold'))
+                .text(d => d)
+            );
+
+          const { x: tx, y, width: w, height: h } = text.node().getBBox();
+          tooltipCircle.attr('transform', `translate(${0},${y + 15})`);
+          text.attr('transform', `translate(${-w / 2},${15 - y})`);
+          tooltipPath.attr(
+            'd',
+            `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`
+          );
+          svg.property('value', O[i]).dispatch('input');
+        }
       }
 
       function pointerleft() {
@@ -272,8 +310,8 @@ function ZoomChart({ name }: { name: string }) {
       g.on('pointerenter pointermove', e => pointermoved(e, xScale))
         .on('pointerleave', pointerleft)
         .on('touchstart', event => event.preventDefault());
-    });
-  }, [size]);
+    }
+  }, [size, data]);
 
   return (
     <div ref={rootRef}>
