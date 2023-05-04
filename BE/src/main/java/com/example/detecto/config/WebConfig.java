@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8088", "http://localhost:5173", "http://k8d201.p.ssafy.io:5173", "https://k8d201.p.ssafy.io") // 프론트엔드 서버의 도메인을 허용합니다.
+                .allowedOrigins("http://localhost:8088", "http://localhost:5173", "http://localhost:4173", "http://k8d201.p.ssafy.io:5173", "https://k8d201.p.ssafy.io") // 프론트엔드 서버의 도메인을 허용합니다.
                 .allowedMethods("*")
                 .allowCredentials(true) // 쿠키 사용 허용
                 .maxAge(3600);
