@@ -43,11 +43,11 @@ public class UserController {
             sessionCookie.setMaxAge(60 * 60); // 쿠키 유효기간 설정 (예: 1시간)
             sessionCookie.setHttpOnly(true); // 쿠키가 HTTP 전송에만 사용되도록 설정 (옵션)
             //sessionCookie.setDomain("https://k8d201.p.ssafy.io"); // 쿠키 도메인 설정
-            //sessionCookie.setSecure(true); // 쿠키가 HTTPS 연결에서만 전송되도록 설정 (옵션)
+            sessionCookie.setSecure(true); // 쿠키가 HTTPS 연결에서만 전송되도록 설정 (옵션)
             sessionCookie.setPath("/");
 
-            response.addHeader("Set-Cookie", sessionCookie.toString() + "; SameSite=None");
-            response.addCookie(sessionCookie);
+            // response.addHeader("Set-Cookie", sessionCookie.toString() + "; SameSite=None");
+            // response.addCookie(sessionCookie);
 
             RespData result = RespData.builder()
                             .flag(true)
