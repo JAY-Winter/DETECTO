@@ -24,7 +24,6 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDto userDto, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("들어오니?");
         Optional<User> OptionalUser = userService.login(userDto);
 
         if (OptionalUser.isPresent()) {
@@ -42,11 +41,10 @@ public class UserController {
             Cookie sessionCookie = new Cookie("SESSIONID", session.getId());
             sessionCookie.setMaxAge(60 * 60); // 쿠키 유효기간 설정 (예: 1시간)
             sessionCookie.setHttpOnly(true); // 쿠키가 HTTP 전송에만 사용되도록 설정 (옵션)
-            //sessionCookie.setDomain("https://k8d201.p.ssafy.io"); // 쿠키 도메인 설정
             sessionCookie.setSecure(true); // 쿠키가 HTTPS 연결에서만 전송되도록 설정 (옵션)
             sessionCookie.setPath("/");
 
-            response.addHeader("Set-Cookie", sessionCookie.toString() + "; SameSite=None");
+            response.addHeader("Set-Cookie", sessionCookie.toString() + "; SameSite=Strict");
             response.addCookie(sessionCookie);
 
             RespData result = RespData.builder()
@@ -72,7 +70,7 @@ public class UserController {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 System.out.println(cookie.getName());
-                if ("JSESSIONID".equals(cookie.getName())) {
+                if ("SESSIONID".equals(cookie.getName())) {
                     myCookieValue = cookie.getValue();
                     break;
                 }
@@ -97,7 +95,7 @@ public class UserController {
         }
 
         // 쿠키를 제거하려면 Set-Cookie 헤더를 사용하여 클라이언트에게 쿠키를 무효화하도록 지시합니다.
-        response.setHeader("Set-Cookie", "JSESSIONID=; Path=/; HttpOnly; Max-Age=0");
+        response.setHeader("Set-Cookie", "SESSIONID=; Path=/; HttpOnly; Max-Age=0");
 
         // 로그아웃 성공에 대한 응답을 반환합니다.
         return ResponseEntity.ok().build();
