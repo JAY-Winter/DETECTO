@@ -80,9 +80,9 @@ public class UserController {
         }
 
         if (myCookieValue != null) {
-            return ResponseEntity.ok().body("Authenticated successfully");
+            return ResponseEntity.status(200).body("Authenticated successfully");
         } else {
-            return ResponseEntity.status(404).body("Authenticated fail");
+            return ResponseEntity.status(400).body("Authenticated fail");
         }
     }
 
