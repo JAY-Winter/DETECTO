@@ -14,6 +14,7 @@ import NavigationBarMobile from '@components/navbar/NavigationBarMobile';
 import DashboardPage from './pages/DashboardPage';
 import MorePage from './pages/MorePage';
 import AuthProvider from '@components/common/AuthProvider';
+import CCTVPage from './pages/CCTVPage';
 
 
 function App() {
@@ -49,6 +50,9 @@ function App() {
             <Route path="/manage" element={<EquipmentManagePage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/more" element={<MorePage setMode={setMode} />} />
+
+            <Route path="/cctv" element={<CCTVPage />} />
+
           </Routes>
         </RouterContainerDiv>
         <NavigationBarMobile />

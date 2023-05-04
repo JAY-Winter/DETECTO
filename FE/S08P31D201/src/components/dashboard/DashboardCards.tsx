@@ -65,7 +65,6 @@ const HistoryCardDiv = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
   column-gap: 1rem;
   row-gap: 1rem;
-  margin-top: 1.5rem;
 `;
 
 const HistoryCard = styled(Card)<{

@@ -37,7 +37,7 @@ function ScatterChart({data}: {data: {reportItem: string, x: number, y: number}[
       //   .call(d3.axisBottom(x));
 
       // Add Y axis
-      const y = d3.scaleLinear().domain([0, 82]).range([height, 0]);
+      const y = d3.scaleLinear().domain([0, 85]).range([height, 0]);
       // g.append('g').call(d3.axisLeft(y));
 
       // Create x-axis line
@@ -125,7 +125,7 @@ function ScatterChart({data}: {data: {reportItem: string, x: number, y: number}[
         .attr('dominant-baseline', 'middle')
         .style('fill', 'currentcolor')
         .style('filter', 'invert(1)')
-        .text('1');
+        .text('3');
 
       g.append('path')
         .attr('d', cctv2 as any)
@@ -139,7 +139,7 @@ function ScatterChart({data}: {data: {reportItem: string, x: number, y: number}[
         .attr('dominant-baseline', 'middle')
         .style('fill', 'currentcolor')
         .style('filter', 'invert(1)')
-        .text('2');
+        .text('1');
 
       g.append('path')
         .attr('d', cctv3 as any)
@@ -152,7 +152,7 @@ function ScatterChart({data}: {data: {reportItem: string, x: number, y: number}[
         .attr('dominant-baseline', 'middle')
         .style('fill', 'currentcolor')
         .style('filter', 'invert(1)')
-        .text('3');
+        .text('4');
 
       g.append('path')
         .attr('d', cctv4 as any)
@@ -165,7 +165,7 @@ function ScatterChart({data}: {data: {reportItem: string, x: number, y: number}[
         .attr('dominant-baseline', 'middle')
         .style('fill', 'currentcolor')
         .style('filter', 'invert(1)')
-        .text('4');
+        .text('2');
 
       // Color scale: give me a specie name, I return a color
       const uniqueDomains = Array.from(new Set(data.map(d => d.reportItem)));

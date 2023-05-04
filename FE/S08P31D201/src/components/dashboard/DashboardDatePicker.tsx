@@ -10,9 +10,10 @@ import {
   KeyboardArrowUp,
 } from '@mui/icons-material';
 import { mobileV } from '@/utils/Mixin';
-import HistoryDatepicker from './Date/HistoryDatepicker';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-function HistoryDatePicker() {
+function DashboardDatePicker() {
   // 모바일 드롭다운 State
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -22,8 +23,6 @@ function HistoryDatePicker() {
   // 날짜 지정 Recoil State
   const [date, setDate] = useRecoilState(HistoryDayAtom);
 
-  console.log(date)
-
   // MUI 탭 onChange
   const tabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -32,6 +31,9 @@ function HistoryDatePicker() {
   const resetFilterDay = () => {
     setDate({ startDay: dayjs(), endDay: dayjs() });
   };
+
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
 
   return (
     <DatePaper>
@@ -43,35 +45,47 @@ function HistoryDatePicker() {
       >
         <div>
           {mobileOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
-          날짜 선택
+          기간 선택
         </div>
-        <Button
-          onClick={e => {
-            e.stopPropagation();
-            resetFilterDay();
-          }}
-        >
-          <span>현재 날짜</span>
-          <RestartAlt color="primary" />
-        </Button>
+        {/* <Button
+            onClick={e => {
+              e.stopPropagation();
+              resetFilterDay();
+            }}
+          >
+            <span>현재 날짜</span>
+            <RestartAlt color="primary" />
+          </Button> */}
       </DateHeaderDiv>
       {/* mobileopen props를 통해 모바일에서 드롭다운 표시 */}
       {/* 모바일이 아닐 경우 항상 표시 됨 */}
       <DateContentDiv mobileopen={mobileOpen}>
         <TabBox>
-          <Tabs value={tabValue} onChange={tabChange} sx={{marginBottom: '1rem'}}>
-            <Tab label="기간 선택" value={0} />
-            <Tab label="날짜 선택" value={1} />
+          <Tabs
+            value={tabValue}
+            onChange={tabChange}
+            sx={{ marginBottom: '1rem' }}
+          >
+            <Tab label="년도 기준" value={0} />
+            <Tab label="월 기준" value={1} />
           </Tabs>
           {/* 탭 패널 */}
           <div hidden={tabValue !== 0}>
             <TabPanelDiv>
-              <HistoryDatepicker datetypes={[["startDay"], ["endDay"]]} />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker label={'년도 선택'} views={['year']} />
+              </LocalizationProvider>
             </TabPanelDiv>
           </div>
           <div hidden={tabValue !== 1}>
             <TabPanelDiv>
-            <HistoryDatepicker datetypes={[["startDay", "endDay"]]} />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="월 선택"
+                  views={['year', 'month']}
+                  format={"YYYY-MM"}
+                />
+              </LocalizationProvider>
             </TabPanelDiv>
           </div>
         </TabBox>
@@ -80,10 +94,9 @@ function HistoryDatePicker() {
   );
 }
 
-export default HistoryDatePicker;
+export default DashboardDatePicker;
 
 const DatePaper = styled(Paper)`
-  width: 100%;
   padding: 1rem;
   margin: 1rem;
 
