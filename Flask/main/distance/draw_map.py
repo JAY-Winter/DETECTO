@@ -1,26 +1,5 @@
 import cv2
 import numpy as np
-import math
-
-
-# 평균 좌표 구하기
-def get_mean_coord(arr):
-    coords = np.argwhere(arr == 4)
-    mean_coord = np.mean(coords, axis=0)
-
-    if math.isnan(mean_coord[0]):
-        coords = np.argwhere(arr == 3)
-        mean_coord = np.mean(coords, axis=0)
-    if math.isnan(mean_coord[0]):
-        coords = np.argwhere(arr == 2)
-        mean_coord = np.mean(coords, axis=0)
-    if math.isnan(mean_coord[0]):
-        coords = np.argwhere(arr == 1)
-        mean_coord = np.mean(coords, axis=0)
-    if math.isnan(mean_coord[0]):
-        mean_coord = [50, 42]
-
-    return mean_coord
 
 
 # 맵 그리기
