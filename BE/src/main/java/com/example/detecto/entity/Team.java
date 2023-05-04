@@ -13,7 +13,7 @@ import java.util.List;
 @ToString(of ={"id", "teamName"})
 public class Team {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
