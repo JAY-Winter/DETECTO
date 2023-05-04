@@ -64,7 +64,6 @@ const RouterContainerDiv = styled.div`
   color: ${props => props.theme.palette.text.primary};
   ${tabletV} {
     margin-left: 70px;
-    
   }
   ${mobileV} {
     margin-left: 0px;
