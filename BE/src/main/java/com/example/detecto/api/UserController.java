@@ -45,6 +45,8 @@ public class UserController {
             //sessionCookie.setDomain("https://k8d201.p.ssafy.io"); // 쿠키 도메인 설정
             //sessionCookie.setSecure(true); // 쿠키가 HTTPS 연결에서만 전송되도록 설정 (옵션)
             sessionCookie.setPath("/");
+
+            response.addHeader("Set-Cookie", sessionCookie.toString() + "; SameSite=None");
             response.addCookie(sessionCookie);
 
             RespData result = RespData.builder()
@@ -63,7 +65,25 @@ public class UserController {
     @PostMapping("/auth")
     public ResponseEntity<?> auth(HttpServletRequest request, HttpServletResponse response) {
         // 인터셉터에서 처리되므로, 인증에 성공했다고 가정하고 응답을 반환합니다.
-        return ResponseEntity.ok().body("Authenticated successfully"); // 200 OK
+        Cookie[] cookies = request.getCookies();
+
+        String myCookieValue = null;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                System.out.println(cookie.getName());
+                if ("JSESSIONID".equals(cookie.getName())) {
+                    myCookieValue = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (myCookieValue != null) {
+            return ResponseEntity.ok().body("Authenticated successfully");
+        } else {
+            return ResponseEntity.status(404).body("Authenticated fail");
+        }
     }
 
     @PostMapping("/logout")

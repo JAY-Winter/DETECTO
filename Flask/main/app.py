@@ -11,6 +11,7 @@ model = YOLO(MODEL_PATH)
 
 
 def create_app():
+    global app
     cctv_list = set()  # 연결된 cctv 목록
     cctv_images = {}
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://wogus:wogus@k8d201.p.ssafy.io/detecto'
