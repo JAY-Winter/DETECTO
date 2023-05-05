@@ -35,16 +35,16 @@ function useAxios({ tryHandler, catchHandler, finallyHandler }: useAxiosParmas) 
     } catch(e) {
       setIsLoading(false);
       if (axios.isAxiosError(e)) {
-        console.log(e.message);
-        // 에러메시지 따라 auth 상태 변경하기
+        console.log("에러메시지:", e.message);
+        // 에러메시지에 세션 관련 에러일 경우엔, auth 상태를 false로 변경하여 로그인 페이지로 보내기
         // setIsAuthenticated(false);
 
         // error 핸들러 수행
-        if (catchHandler) {
-          catchHandler(e);
+        if (catchHandler && e.response) {
+          catchHandler(e.response.status);
         }
       } else {
-        console.error(e)
+        console.error(e);
       }
     } finally {
       setRequestObj(null);  // 요청 처리되면 요청 객체는 null로 초기화

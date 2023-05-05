@@ -41,8 +41,8 @@ function SignIn() {
     }
   }
 
-  const catchHandler = (error: AxiosError) => {
-    switch (error.status) {
+  const catchHandler = (errorCode: number) => {
+    switch (errorCode) {
       case 400:
         alert('아이디와 비밀번호를 확인해주세요');
         setInputPW("");

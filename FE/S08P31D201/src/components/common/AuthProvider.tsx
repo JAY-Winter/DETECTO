@@ -23,7 +23,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   }
 
   // 쿠키값 유효하지 않을경우 핸들러
-  const catchHandler = (error: AxiosError) => {
+  const catchHandler = (errorCode: number) => {
     setIsAuthenticated(false);
   }
 
