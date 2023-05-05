@@ -10,10 +10,11 @@ app = Flask(__name__)
 model = YOLO(MODEL_PATH)
 
 
+cctv_images = {}
+
 def create_app():
     global app
     cctv_list = set()  # 연결된 cctv 목록
-    cctv_images = {}
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://wogus:wogus@k8d201.p.ssafy.io/detecto'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -34,7 +35,9 @@ def create_app():
     # CCTV로부터 영상(이미지)를 받아오기
     @app.route('/upload', methods=['POST'])
     def upload():
-        return upload_image(request, model, cctv_images)
+        global cctv_images
+        cctv_images = upload_image(request, model)
+        return {"result": "이미지 업로드 성공"}
 
     # html로 detecting된 영상 전송
     @app.route('/stream/<int:cctv_id>')
