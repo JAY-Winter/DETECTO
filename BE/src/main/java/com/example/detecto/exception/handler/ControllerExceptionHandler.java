@@ -2,6 +2,7 @@ package com.example.detecto.exception.handler;
 
 import com.example.detecto.data.RespData;
 import com.example.detecto.exception.DoesNotExistData;
+import com.example.detecto.exception.DoesNotExistServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,11 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(AlreadyBoundException.class)
     public ResponseEntity<?> alreadyBoundException(Exception e) {
         return createErrorResponse(e, HttpStatus.NOT_FOUND); // 409
+    }
+
+    @ExceptionHandler(DoesNotExistServer.class)
+    public ResponseEntity<?> doesNotExistServer(Exception e){
+        return createErrorResponse(e, HttpStatus.NOT_FOUND); // 404
     }
 
 

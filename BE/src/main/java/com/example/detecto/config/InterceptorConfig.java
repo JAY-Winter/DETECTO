@@ -18,6 +18,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(sessionInterceptor)
                 .addPathPatterns("/**") // 세션 인증을 확인할 URL 패턴을 설정합니다.
-                .excludePathPatterns("/user/login"); // 인증을 확인하지 않을 URL 패턴을 설정합니다.
+                .excludePathPatterns("/api/user/login"); // 인증을 확인하지 않을 URL 패턴을 설정합니다.
     }
 }
