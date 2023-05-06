@@ -87,8 +87,7 @@ export default HistoryDatePicker;
 const DatePaper = styled(Paper)`
   width: 100%;
   padding: 1rem;
-  margin: 1rem;
-
+  margin: 1rem 0rem;
   transition: 0.2s all ease;
 `;
 

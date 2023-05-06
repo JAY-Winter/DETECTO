@@ -74,6 +74,8 @@ const StyledDesktopLi = styled.li<{currentPathName: string, pathName: string}>`
 `
 
 const StyledTabletLi = styled.li<{currentPathName: string, pathName: string}>`
+  display: flex;
+  align-items: center;
   background-color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.neutral.card};
   color: ${props => props.currentPathName === props.pathName ? props.theme.palette.neutral.main : props.theme.palette.text.secondary};
   @media(hover: hover) {
@@ -84,6 +86,8 @@ const StyledTabletLi = styled.li<{currentPathName: string, pathName: string}>`
 `
 
 const StyledMobileLi = styled.li<{currentPathName: string, pathName: string}>`
+  display: flex;
+  align-items: center;
   color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.text.secondary};
 `
 

@@ -64,7 +64,7 @@ const FilterPaper = styled(Paper)`
   flex-direction: column;
   width: 100%;
   padding: 1rem;
-  margin: 0.5rem;
+  margin: 0.5rem 0rem;
 `;
 
 const FilterHeaderDiv = styled.div`

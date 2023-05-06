@@ -6,6 +6,7 @@ import ListItem from './ListItem'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useLocation } from 'react-router-dom';
 import { mobileV } from '@/utils/Mixin';
@@ -32,6 +33,7 @@ function NavigationBarMobile() {
         <ListItem renderMode='mobile' icon={<HomeOutlinedIcon fontSize='medium'/>} pathName="/history" currentPathName={currentPathName} />
         <ListItem renderMode='mobile' icon={<EngineeringOutlinedIcon  fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
         <ListItem renderMode='mobile' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
+        <ListItem renderMode='mobile' icon={<VideocamOutlinedIcon/>} label={"모니터링"} pathName="/monitor" currentPathName={currentPathName} />
         <ListItem renderMode='mobile' icon={<MenuIcon  fontSize='medium'/>} pathName="/more" currentPathName={currentPathName} />
       </ul>
     </MobileNav>
