@@ -8,89 +8,91 @@ import { useSetRecoilState } from 'recoil';
 import authState from '@/store/authState';
 import useAxios from '@/hooks/useAxios';
 import { UserInfo } from '@/store/userInfoStroe';
-import { AxiosError } from 'axios';
+import { AxiosResponse, AxiosError } from 'axios';
 import SamLogoLight from '@/assets/img/samlogoLight.svg'
 import SamLogoDark from '@/assets/img/samlogoDark.svg'
 import wavemainSVG from '@/assets/img/wavemain.svg'
 import wavedarkSVG from '@/assets/img/wavedark.svg'
 import wavelightSVG from '@/assets/img/wavelight.svg'
+import { UserType } from 'UserTypes';
 
 function SignIn() {
   const theme = useTheme();
-  const axios = useAxios();
   const [inputID, setInputID] = useState("");
   const [inputPW, setInputPW] = useState("");
-  const [isRequested, setIsRequested] = useState(false);  // 연속 클릭 방지를 위한 토글변수
   const setIsAuthenticated = useSetRecoilState(authState);
   const setUserInfo = useSetRecoilState(UserInfo);
 
+  const tryHandler = (response: AxiosResponse) => {
+    if (response.status === 200) {
+      setIsAuthenticated(true);
+      if (response.data) {
+        const userInfo = response.data.data
+        const newUser: UserType = {
+          id: userInfo.id,
+          name: userInfo.userName,
+          division: userInfo.division,
+          img: userInfo.img,
+          theme: userInfo.theme
+        }
+        
+        setUserInfo(newUser);
+      }
+    }
+  }
+
+  const catchHandler = (errorCode: number) => {
+    switch (errorCode) {
+      case 400:
+        alert('아이디와 비밀번호를 확인해주세요');
+        setInputPW("");
+        break;
+      case 401:
+        alert('인증되지 않은 요청입니다');
+        break;
+      case 404:
+        alert('리소스를 찾을 수 없습니다');
+        break;
+      case 500:
+        alert('서버에서 오류가 발생했습니다');
+        break
+      default:
+        alert('알 수 없는 에러...')
+    }
+  }
+
+  const [data, isLoading, setRequestObj] = useAxios({tryHandler: tryHandler, catchHandler: catchHandler});
+
+  // 아이디 입력 핸들러
   const handleChangeInputID = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     setInputID(e.target.value.trim());
   }
 
+  // 비밀번호 입력 핸들러
   const handleChangeInputPW = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     setInputPW(e.target.value.trim());
   }
 
   // 서버에게 ID, PW 정보 보내서 로그인 처리한다
-  const submitSignInfo = async () => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: 'http://k8d201.p.ssafy.io:8000/user/login',
-        data: {
-          id: Number(inputID),
-          password: inputPW
-        }
-      })
-
-      // 인증 성공
-      if (response.status === 200) {
-        setIsAuthenticated(true);
-        // 세션 값은 여기서 처리한다: 받은 세션값을 가지고 다시 한번 요청 보내서 유저 정보 가져오기??
-        
-        // 유저 정보 업데이트
-        if (response.data) {
-          setUserInfo(response.data);
-        }
+  const submitSignInfo = () => {
+    setRequestObj({
+      url: 'user/login',
+      method: 'post',
+      body: {
+        id: Number(inputID),
+        password: inputPW
       }
-    } catch(error) {  // 인증 실패
-      setIsAuthenticated(false);
-      // 에러 코드에 따라 다르게 처리하기
-      const axiosError = error as AxiosError;
-      console.log(error)
-      switch (axiosError.response?.status) {
-        case 400:
-          alert('아이디와 비밀번호를 확인해주세요');
-          setInputPW("");
-          break;
-        case 401:
-          alert('인증되지 않은 요청입니다');
-          break;
-        case 404:
-          alert('리소스를 찾을 수 없습니다');
-          break;
-        case 500:
-          alert('서버에서 오류가 발생했습니다');
-          break
-        default:
-          alert('알 수 없는 에러...')
-      }
-    } finally {
-      setIsRequested(false);
-    }
+    })
   }
 
   // 로그인 버튼 클릭 핸들링
   const clickLogin = () => {
-    setIsRequested(true);
     submitSignInfo();
   }
 
   // 로그인 버튼 엔터입력 핸들링
   const handleOnKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === "Enter") {
-      setIsRequested(true);
       submitSignInfo();
     }
   }
@@ -110,8 +112,8 @@ function SignIn() {
         <p>로그인</p>
         <TextField label="아이디" margin="normal" required fullWidth value={inputID} onChange={handleChangeInputID} />
         <TextField label="비밀번호" margin="normal" required fullWidth type="password" value={inputPW} onChange={handleChangeInputPW} onKeyPress={handleOnKeyPress} />
-        <Button onClick={clickLogin} variant="contained" fullWidth style={{marginTop: "30px"}} disabled={inputID.length < 1 || inputPW.length < 3 || isRequested}>
-          {isRequested ?
+        <Button onClick={clickLogin} variant="contained" fullWidth style={{marginTop: "30px"}} disabled={inputID.length < 1 || inputPW.length < 3 || isLoading}>
+          {isLoading ?
             <CircularProgress size="1.7rem"/> :
             "로그인"
           }

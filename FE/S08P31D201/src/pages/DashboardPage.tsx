@@ -118,14 +118,22 @@ function DashboardPage() {
 export default DashboardPage;
 
 const DashboardContainer = styled.div`
+  /* width: 100%; */
   display: flex;
   flex-direction: column;
-  width: 100%;
+
+  height: 100%;
+  align-items: center;
+  padding: 2.5rem 2rem;
+  ${ tabletV } {
+    align-items: normal;
+  }
 `;
 
 const DashboardHeader = styled.div`
   display: flex;
-  padding: 2rem;
+  /* padding: 2rem; */
+  margin: 0rem 0rem 2rem;
 
   .MuiCard-root {
     display: flex;
@@ -157,8 +165,10 @@ const ChartCard = styled(Card)`
 const DashboardContent = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(100% - 4rem);
-  margin: 2rem;
+  /* width: calc(100% - 4rem);
+  margin: 2rem; */
+
+  width: 100%;
 `;
 
 const ChartCardDiv = styled.div`

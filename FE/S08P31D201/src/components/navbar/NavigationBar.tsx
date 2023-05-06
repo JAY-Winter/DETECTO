@@ -8,6 +8,7 @@ import SamLogoDark from '@/assets/img/samlogoDark.svg'
 import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -88,6 +89,7 @@ function NavigationBar({setMode, isModal=false}: NavigationBarProps) {
           <ListItem renderMode='desktop' icon={<SpaceDashboardOutlinedIcon/>} label={"히스토리"} pathName="/history" currentPathName={currentPathName} />
           <ListItem renderMode='desktop' icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} />
           <ListItem renderMode='desktop' icon={<ArticleOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} />
+          <ListItem renderMode='desktop' icon={<VideocamOutlinedIcon/>} label={"모니터링"} pathName="/monitor" currentPathName={currentPathName} />
         </ul>
         
         <div css={footerContainer}>

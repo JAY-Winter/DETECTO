@@ -6,6 +6,7 @@ import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlin
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -89,8 +90,9 @@ function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
           {/* 네비게이션 아이템들 */}
           <ul css={listContainer}>
             <ListItem renderMode='tablet' icon={<SpaceDashboardOutlinedIcon fontSize='medium'/>} pathName="/history" currentPathName={currentPathName} />
-            <ListItem renderMode='tablet' icon={<EngineeringOutlinedIcon  fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
-            <ListItem renderMode='tablet' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
+            <ListItem renderMode='tablet' icon={<EngineeringOutlinedIcon fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
+            <ListItem renderMode='tablet' icon={<ArticleOutlinedIcon fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
+            <ListItem renderMode='tablet' icon={<VideocamOutlinedIcon fontSize='medium'/>}pathName="/monitor" currentPathName={currentPathName} />
           </ul>
           
           <div css={footerContainer}>

@@ -14,6 +14,7 @@ import NavigationBarMobile from '@components/navbar/NavigationBarMobile';
 import DashboardPage from './pages/DashboardPage';
 import MorePage from './pages/MorePage';
 import AuthProvider from '@components/common/AuthProvider';
+import MonitorPage from './pages/MonitorPage';
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/monitor" element={<MonitorPage />} />
             <Route path="/more" element={<MorePage setMode={setMode} />} />
           </Routes>
         </RouterContainerDiv>
@@ -64,7 +66,6 @@ const RouterContainerDiv = styled.div`
   color: ${props => props.theme.palette.text.primary};
   ${tabletV} {
     margin-left: 70px;
-    
   }
   ${mobileV} {
     margin-left: 0px;
