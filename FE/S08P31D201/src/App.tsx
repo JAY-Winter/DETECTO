@@ -38,6 +38,16 @@ function App() {
     }
   }, [mode]);
 
+  useEffect(() => {
+    const test = async () => {
+      const response = await fetch('http://detec.store:5000/');
+      const data = await response.json();
+      console.log("test:", data);
+    }
+
+    test();
+  }, [])
+
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
