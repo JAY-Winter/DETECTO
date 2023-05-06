@@ -7,6 +7,7 @@ import {
 import { SpaceDashboard } from '@mui/icons-material';
 import DashboardContent from '@components/dashboard/DashboardContent';
 import DashboardDatePicker from '@components/dashboard/DashboardDatePicker';
+import { tabletV } from '@/utils/Mixin';
 
 function DashboardPage() {
   return (
@@ -28,15 +29,22 @@ function DashboardPage() {
 export default DashboardPage;
 
 const DashboardContainer = styled.div`
+  /* width: 100%; */
   display: flex;
   flex-direction: column;
-  width: 100%;
+
+  height: 100%;
+  align-items: center;
+  padding: 2.5rem 2rem;
+  ${ tabletV } {
+    align-items: normal;
+  }
 `;
 
 const DashboardHeader = styled.div`
   display: flex;
-  padding: 2rem;
-  flex-direction: row;
+  /* padding: 2rem; */
+  margin: 0rem 0rem 2rem;
 
   .MuiCard-root {
     display: flex;
@@ -56,8 +64,24 @@ const DashboardHeader = styled.div`
 const DashboardContentPaper = styled.div`
   min-height: 60vh;
 
-  margin: 0 1rem 1rem 1rem;
-  border-radius: 0 0 0.5rem 0.5rem;
+  ${tabletV} {
+    margin-left: 0;
+    margin-right: 0;
+  }
+`;
+
+// const DashboardContent = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   /* width: calc(100% - 4rem);
+//   margin: 2rem; */
+
+//   width: 100%;
+// `;
+
+const ChartCardDiv = styled.div`
+  display: flex;
+  flex-direction: column;
 
   box-shadow: 5px 5px 10px 5px ${props => props.theme.palette.neutral.cardHover};
 `;

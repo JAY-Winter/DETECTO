@@ -7,7 +7,7 @@ declare module "AxiosRequest" {
   }
 	export type useAxiosParmas = {
     tryHandler?: (response: AxiosResponse) => void,
-    catchHandler?: (error: AxiosError) => void,
+    catchHandler?: (error: number) => void,
     finallyHandler?: () => void
   }
 }

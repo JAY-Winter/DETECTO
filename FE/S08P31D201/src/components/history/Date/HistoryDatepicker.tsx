@@ -50,5 +50,5 @@ function HistoryDatepicker({datetypes}: {datetypes: TdatepickerType[]}) {
 export default HistoryDatepicker;
 
 const DatePickerCSS = css`
-  margin: 10px;
+  margin: 2rem 0rem 0rem;
 `;

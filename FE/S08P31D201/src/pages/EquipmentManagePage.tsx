@@ -86,12 +86,14 @@ function EquipmentManagePage() {
 export default EquipmentManagePage;
 
 const EquipmentManageDiv = styled.div`
-  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 3rem 0px;
-  padding: 0px 1rem;
+  padding: 2.5rem 2rem;
+  ${ mobileV } {
+    align-items: normal;
+  }
 `;
 
 const EquipmentCardDiv = styled.div`

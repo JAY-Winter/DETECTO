@@ -78,10 +78,10 @@ const temp = css`
 `
 
 const container = css`
-  padding: 2.5rem 2rem;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  padding: 2.5rem 2rem;
 `
 
 const ProfileCardDiv = styled.div`
