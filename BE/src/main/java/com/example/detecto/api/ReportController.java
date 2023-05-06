@@ -19,9 +19,7 @@ public class ReportController {
 
     @GetMapping
     public ResponseEntity<?> search(ReportSearchDto reportSearchDto){
-        System.out.println("들어오나2");
         RespData result = reportService.search(reportSearchDto);
-
         return result.get();
     }
 }
