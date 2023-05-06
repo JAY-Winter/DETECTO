@@ -40,11 +40,11 @@ function App() {
 
   useEffect(() => {
     const test = async () => {
-      const response = await fetch('http://detec.store:5000/');
+      const response = await fetch('https://detec.store:5000/');
       const data = await response.json();
       console.log("test:", data);
     }
-
+    
     test();
   }, [])
 
