@@ -2,14 +2,32 @@ import styled from '@emotion/styled';
 import { Card } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-function HistoryCards({ eqData }) {
-  const [topEq, setTopEq] = useState();
+function HistoryCards({
+  eqData,
+}: {
+  eqData: {
+    reportItem: string;
+    count: number;
+  }[];
+}) {
+  const [topEq, setTopEq] = useState<string>();
 
   useEffect(() => {
     if (eqData) {
-      const highestValueKey = eqData.reduce((maxItem, currentItem) => {
-        return currentItem.count > maxItem.count ? currentItem : maxItem;
-      }).reportItem;
+      const highestValueKey = eqData.reduce(
+        (
+          maxItem: {
+            reportItem: string;
+            count: number;
+          },
+          currentItem: {
+            reportItem: string;
+            count: number;
+          }
+        ) => {
+          return currentItem.count > maxItem.count ? currentItem : maxItem;
+        }
+      ).reportItem;
 
       setTopEq(highestValueKey);
     }

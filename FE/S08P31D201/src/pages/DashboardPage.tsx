@@ -44,6 +44,7 @@ const DashboardContainer = styled.div`
 const DashboardHeader = styled.div`
   display: flex;
   /* padding: 2rem; */
+  width: 100%;
   margin: 0rem 0rem 2rem;
 
   .MuiCard-root {
@@ -62,6 +63,7 @@ const DashboardHeader = styled.div`
 `;
 
 const DashboardContentPaper = styled.div`
+  width: 100%;
   min-height: 60vh;
 
   ${tabletV} {

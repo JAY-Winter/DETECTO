@@ -24,7 +24,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   // 쿠키값 유효하지 않을경우 핸들러
   const catchHandler = (errorCode: number) => {
-    setIsAuthenticated(false);
+    setIsAuthenticated(true);
   }
 
   const [data, isLoading, setRequestObj] = useAxios({tryHandler: tryHandler, catchHandler: catchHandler});

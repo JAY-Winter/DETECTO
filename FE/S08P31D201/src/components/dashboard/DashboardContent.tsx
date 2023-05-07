@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { Button, Card } from '@mui/material';
 import * as d3 from 'd3';
 
-import { SpaceDashboard } from '@mui/icons-material';
 import DashboardCards from '@components/dashboard/DashboardCards';
 import ZoomChart from '@components/dashboard/Charts/ZoomChart';
 import PieChart from '@components/dashboard/Charts/PieChart';
@@ -10,9 +9,10 @@ import ScatterChart from '@components/dashboard/Charts/ScatterChart';
 import { tabletV } from '@/utils/Mixin';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { NewReportType, ReportType } from 'ReportTypes';
 
 function DashboardContent() {
-  const [data, setData] = useState();
+  const [data, setData] = useState<ReportType[]>();
   const [eqdata, seteqData] = useState();
   const [codata, setCoData] = useState();
   const [ctidata, setCtiData] = useState<{ reportItem: any; value: any }[]>();
@@ -20,13 +20,13 @@ function DashboardContent() {
   const [teamIndex, setTeamIndex] = useState(0);
 
   // time => Date
-  function processData(data) {
+  function processData(data: ReportType[]): NewReportType[] {
     return data.map(d => {
       return {
         id: d.id,
         reportItems: d.reportItems,
         team: d.team,
-        time: d3.timeParse('%Y-%m-%d')(d.time.slice(0, 9)),
+        time: d3.timeParse('%Y-%m-%d')(d.time.slice(0, 9)) as Date,
         user: d.user,
         x: d.x,
         y: d.y,
@@ -35,7 +35,7 @@ function DashboardContent() {
   }
 
   // 시간 별로 count
-  function countByTime(data) {
+  function countByTime(data: NewReportType[]) {
     const counts = d3.rollup(
       data,
       group => group.length,
@@ -45,11 +45,11 @@ function DashboardContent() {
     return Array.from(counts, ([date, value]) => ({
       date: date,
       value: value.toString(),
-    })).sort((a, b) => a.date - b.date);
+    })).sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 
   // 안전 장구별로 count
-  function countByReportItems(data) {
+  function countByReportItems(data: NewReportType[]) {
     const counts = d3.rollup(
       data.flatMap(d =>
         d.reportItems.map(reportItem => ({ ...d, reportItem }))
@@ -65,7 +65,7 @@ function DashboardContent() {
   }
 
   // 안전 장구별로 날짜 순 정리
-  function countByTimeByReportItems(data) {
+  function countByTimeByReportItems(data: NewReportType[]) {
     // 장구 별로 그룹화
     const groupedData = d3.group(
       data.flatMap(d =>
@@ -85,7 +85,7 @@ function DashboardContent() {
 
   // 팀별로 날짜 별 카운트
 
-  function countByTimeByTeams(data) {
+  function countByTimeByTeams(data: NewReportType[]) {
     const groupData = d3.group(data, d => d.team.teamName);
 
     const countTimeTeamData = new Map();
@@ -100,7 +100,7 @@ function DashboardContent() {
   useEffect(() => {
     axios({
       method: 'GET',
-      url: 'http://k8d201.p.ssafy.io/api/report?startDate=2023-04-01&endDate=2023-05-05&equipments=',
+      url: 'https://k8d201.p.ssafy.io/api/report?startDate=2023-04-01&endDate=2023-05-05&equipments=',
     }).then(res => {
       const transformedData = processData(res.data.data);
       console.log(transformedData)
