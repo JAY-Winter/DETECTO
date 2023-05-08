@@ -61,7 +61,7 @@ function SignIn() {
     }
   }
 
-  const [data, isLoading, setRequestObj] = useAxios({tryHandler: tryHandler, catchHandler: catchHandler});
+  const [data, isLoading, setRequestObj] = useAxios({tryHandler: tryHandler, catchHandler: catchHandler, baseURL: "https://k8d201.p.ssafy.io/api/"});
 
   // 아이디 입력 핸들러
   const handleChangeInputID = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {

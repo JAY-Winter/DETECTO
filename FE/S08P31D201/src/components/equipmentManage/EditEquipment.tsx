@@ -1,7 +1,9 @@
-import { Button, TextField } from '@mui/material';
+import { Button, CircularProgress, TextField } from '@mui/material';
 import styled from '@emotion/styled'
 import React, { useEffect, useState } from 'react'
 import DragAndDrop from './DragAndDrop';
+import useAxios from '@/hooks/useAxios';
+import { RequestObj } from 'AxiosRequest';
 
 
 type EditEquipmentProps = {
@@ -19,13 +21,33 @@ function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
   const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [data, isLoading, setRequestObj] = useAxios({baseURL: "https://detec.store:5000/"});
 
   const submit = () => {
-    console.log(equipmentName, equipmentDesc);
-    if (imageSrc !== null) {
-      addItemHandler(equipmentName, equipmentDesc, imageSrc);
+    if (selectedZip === null) {
+      alert("올바른 파일을 업로드 해주세요");
+      return;
+    } else if (equipmentName === "") {
+      alert("장비명은 필수 입력란입니다");
+      return;
     }
-    onClose();
+    const formData = new FormData();
+    formData.append('file', selectedZip);
+    formData.append('img', selectedImage ?? "");
+    formData.append('name', equipmentName);
+    formData.append('description', equipmentName);
+
+    // requestObj 생성
+    const reqeusetObj: RequestObj = {
+      url: 'upload',
+      method: 'post',
+      body: formData,
+      headerObj: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+
+    setRequestObj(reqeusetObj);
   }
 
   const handleNameinput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +62,7 @@ function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
       setIsValid(false);
     } else {
       setIsErrorName(false);
-      setErrorMessage(" ");
+      setErrorMessage("");
     }
     setEquipmentName(name);
   }
@@ -68,16 +90,31 @@ function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
     }
   }, [selectedImage])
 
+  useEffect(() => {
+    if (isLoading === false && data !== null) {
+      console.log("업로드 완료!");
+      if (imageSrc !== null) {
+        addItemHandler(equipmentName, equipmentDesc, imageSrc);
+      }
+      onClose();
+    }
+  }, [data, isLoading])
+
   return (
     <EditEquipmentForm>
       <div>
         <DragAndDrop isDragging={isDragging} setIsDragging={setIsDragging} selectedFile={selectedZip} setSelectedFile={setSelectedZip} type='zip' />
         <br />
         <DragAndDrop isDragging={isDragging} setIsDragging={setIsDragging} selectedFile={selectedImage} setSelectedFile={setSelectedImage} type='image' />
-        <TextField fullWidth label="장비명(공백제외 최대 20자)" variant="standard" onChange={handleNameinput} margin="normal" error={isErrorName} helperText={errorMessage} />
-        <TextField fullWidth label="장비 설명(선택)" variant="standard" onChange={handleDescinput} />
+        <TextField fullWidth label="장비명(공백제외 최대 20자)" value={equipmentName} variant="standard" onChange={handleNameinput} margin="normal" error={isErrorName} helperText={errorMessage} />
+        <TextField fullWidth label="장비 설명(선택)" value={equipmentDesc} variant="standard" onChange={handleDescinput} />
       </div>
-      <Button fullWidth variant="contained" onClick={submit} disabled={!isValid}>등록하기</Button>
+      <Button fullWidth variant="contained" onClick={submit} disabled={!isValid || isLoading}>
+        {isLoading ?
+          <CircularProgress size="1.7rem"/> :
+          "등록하기"
+        }
+      </Button>
     </EditEquipmentForm>
   )
 }

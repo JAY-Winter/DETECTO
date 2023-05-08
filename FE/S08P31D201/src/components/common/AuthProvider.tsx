@@ -27,7 +27,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     setIsAuthenticated(false);
   }
 
-  const [data, isLoading, setRequestObj] = useAxios({tryHandler: tryHandler, catchHandler: catchHandler});
+  const [data, isLoading, setRequestObj] = useAxios({tryHandler: tryHandler, catchHandler: catchHandler, baseURL: "https://k8d201.p.ssafy.io/api/"});
 
   // 로그인 상태가 변경되면 액션을 달리 취함
   useEffect(() => {

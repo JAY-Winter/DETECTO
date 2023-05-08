@@ -4,24 +4,27 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useSetRecoilState } from "recoil";
 
-function useAxios({ tryHandler, catchHandler, finallyHandler }: useAxiosParmas) {
-  const [data, setData] = useState(null);
+function useAxios({ tryHandler, catchHandler, finallyHandler, baseURL }: useAxiosParmas) {
+  const [data, setData] = useState<object | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [requestObj, setRequestObj] = useState<RequestObj | null>(null);
   const setIsAuthenticated = useSetRecoilState(authState);
 
   const request = async (requestObj: RequestObj) => {
-    const {url, method, body} = requestObj;
+    const {url, method, body, headerObj} = requestObj;
     try {
       setIsLoading(true);
       // axios 객체 생성
       const response = await axios({
         url: url,
         method: method,
-        baseURL: 'https://k8d201.p.ssafy.io/api/',
+        baseURL: baseURL,
         data: body,
         timeout: 5000,
-        withCredentials: true
+        withCredentials: true,
+        headers: headerObj ?? {
+          "Content-Type": "application/json"
+        }
       })
 
       // 응답 데이터 설정
