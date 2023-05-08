@@ -33,13 +33,6 @@ function NavigationBar({setMode, isModal=false}: NavigationBarProps) {
   const userInfo = useRecoilValue(UserInfo);
   const [selectedItemOffsetTop, setSelectedItemOffsetTop] = useState(0);
 
-  // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
-  // const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-  //   const rect = e.currentTarget.getBoundingClientRect();  // 클릭된 아이템의 레이아웃 정보를 알아낸다
-  //   const itemTopPos = rect.top;  // 클릭된 아이템의 최상위 지점을 알아낸다
-  //   console.log("itemTopPos:", itemTopPos);
-  // }
-
   // 로그아웃 핸들러
   const handleClickLogout = () => {
     const isConfirmToLogout = confirm("로그아웃 하시겠습니까??");
@@ -68,10 +61,6 @@ function NavigationBar({setMode, isModal=false}: NavigationBarProps) {
       }
     })
   }, [location])
-
-  useEffect(() => {
-    console.log("selectedItemOffsetTop:", selectedItemOffsetTop);
-  }, [selectedItemOffsetTop])
 
   return (
     <StyledNav isModal={isModal}>
