@@ -2,10 +2,12 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { rgb } from 'd3-color'
 import useResize from '@/hooks/useResize';
+import { CoordinationItemData } from 'ChartTypes';
+import { useRecoilState } from 'recoil';
 
 const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 
-function ScatterChart({data}: {data: {reportItem: string, x: number, y: number}[]}) {
+function ScatterChart({data}: {data: CoordinationItemData[] | undefined}) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const mainDiv = useRef(null);
   const size = useResize(mainDiv);
@@ -180,6 +182,7 @@ function ScatterChart({data}: {data: {reportItem: string, x: number, y: number}[
 
       // Highlight the specie that is hovered
       const highlight = function (event: MouseEvent, d: any) {
+        
         const selected_reportitem = d.reportItem;
         d3.selectAll('.dot')
           .transition()

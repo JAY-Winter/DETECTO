@@ -22,10 +22,6 @@ function DashboardDatePicker() {
   // 날짜 지정 Recoil State
   const [date, setDate] = useRecoilState(DashboardDayAtom);
 
-  useEffect(() => {
-    console.log(date.startDay)
-  }, [date])
-
   // MUI 탭 onChange + 년도, 월로 바꿀때 값을 같이 바꿈
   const tabChange = (event: React.SyntheticEvent, newValue: number) => {
     switch(newValue) {

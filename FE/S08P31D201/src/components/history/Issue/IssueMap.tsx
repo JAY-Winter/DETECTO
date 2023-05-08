@@ -1,9 +1,233 @@
-import React from 'react'
+import { useEffect, useRef, useState } from 'react';
+import * as d3 from 'd3';
+import { rgb } from 'd3-color';
+import useResize from '@/hooks/useResize';
+import { CoordinationItemData } from 'ChartTypes';
 
-function IssueMap() {
+const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+
+function IssueMap({ data }: { data: {x: number, y: number} | undefined }) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const mainDiv = useRef(null);
+  const size = useResize(mainDiv);
+  const [coordinate, setCoordinate] = useState({x: -10, y: -10})
+
+  useEffect(() => {
+    if (data)
+    setCoordinate({x: data.x, y: data.y})
+  }, [])
+
+  useEffect(() => {
+    d3.select(svgRef.current).selectAll('*').remove();
+    if (Array.isArray(data) && data.length > 0) {
+      const svg = d3.select(svgRef.current);
+
+      const { width } = size;
+      const mapWidth = width - margin.right - margin.left;
+      const height = mapWidth * 0.65;
+
+      svg
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom);
+      const g = svg
+        .append('g')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+      // Add X axis
+      const x = d3.scaleLinear().domain([0, 100]).range([0, mapWidth]);
+
+      // Add Y axis
+      const y = d3.scaleLinear().domain([0, 85]).range([height, 0]);
+
+      // Create x-axis line
+      g.append('line')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', mapWidth)
+        .attr('y2', 0)
+        .attr('stroke', 'currentColor');
+
+      g.append('line')
+        .attr('x1', 0)
+        .attr('y1', height)
+        .attr('x2', mapWidth)
+        .attr('y2', height)
+        .attr('stroke', 'currentColor');
+
+      g.append('line')
+        .attr('x1', 0)
+        .attr('y1', height / 2)
+        .attr('x2', mapWidth)
+        .attr('y2', height / 2)
+        .attr('stroke', 'currentColor');
+
+      // Create y-axis line
+
+      g.append('line')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 0)
+        .attr('y2', height)
+        .attr('stroke', 'currentColor');
+
+      g.append('line')
+        .attr('x1', mapWidth)
+        .attr('y1', 0)
+        .attr('x2', mapWidth)
+        .attr('y2', height)
+        .attr('stroke', 'currentColor');
+
+      g.append('line')
+        .attr('x1', mapWidth / 2)
+        .attr('y1', 0)
+        .attr('x2', mapWidth / 2)
+        .attr('y2', height)
+        .attr('stroke', 'currentColor');
+
+      const cctv1: d3.Arc<any, d3.DefaultArcObject> = d3
+        .arc()
+        .innerRadius(0)
+        .outerRadius(30)
+        .startAngle(Math.PI)
+        .endAngle(Math.PI / 2);
+
+      const cctv2: d3.Arc<any, d3.DefaultArcObject> = d3
+        .arc()
+        .innerRadius(0)
+        .outerRadius(30)
+        .startAngle(Math.PI)
+        .endAngle((Math.PI * 3) / 2);
+
+      const cctv3: d3.Arc<any, d3.DefaultArcObject> = d3
+        .arc()
+        .innerRadius(0)
+        .outerRadius(30)
+        .startAngle(0)
+        .endAngle(Math.PI / 2);
+
+      const cctv4: d3.Arc<any, d3.DefaultArcObject> = d3
+        .arc()
+        .innerRadius(0)
+        .outerRadius(30)
+        .startAngle(Math.PI * 2)
+        .endAngle((Math.PI * 3) / 2);
+
+      // Create CCTV Circle
+      g.append('path')
+        .attr('d', cctv1 as any)
+        .style('fill', 'currentColor')
+        .attr('transform', `translate(0,0)`);
+      g.append('text')
+        .attr('x', 10)
+        .attr('y', 10)
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .style('fill', 'currentcolor')
+        .style('filter', 'invert(1)')
+        .text('3');
+
+      g.append('path')
+        .attr('d', cctv2 as any)
+        .style('fill', 'currentColor')
+        .attr('transform', `translate(${mapWidth}, 0)`);
+
+      g.append('text')
+        .attr('x', mapWidth - 10)
+        .attr('y', 10)
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .style('fill', 'currentcolor')
+        .style('filter', 'invert(1)')
+        .text('1');
+
+      g.append('path')
+        .attr('d', cctv3 as any)
+        .style('fill', 'currentColor')
+        .attr('transform', `translate(0, ${height})`);
+      g.append('text')
+        .attr('x', 10)
+        .attr('y', height - 10)
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .style('fill', 'currentcolor')
+        .style('filter', 'invert(1)')
+        .text('4');
+
+      g.append('path')
+        .attr('d', cctv4 as any)
+        .style('fill', 'currentColor')
+        .attr('transform', `translate(${mapWidth}, ${height})`);
+      g.append('text')
+        .attr('x', mapWidth - 10)
+        .attr('y', height - 10)
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .style('fill', 'currentcolor')
+        .style('filter', 'invert(1)')
+        .text('2');
+
+      // Add dots
+      const redDot = g
+        .append('g')
+        .selectAll('dot')
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('class', function (d) {
+          return 'dot ' + d.reportItem;
+        })
+        .attr('cx', function (d) {
+          return x(coordinate.x);
+        })
+        .attr('cy', function (d) {
+          return y(coordinate.y);
+        })
+        .attr('r', 10)
+        .style('fill', 'red');
+
+      function dotMove(event: any) {
+        const [mouseX, mouseY] = d3.pointer(event);
+        const xValue = x.invert(mouseX);
+        const yValue = y.invert(mouseY);
+        console.log(xValue, yValue);
+        redDot
+          .attr('cx', function (d) {
+            return x(xValue);
+          })
+          .attr('cy', function (d) {
+            return y(yValue);
+          });
+      }
+
+      function dotClick(event: any) {
+        const [mouseX, mouseY] = d3.pointer(event);
+        const xValue = x.invert(mouseX);
+        const yValue = y.invert(mouseY);
+        console.log(xValue, yValue)
+        setCoordinate({x: xValue, y: yValue})
+      }
+
+
+      const rect = g
+        .append('rect')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('fill', 'transparent');
+
+      if (coordinate.x === -10 && coordinate.y === -10) {
+        rect.on('pointermove', dotMove).on('click', dotClick);
+      }
+      else {
+        rect.on('pointermove', null).on('click', dotClick);
+      }
+    }
+  }, [size, data, coordinate]);
+
   return (
-    <div>IssueMap</div>
-  )
+    <div ref={mainDiv}>
+      <svg ref={svgRef}></svg>
+    </div>
+  );
 }
 
-export default IssueMap
+export default IssueMap;

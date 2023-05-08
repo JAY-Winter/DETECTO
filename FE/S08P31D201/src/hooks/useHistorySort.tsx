@@ -26,7 +26,7 @@ function useHistorySort(): [
     setData(prev => {
       const clonedPrev = Array.from(prev);
       clonedPrev.sort((a, b) => {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
+        return new Date(b.time).getTime() - new Date(a.time).getTime();
       });
       return clonedPrev;
     });
@@ -53,33 +53,33 @@ function useHistorySort(): [
         case 'Date':
           if (sortOrder === 'asc') {
             clonedPrev.sort((a, b) => {
-              return new Date(a.date).getTime() - new Date(b.date).getTime();
+              return new Date(a.time).getTime() - new Date(b.time).getTime();
             });
           } else {
             clonedPrev.sort((a, b) => {
-              return new Date(b.date).getTime() - new Date(a.date).getTime();
+              return new Date(b.time).getTime() - new Date(a.time).getTime();
             });
           }
           break;
         case 'Equipment':
           if (sortOrder === 'asc') {
             clonedPrev.sort((a, b) => {
-              return a.issue.length - b.issue.length;
+              return a.reportItems.length - b.reportItems.length;
             });
           } else {
             clonedPrev.sort((a, b) => {
-              return b.issue.length - a.issue.length;
+              return b.reportItems.length - a.reportItems.length;
             });
           }
           break;
         case 'Team':
           if (sortOrder === 'asc') {
             clonedPrev.sort((a, b) => {
-              return a.team - b.team;
+              return a.team.id - b.team.id;
             });
           } else {
             clonedPrev.sort((a, b) => {
-              return b.team - a.team;
+              return b.team.id - a.team.id;
             });
           }
           break;

@@ -3,23 +3,22 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 import { Button, Card } from '@mui/material';
-import { TteamMember } from '@/store/HistoryIssue';
+import { TeamType, ReportUserType } from 'ReportTypes';
 
-const nullMember: TteamMember = {
-  memberId: 0,
-  memberImg: '',
-  memberName: '미지정',
-  memberTeam: '팀 미지정',
+const nullMember: ReportUserType = {
+  id: 0,
+  userImage: '',
+  userName: '미지정',
 };
 
 function MemberCard({
   teamList,
   violate_member,
 }: {
-  teamList: TteamMember[];
-  violate_member?: TteamMember;
+  teamList: TeamType;
+  violate_member: ReportUserType | undefined;
 }) {
-  const [cardList, setCardList] = useState([nullMember, ...teamList]);
+  const [cardList, setCardList] = useState([nullMember, ...teamList.users]);
   const [memberNum, setMemberNum] = useState(0);
 
   const switchRightMemeber = () => {
@@ -55,11 +54,11 @@ function MemberCard({
       <ProfileCard>
         <img
           css={profileImageStyle}
-          src={cardList[memberNum].memberImg}
+          src={cardList[memberNum].userImage}
           alt=""
         />
-        <p>{cardList[memberNum].memberName} Pro</p>
-        <p>{cardList[memberNum].memberTeam}</p>
+        <p>{cardList[memberNum].userName} Pro</p>
+        <p>{teamList.teamName}팀</p>
         <ArrowButton className="leftArrow" onClick={switchRightMemeber}>
           <KeyboardArrowLeft />
         </ArrowButton>

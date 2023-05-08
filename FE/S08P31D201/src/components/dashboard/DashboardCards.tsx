@@ -1,14 +1,12 @@
 import styled from '@emotion/styled';
 import { Card } from '@mui/material';
+import { CountItemData } from 'ChartTypes';
 import React, { useEffect, useState } from 'react';
 
 function HistoryCards({
   eqData,
 }: {
-  eqData: {
-    reportItem: string;
-    count: number;
-  }[];
+  eqData: CountItemData[] | undefined
 }) {
   const [topEq, setTopEq] = useState<string>();
 

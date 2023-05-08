@@ -21,17 +21,29 @@ import { HistoryIssue } from '@/store/HistoryIssue';
 import TableHeader from './Issue/TableHeader';
 import { HistoryDayAtom, HistoryEqAtom } from '@/store/HistoryFilter';
 import useAxios from '@/hooks/useAxios';
+import axios, { AxiosResponse } from 'axios';
 
 function HistorySafetyIssue() {
   const [reportData, setReportData] = useRecoilState(HistoryIssue);
   const historyDate = useRecoilValue(HistoryDayAtom);
   const historyEq = useRecoilValue(HistoryEqAtom);
 
+  
+  const historyTryhandler = (response: AxiosResponse) => {
+    setReportData(response.data.data)
+  }
+  
+  const [data, isLoading, setRequestObj] = useAxios({tryHandler: historyTryhandler})
+  
   useEffect(() => {
     const startDate = historyDate.startDay.toISOString().slice(0, 10)
     const endDate = historyDate.endDay.toISOString().slice(0, 10)
     const eq = historyEq.toString()
-    console.log(`report?startdate=${startDate}&enddate=${endDate}&eq=${eq}`)
+    setRequestObj({
+      method: 'get',
+      url: `https://k8d201.p.ssafy.io/api/report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`,
+    })
+    console.log(reportData)
   }, [historyDate, historyEq])
 
   // 페이지네이션 state
@@ -75,7 +87,7 @@ function HistorySafetyIssue() {
               ? reportData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : reportData
             ).map(row => (
-              <Row key={row.date} row={row} />
+              <Row key={row.time} row={row} />
             ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
@@ -110,7 +122,7 @@ function HistorySafetyIssue() {
           <MobileSortButton />
         </MobileSortDiv>
         {reportData.slice(mobilePage * 5 - 5, mobilePage * 5).map(issue => {
-          return <IssueCard {...issue} key={issue.date} />;
+          return <IssueCard {...issue} key={issue.time} />;
         })}
         <Pagination
           count={Math.ceil(reportData.length / 5)}

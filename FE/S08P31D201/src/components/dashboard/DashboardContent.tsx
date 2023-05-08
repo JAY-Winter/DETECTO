@@ -10,13 +10,28 @@ import { tabletV } from '@/utils/Mixin';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { NewReportType, ReportType } from 'ReportTypes';
+import {
+  CoordinationItemData,
+  CountItemData,
+  CountTimeData,
+  CountTimeItemData,
+  CountTimeTeamData,
+} from 'ChartTypes';
+
+const dummyData: CoordinationItemData[] = [
+  {
+    reportItem: 'halmet',
+    x: -10,
+    y: -10,
+  },
+];
 
 function DashboardContent() {
-  const [data, setData] = useState<ReportType[]>();
-  const [eqdata, seteqData] = useState();
-  const [codata, setCoData] = useState();
-  const [ctidata, setCtiData] = useState<{ reportItem: any; value: any }[]>();
-  const [teamdata, setTeamData] = useState();
+  const [data, setData] = useState<CountTimeData[]>();
+  const [eqdata, seteqData] = useState<CountItemData[]>();
+  const [codata, setCoData] = useState<CoordinationItemData[]>();
+  const [ctidata, setCtiData] = useState<CountTimeItemData[]>();
+  const [teamdata, setTeamData] = useState<CountTimeTeamData[]>();
   const [teamIndex, setTeamIndex] = useState(0);
 
   // time => Date
@@ -27,6 +42,7 @@ function DashboardContent() {
         reportItems: d.reportItems,
         team: d.team,
         time: d3.timeParse('%Y-%m-%d')(d.time.slice(0, 9)) as Date,
+        cctvArea: d.cctvArea,
         user: d.user,
         x: d.x,
         y: d.y,
@@ -35,7 +51,7 @@ function DashboardContent() {
   }
 
   // 시간 별로 count
-  function countByTime(data: NewReportType[]) {
+  function countByTime(data: NewReportType[]): CountTimeData[] {
     const counts = d3.rollup(
       data,
       group => group.length,
@@ -49,7 +65,7 @@ function DashboardContent() {
   }
 
   // 안전 장구별로 count
-  function countByReportItems(data: NewReportType[]) {
+  function countByReportItems(data: NewReportType[]): CountItemData[] {
     const counts = d3.rollup(
       data.flatMap(d =>
         d.reportItems.map(reportItem => ({ ...d, reportItem }))
@@ -65,7 +81,9 @@ function DashboardContent() {
   }
 
   // 안전 장구별로 날짜 순 정리
-  function countByTimeByReportItems(data: NewReportType[]) {
+  function countByTimeByReportItems(
+    data: NewReportType[]
+  ): CountTimeItemData[] {
     // 장구 별로 그룹화
     const groupedData = d3.group(
       data.flatMap(d =>
@@ -80,12 +98,14 @@ function DashboardContent() {
       countTimeItemData.set(key, countByTime(values));
     });
 
-    return countTimeItemData;
+    return Array.from(countTimeItemData, ([key, value]) => {
+      return { reportItem: key, value };
+    });
   }
 
   // 팀별로 날짜 별 카운트
 
-  function countByTimeByTeams(data: NewReportType[]) {
+  function countByTimeByTeams(data: NewReportType[]): CountTimeTeamData[] {
     const groupData = d3.group(data, d => d.team.teamName);
 
     const countTimeTeamData = new Map();
@@ -94,7 +114,9 @@ function DashboardContent() {
       countTimeTeamData.set(key, countByTime(values));
     });
 
-    return countTimeTeamData;
+    return Array.from(countTimeTeamData, ([key, value]) => {
+      return { teamName: key, value };
+    });
   }
 
   useEffect(() => {
@@ -102,89 +124,89 @@ function DashboardContent() {
       method: 'GET',
       url: 'https://k8d201.p.ssafy.io/api/report?startDate=2023-04-01&endDate=2023-05-05&equipments=',
     }).then(res => {
-      const transformedData = processData(res.data.data);
-      console.log(transformedData)
-      // 시간대별로 데이터 그룹화
-      const dayData = countByTime(transformedData);
-      setData(dayData);
+      if (res.data.data.length !== 0) {
+        console.log(res.data.data);
+        const transformedData = processData(res.data.data);
+        console.log(transformedData);
+        // 시간대별로 데이터 그룹화
+        const dayData = countByTime(transformedData);
+        setData(dayData);
 
-      // 장구별로 횟수 그룹화
-      const eqData = countByReportItems(transformedData);
-      seteqData(eqData);
+        // 장구별로 횟수 그룹화
+        const eqData = countByReportItems(transformedData);
+        seteqData(eqData);
 
-      // 안전장구별로 위치
-      const coData = transformedData.flatMap(d =>
-        d.reportItems.map(reportItem => ({ reportItem, x: d.x, y: d.y }))
-      );
-      setCoData(coData);
+        // 안전장구별로 위치
+        const coData = transformedData.flatMap(d =>
+          d.reportItems.map(reportItem => ({ reportItem, x: d.x, y: d.y }))
+        );
+        setCoData(coData);
 
-      // 안전 장구별 날짜 데이터
-      const ctiData = Array.from(
-        countByTimeByReportItems(transformedData),
-        ([key, value]) => {
-          return { reportItem: key, value };
-        }
-      );
-      setCtiData(ctiData);
+        // 안전 장구별 날짜 데이터
+        const ctiData = countByTimeByReportItems(transformedData);
+        setCtiData(ctiData);
 
-      const teamData = Array.from(
-        countByTimeByTeams(transformedData),
-        ([key, value]) => {
-          return { teamName: key, value };
-        }
-      );
-      setTeamData(teamData);
+        const teamData = countByTimeByTeams(transformedData);
+        setTeamData(teamData);
+      }
     });
   }, []);
 
   return (
     <DashboardContentDiv>
-      <DashboardCards eqData={eqdata} />
-      <ChartCardDiv>
-        <TotalChartDiv>
-          <ZoomCard>
-            <h1>전체 기간 차트</h1>
-            <ZoomChart name="allDay" data={data} />
-          </ZoomCard>
-          <PieCard>
-            <h1>파이차트</h1>
-            <PieChart data={eqdata} />
-          </PieCard>
-        </TotalChartDiv>
-        <EQChartDiv>
-          {ctidata &&
-            ctidata.map((d, index) => (
-              <EQCard>
-                <h1>{d.reportItem}</h1>
-                <ZoomChart
-                  name={d.reportItem + 'def'}
-                  data={d.value}
-                  color={d3.schemeCategory10[index % 10]}
-                  key={d.reportItem + 'zoomChart'}
-                />
-              </EQCard>
-            ))}
-        </EQChartDiv>
-        <ScatterCard>
-          <h1>위치</h1>
-          <ScatterChart data={codata} />
-        </ScatterCard>
-        <TeamZoomCard>
-          <h1>팀 별 기간 차트</h1>
-          <div>
-            {teamdata &&
-              teamdata.map((d, index) => (
-                <Button
-                  onClick={() => setTeamIndex(index)}
-                  key={d.teamName + 'button'}
-                >
-                  {d.teamName}
-                </Button>
-              ))}
-          </div>
-          <ZoomChart name="team" data={teamdata && teamdata[teamIndex].value} />
-        </TeamZoomCard>
-      </ChartCardDiv>
+      {data && (
+        <>
+          <DashboardCards eqData={eqdata} />
+          <ChartCardDiv>
+            <TotalChartDiv>
+              <ZoomCard>
+                <h1>전체 기간 차트</h1>
+                <ZoomChart name="allDay" data={data} />
+              </ZoomCard>
+              <PieCard>
+                <h1>파이차트</h1>
+                <PieChart data={eqdata} />
+              </PieCard>
+            </TotalChartDiv>
+            <EQChartDiv>
+              {ctidata &&
+                ctidata.map((d, index) => (
+                  <EQCard>
+                    <h1>{d.reportItem}</h1>
+                    <ZoomChart
+                      name={d.reportItem + 'def'}
+                      data={d.value}
+                      color={d3.schemeCategory10[index % 10]}
+                      key={d.reportItem + 'zoomChart'}
+                    />
+                  </EQCard>
+                ))}
+            </EQChartDiv>
+            <ScatterCard>
+              <h1>위치</h1>
+              <ScatterChart data={codata} />
+            </ScatterCard>
+            <TeamZoomCard>
+              <h1>팀 별 기간 차트</h1>
+              <div>
+                {teamdata &&
+                  teamdata.map((d, index) => (
+                    <Button
+                      onClick={() => setTeamIndex(index)}
+                      key={d.teamName + 'button'}
+                    >
+                      {d.teamName}
+                    </Button>
+                  ))}
+              </div>
+              <ZoomChart
+                name="team"
+                data={teamdata && teamdata[teamIndex].value}
+              />
+            </TeamZoomCard>
+          </ChartCardDiv>
+        </>
+      )}
     </DashboardContentDiv>
   );
 }

@@ -22,8 +22,6 @@ function HistoryDatePicker() {
   // 날짜 지정 Recoil State
   const [date, setDate] = useRecoilState(HistoryDayAtom);
 
-  console.log(date)
-
   // MUI 탭 onChange
   const tabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);

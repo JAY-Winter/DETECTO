@@ -1,5 +1,3 @@
-// import { Dayjs } from 'dayjs';
-
 // 리포트 타입 선언
 declare module 'ReportTypes' {
   export type ReportType = {
@@ -7,6 +5,7 @@ declare module 'ReportTypes' {
     reportItems: string[];
     team: TeamType;
     time: string;
+    cctvArea: number;
     user: UserType;
     x: number;
     y: number;
@@ -16,6 +15,7 @@ declare module 'ReportTypes' {
     reportItems: string[];
     team: TeamType;
     time: Date;
+    cctvArea: number;
     user: UserType;
     x: number;
     y: number;
@@ -23,9 +23,12 @@ declare module 'ReportTypes' {
   export type TeamType = {
     id: number;
     teamName: string;
+    users: UserType[];
   };
-  export type UserType = {
+  export type ReportUserType = {
     id: number;
+    userImage: string;
+    userName: string;
   };
   export type DateFilterType = {
     [key: string]: Dayjs;

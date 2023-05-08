@@ -12,8 +12,6 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { EquipmentsAtom } from '@/store/EquipmentStore';
 
-// const eq = ['안전모', '장갑', '앞치마', '보안경', '방진마스크'];
-
 function HistoryEquipmentFilter() {
   const equipments = useRecoilValue(EquipmentsAtom);
 

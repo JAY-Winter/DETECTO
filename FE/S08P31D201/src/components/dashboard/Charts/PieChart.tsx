@@ -1,15 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import useResize from '@/hooks/useResize';
+import { CountItemData } from 'ChartTypes';
 
-function PieChart({
-  data,
-}: {
-  data: {
-    reportItem: string;
-    count: number;
-  }[];
-}) {
+function PieChart({ data }: { data: CountItemData[] | undefined }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const size = useResize(rootRef);
@@ -89,18 +83,18 @@ function PieChart({
         innerText
           .select('tspan.reportItem')
           .text(selected ? `${selected.data.reportItem}` : `전체`);
-
-        innerText
-          .select('tspan.value')
-          .text(
-            selected
-              ? `${selected.data.count}건`
-              : `${data.reduce(
-                  (accumulator, currentValue) =>
-                    accumulator + currentValue.count,
-                  0
-                )}건`
-          );
+        if (data)
+          innerText
+            .select('tspan.value')
+            .text(
+              selected
+                ? `${selected.data.count}건`
+                : `${data.reduce(
+                    (accumulator, currentValue) =>
+                      accumulator + currentValue.count,
+                    0
+                  )}건`
+            );
       }
 
       const innerText = svg

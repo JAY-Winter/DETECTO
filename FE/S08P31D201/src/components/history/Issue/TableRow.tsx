@@ -2,26 +2,24 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { Box, Collapse, TableCell, TableRow } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import { TtableData, TteamMember } from '@/store/HistoryIssue';
 import MemberCard from './MemberCard';
 import IssueImage from './IssueImage';
 import ScatterChart from '@components/dashboard/Charts/ScatterChart';
-
-const nullMember: TteamMember = {
-  memberId: 0,
-  memberImg: '',
-  memberName: '미지정',
-  memberTeam: '팀 미지정',
-};
+import { ReportType, TeamType, ReportUserType } from 'ReportTypes';
+import IssueMap from './IssueMap';
 
 const TableCollapseCard = ({
+  x,
+  y,
   violate_img,
   teamList,
   violate_member,
 }: {
+  x: number;
+  y: number;
   violate_img: string;
-  teamList: TteamMember[];
-  violate_member?: TteamMember;
+  teamList: TeamType;
+  violate_member?: ReportUserType;
 }) => {
   return (
     <Box
@@ -57,14 +55,19 @@ const TableCollapseCard = ({
           width: '50%',
         }}
       >
-        <h2>위치</h2>
-        <ScatterChart />
+        <h2>위치</h2> 
+        <IssueMap
+          data={{
+            x: x,
+            y: y,
+          }}
+        />
       </div>
     </Box>
   );
 };
 
-function Row(props: { row: TtableData }) {
+function Row(props: { row: ReportType }) {
   const { row } = props;
   const [open, setOpen] = useState(false);
 
@@ -75,10 +78,10 @@ function Row(props: { row: TtableData }) {
         onClick={() => setOpen(!open)}
       >
         <TableCell component="th" scope="row">
-          {row.date}
+          {row.time}
         </TableCell>
-        <TableCell align="left">{row.issue.toString()}</TableCell>
-        <TableCell align="left">{row.team}팀</TableCell>
+        <TableCell align="left">{row.reportItems.toString()}</TableCell>
+        <TableCell align="left">{row.team.teamName}팀</TableCell>
         <TableCell align="right" padding="checkbox">
           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
         </TableCell>
@@ -87,9 +90,11 @@ function Row(props: { row: TtableData }) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <TableCollapseCard
-              violate_img={row.violate_img}
-              violate_member={row.violate_member}
-              teamList={row.teamList}
+              x={row.x}
+              y={row.y}
+              violate_img={'나중에  S3로 바꿔야함'}
+              violate_member={row.user}
+              teamList={row.team}
             />
           </Collapse>
         </TableCell>
