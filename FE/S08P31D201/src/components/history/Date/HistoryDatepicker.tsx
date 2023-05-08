@@ -36,6 +36,7 @@ function HistoryDatepicker({datetypes}: {datetypes: TdatepickerType[]}) {
     maxDate={dayjs()}
     onChange={(newValue: Dayjs | null) => DateChangeHandler(newValue, type)}
     css={DatePickerCSS}
+    key={labeltext}
   />
   })
 

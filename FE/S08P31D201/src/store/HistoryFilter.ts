@@ -1,13 +1,8 @@
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { atom } from 'recoil';
+import { DateFilterType } from 'ReportTypes';
 
-type ThistoryDay = {
-  [key: string]: Dayjs;
-  startDay: Dayjs;
-  endDay: Dayjs;
-};
-
-const HistoryDayAtom = atom<ThistoryDay>({
+const HistoryDayAtom = atom<DateFilterType>({
   key: 'historyDay',
   default: { startDay: dayjs(), endDay: dayjs() },
 });

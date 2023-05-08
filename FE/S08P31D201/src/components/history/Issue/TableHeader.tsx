@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Button, TableCell, TableHead, TableRow } from '@mui/material';
 import {
@@ -7,9 +7,16 @@ import {
   UnfoldMore,
 } from '@mui/icons-material';
 import useHistorySort from '@/hooks/useHistorySort';
+import { useRecoilValue } from 'recoil';
+import { HistoryIssue } from '@/store/HistoryIssue';
 
 function TableHeader() {
   const [sortField, order, changeSortHandler] = useHistorySort();
+
+  useEffect(() => {
+    changeSortHandler('Date')
+  }, [])
+
   return (
     <TableHead>
       <TableRow>

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import useResize from '@/hooks/useResize';
+import { CountTimeData } from 'ChartTypes';
 
 // const width = 800;
 const margin = { top: 60, right: 30, bottom: 60, left: 60 };
@@ -12,12 +13,7 @@ function ZoomChart({
 }: {
   name: string;
   color?: string;
-  data:
-    | d3.DSVParsedArray<{
-        date: Date | null;
-        value: string | undefined;
-      }>
-    | undefined;
+  data: CountTimeData[] | undefined;
 }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -29,8 +25,6 @@ function ZoomChart({
     // svg를 지정
     const { width } = size;
     const height = Math.max(width * 0.5, 300);
-
-    console.log(width);
 
     const svg = d3
       .select(svgRef.current)
@@ -61,7 +55,10 @@ function ZoomChart({
     gradient
       .append('stop')
       .attr('offset', '0%')
-      .attr('style', `stop-color:${color ? color : '#5688c1'};stop-opacity:0.05`);
+      .attr(
+        'style',
+        `stop-color:${color ? color : '#5688c1'};stop-opacity:0.05`
+      );
 
     gradient
       .append('stop')

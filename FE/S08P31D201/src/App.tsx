@@ -15,6 +15,7 @@ import DashboardPage from './pages/DashboardPage';
 import MorePage from './pages/MorePage';
 import AuthProvider from '@components/common/AuthProvider';
 import MonitorPage from './pages/MonitorPage';
+import CCTVPage from './pages/CCTVPage';
 
 
 function App() {
@@ -49,7 +50,7 @@ function App() {
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/monitor" element={<MonitorPage />} />
+            <Route path="/monitor" element={<CCTVPage />} />
             <Route path="/more" element={<MorePage setMode={setMode} />} />
           </Routes>
         </RouterContainerDiv>

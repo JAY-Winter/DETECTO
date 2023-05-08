@@ -1,30 +1,31 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { rgb } from 'd3-color'
+import { rgb } from 'd3-color';
 import useResize from '@/hooks/useResize';
 import { CoordinationItemData } from 'ChartTypes';
-import { useRecoilState } from 'recoil';
 
 const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 
-function ScatterChart({data}: {data: CoordinationItemData[] | undefined}) {
+function IssueMap({ data }: { data: {x: number, y: number} | undefined }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const mainDiv = useRef(null);
   const size = useResize(mainDiv);
+  const [coordinate, setCoordinate] = useState({x: -10, y: -10})
+
+  useEffect(() => {
+    if (data)
+    setCoordinate({x: data.x, y: data.y})
+  }, [])
 
   useEffect(() => {
     d3.select(svgRef.current).selectAll('*').remove();
     if (Array.isArray(data) && data.length > 0) {
-    const svg = d3.select(svgRef.current);
+      const svg = d3.select(svgRef.current);
 
-    const { width } = size;
-    const mapWidth = width * 0.7;
-    const height = mapWidth * 0.65;
+      const { width } = size;
+      const mapWidth = width - margin.right - margin.left;
+      const height = mapWidth * 0.65;
 
-    // d3.csv(
-    //   'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/iris.csv'
-    // ).then(function (data) {
-    //   console.log(data)
       svg
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom);
@@ -34,13 +35,9 @@ function ScatterChart({data}: {data: CoordinationItemData[] | undefined}) {
 
       // Add X axis
       const x = d3.scaleLinear().domain([0, 100]).range([0, mapWidth]);
-      // g.append('g')
-      //   .attr('transform', `translate(0, ${height})`)
-      //   .call(d3.axisBottom(x));
 
       // Add Y axis
       const y = d3.scaleLinear().domain([0, 85]).range([height, 0]);
-      // g.append('g').call(d3.axisLeft(y));
 
       // Create x-axis line
       g.append('line')
@@ -169,50 +166,9 @@ function ScatterChart({data}: {data: CoordinationItemData[] | undefined}) {
         .style('filter', 'invert(1)')
         .text('2');
 
-      // Color scale: give me a specie name, I return a color
-      const uniqueDomains = Array.from(new Set(data.map(d => d.reportItem)));
-
-      const color = d3
-        .scaleOrdinal()
-        .domain(uniqueDomains)
-        .range(uniqueDomains.map((_, i) => {
-          const baseColor = rgb(d3.schemeCategory10[i % 10]);
-          return `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0.6)`;
-        }));
-
-      // Highlight the specie that is hovered
-      const highlight = function (event: MouseEvent, d: any) {
-        
-        const selected_reportitem = d.reportItem;
-        d3.selectAll('.dot')
-          .transition()
-          .duration(200)
-          .style('fill', '#77777772')
-          .attr('r', 3);
-
-        d3.selectAll('.' + selected_reportitem)
-          .transition()
-          .duration(200)
-          .style('fill', color(selected_reportitem) as string)
-          .attr('r', 7);
-      };
-
-      // Highlight the specie that is hovered
-      const doNotHighlight = function (
-        event: MouseEvent,
-        d: any
-      ) {
-        d3.selectAll('.dot')
-          .transition()
-          .duration(200)
-          .style('fill', function (d: any) {
-            return color(d.reportItem) as string;
-          })
-          .attr('r', 5);
-      };
-
       // Add dots
-      g.append('g')
+      const redDot = g
+        .append('g')
         .selectAll('dot')
         .data(data)
         .enter()
@@ -221,86 +177,57 @@ function ScatterChart({data}: {data: CoordinationItemData[] | undefined}) {
           return 'dot ' + d.reportItem;
         })
         .attr('cx', function (d) {
-          return x(d.x as number);
+          return x(coordinate.x);
         })
         .attr('cy', function (d) {
-          return y(d.y as number);
+          return y(coordinate.y);
         })
-        .attr('r', 5)
-        .style('fill', function (d) {
-          return color(d.reportItem as string) as string;
-        })
-        .on('mouseover', highlight)
-        .on('mouseleave', doNotHighlight);
-      // add marks
+        .attr('r', 10)
+        .style('fill', 'red');
 
-      const marksGroup = svg
-        .selectAll('g.marks')
-        .data([null])
-        .attr('transform', `translate(${width * 0.75}, 10)`);
-
-      const marksGroupEnter = marksGroup
-        .enter()
-        .append('g')
-        .classed('mapmarks', true)
-        .attr('transform', `translate(${width * 0.75}, 10)`);
-
-      marksGroup.exit().remove();
-
-      const marksUpdate = marksGroupEnter.merge(marksGroup as any);
-
-      const groupedData = d3.group(
-        data,
-        d => d.reportItem
-      );
-
-
-      const mark = marksUpdate
-        .selectAll('g.mapmarks')
-        .data(groupedData)
-        .join(
-          enter => {
-            const g = enter.append('g').classed('mapmarks', true);
-            g.append('rect')
-              .attr('rx', 3)
-              .attr('ry', 3)
-              .attr('width', 20)
-              .attr('height', 15);
-            g.append('text')
-              .attr('dx', 25)
-              .attr('alignment-baseline', 'hanging');
-            return g;
-          },
-          update => update,
-          exit => exit.remove()
-        )
-        .attr('transform', (d, i) => `translate(0, ${i * 30})`)
-        .style('fill', function (d) {
-          return color(d[0] as string) as string;
-        })
-        .on('mouseenter', (e, d) => {
-          highlight(e, d[1][0])
-        })
-        .on('mouseleave', (e, d: any) => {
-          doNotHighlight(e, d[1][0])
-        });;
-
-        marksUpdate
-          .selectAll('.mapmarks')
-          .select('text')
-          .text((d: any) => d[0])
-          .attr('fill', "currentColor");
-
-    // });
+      function dotMove(event: any) {
+        const [mouseX, mouseY] = d3.pointer(event);
+        const xValue = x.invert(mouseX);
+        const yValue = y.invert(mouseY);
+        console.log(xValue, yValue);
+        redDot
+          .attr('cx', function (d) {
+            return x(xValue);
+          })
+          .attr('cy', function (d) {
+            return y(yValue);
+          });
       }
-  }, [size, data]);
+
+      function dotClick(event: any) {
+        const [mouseX, mouseY] = d3.pointer(event);
+        const xValue = x.invert(mouseX);
+        const yValue = y.invert(mouseY);
+        console.log(xValue, yValue)
+        setCoordinate({x: xValue, y: yValue})
+      }
+
+
+      const rect = g
+        .append('rect')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('fill', 'transparent');
+
+      if (coordinate.x === -10 && coordinate.y === -10) {
+        rect.on('pointermove', dotMove).on('click', dotClick);
+      }
+      else {
+        rect.on('pointermove', null).on('click', dotClick);
+      }
+    }
+  }, [size, data, coordinate]);
 
   return (
     <div ref={mainDiv}>
-      <svg ref={svgRef}>
-      </svg>
+      <svg ref={svgRef}></svg>
     </div>
   );
 }
 
-export default ScatterChart;
+export default IssueMap;

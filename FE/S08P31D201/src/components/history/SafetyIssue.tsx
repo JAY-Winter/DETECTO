@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import styled from '@emotion/styled';
 import {
@@ -16,12 +16,35 @@ import IssueCard from './Issue/IssueCard';
 import TablePaginationActions from './Issue/TablePaginationActions';
 import Row from './Issue/TableRow';
 import MobileSortButton from './Issue/MobileSortButton';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { HistoryIssue } from '@/store/HistoryIssue';
 import TableHeader from './Issue/TableHeader';
+import { HistoryDayAtom, HistoryEqAtom } from '@/store/HistoryFilter';
+import useAxios from '@/hooks/useAxios';
+import axios, { AxiosResponse } from 'axios';
 
 function HistorySafetyIssue() {
-  const data = useRecoilValue(HistoryIssue);
+  const [reportData, setReportData] = useRecoilState(HistoryIssue);
+  const historyDate = useRecoilValue(HistoryDayAtom);
+  const historyEq = useRecoilValue(HistoryEqAtom);
+
+  
+  const historyTryhandler = (response: AxiosResponse) => {
+    setReportData(response.data.data)
+  }
+  
+  const [data, isLoading, setRequestObj] = useAxios({tryHandler: historyTryhandler})
+  
+  useEffect(() => {
+    const startDate = historyDate.startDay.toISOString().slice(0, 10)
+    const endDate = historyDate.endDay.toISOString().slice(0, 10)
+    const eq = historyEq.toString()
+    setRequestObj({
+      method: 'get',
+      url: `https://k8d201.p.ssafy.io/api/report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`,
+    })
+    console.log(reportData)
+  }, [historyDate, historyEq])
 
   // 페이지네이션 state
   const [page, setPage] = useState(0);
@@ -38,7 +61,7 @@ function HistorySafetyIssue() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - reportData.length) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -61,10 +84,10 @@ function HistorySafetyIssue() {
           <TableHeader />
           <TableBody>
             {(rowsPerPage > 0
-              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : data
+              ? reportData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : reportData
             ).map(row => (
-              <Row key={row.date} row={row} />
+              <Row key={row.time} row={row} />
             ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
@@ -77,7 +100,7 @@ function HistorySafetyIssue() {
               <TablePagination
                 rowsPerPageOptions={[5]}
                 colSpan={4}
-                count={data.length}
+                count={reportData.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{
@@ -98,11 +121,11 @@ function HistorySafetyIssue() {
         <MobileSortDiv>
           <MobileSortButton />
         </MobileSortDiv>
-        {data.slice(mobilePage * 5 - 5, mobilePage * 5).map(issue => {
-          return <IssueCard {...issue} key={issue.date} />;
+        {reportData.slice(mobilePage * 5 - 5, mobilePage * 5).map(issue => {
+          return <IssueCard {...issue} key={issue.time} />;
         })}
         <Pagination
-          count={Math.ceil(data.length / 5)}
+          count={Math.ceil(reportData.length / 5)}
           page={mobilePage}
           onChange={handleMobliePage}
         />
