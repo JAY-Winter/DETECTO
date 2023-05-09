@@ -130,7 +130,7 @@ async def websocket_endpoint(websocket: WebSocket, partition: int):
     await websocket.close()
 
 ################################################################
-@app.get("/max_offset")
+@app.get("/ws/max_offset")
 async def get_max_offset(partition: Optional[int] = None):
     loop = asyncio.get_running_loop()
 
