@@ -22,6 +22,8 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
+    public final StringPath fcmToken = createString("fcmToken");
+
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
     public final StringPath password = createString("password");

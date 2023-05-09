@@ -22,6 +22,8 @@ public class QReport extends EntityPathBase<Report> {
 
     public static final QReport report = new QReport("report");
 
+    public final NumberPath<Integer> cctvArea = createNumber("cctvArea", Integer.class);
+
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
     public final ListPath<ReportItem, QReportItem> reportItems = this.<ReportItem, QReportItem>createList("reportItems", ReportItem.class, QReportItem.class, PathInits.DIRECT2);

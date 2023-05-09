@@ -19,7 +19,17 @@ public class QEquipment extends EntityPathBase<Equipment> {
 
     public static final QEquipment equipment = new QEquipment("equipment");
 
+    public final NumberPath<Integer> able = createNumber("able", Integer.class);
+
+    public final StringPath description = createString("description");
+
     public final StringPath name = createString("name");
+
+    public final NumberPath<Integer> training = createNumber("training", Integer.class);
+
+    public final NumberPath<Integer> type = createNumber("type", Integer.class);
+
+    public final StringPath url = createString("url");
 
     public QEquipment(String variable) {
         super(Equipment.class, forVariable(variable));

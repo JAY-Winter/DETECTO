@@ -30,15 +30,20 @@ public class Report {
 
     private int y;
 
+    // cctv 구역 int로
+    @Column(name = "cctv_area")
+    private int cctvArea;
+
     @JsonIgnore
     @OneToMany(mappedBy = "report", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ReportItem> reportItems = new ArrayList<>();
 
     @Builder
-    public Report(int x, int y){
+    public Report(int x, int y, int cctvArea){
         this.x = x;
         this.y = y;
         this.time = LocalDateTime.now();
+        this.cctvArea = cctvArea;
     }
 
     public void setUser(User user){
