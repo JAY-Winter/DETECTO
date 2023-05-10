@@ -11,13 +11,13 @@ import IssueMap from './IssueMap';
 const TableCollapseCard = ({
   x,
   y,
-  violate_img,
+  reportid,
   teamList,
   violate_member,
 }: {
   x: number;
   y: number;
-  violate_img: string;
+  reportid: number;
   teamList: TeamType;
   violate_member?: ReportUserType;
 }) => {
@@ -41,7 +41,7 @@ const TableCollapseCard = ({
           alignItems: 'center',
         }}
       >
-        <IssueImage violate_img={violate_img} />
+        <IssueImage reportid={reportid.toString()} />
       </div>
       <div
         style={{
@@ -56,12 +56,14 @@ const TableCollapseCard = ({
         }}
       >
         <h2>위치</h2> 
-        <IssueMap
+        {/* <IssueMap
           data={{
+            id: reportid,
+
             x: x,
             y: y,
           }}
-        />
+        /> */}
       </div>
     </Box>
   );
@@ -92,7 +94,7 @@ function Row(props: { row: ReportType }) {
             <TableCollapseCard
               x={row.x}
               y={row.y}
-              violate_img={'나중에  S3로 바꿔야함'}
+              reportid={row.id}
               violate_member={row.user}
               teamList={row.team}
             />

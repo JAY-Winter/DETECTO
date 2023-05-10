@@ -10,7 +10,6 @@ import IssueBottomSheet from './IssueBottomSheet';
 import MemberCard from './MemberCard';
 import IssueImage from './IssueImage';
 import styled from '@emotion/styled';
-import ScatterChart from '@components/dashboard/Charts/ScatterChart';
 import { ReportType } from 'ReportTypes';
 import IssueMap from './IssueMap';
 
@@ -40,7 +39,7 @@ function IssueCard(issue: ReportType) {
         <CardMedia
           component="img"
           height="194"
-          image={'위반 이미지'}
+          image={`https://kr.object.ncloudstorage.com/detec/report/${issue.id}.jpg`}
           alt="위반 이미지"
         />
         <CardContent>
@@ -62,7 +61,7 @@ function IssueCard(issue: ReportType) {
               <p>{issue.reportItems.toString()}</p>
             </MobileCard>
             <MobileCard>
-              <IssueImage violate_img={'위반 이미지'} />
+              <IssueImage reportid={issue.id.toString()} />
             </MobileCard>
             <MobileCard>
               <MemberCard teamList={issue.team} violate_member={issue.user} />
@@ -71,6 +70,8 @@ function IssueCard(issue: ReportType) {
               <h2>위치</h2>
               <IssueMap
                 data={{
+                  id: issue.id,
+                  area: issue.cctvArea,
                   x: issue.x,
                   y: issue.y
                 }}

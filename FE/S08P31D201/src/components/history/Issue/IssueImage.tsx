@@ -1,19 +1,19 @@
 import React from 'react';
 import { css } from '@emotion/react';
 
-function IssueImage({violate_img}: {violate_img: string}) {
+function IssueImage({reportid}: {reportid: string}) {
   return (
     <div
       style={{
         width: '100%',
-        height: '300px',
+        height: 'fit-content',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
       }}
     >
       <h2>위반 사진</h2>
-      <img css={IssueImageStyle} src={violate_img} alt="" />
+      <img css={IssueImageStyle} src={`https://kr.object.ncloudstorage.com/detec/report/${reportid}.jpg`} alt="" />
     </div>
   );
 }
