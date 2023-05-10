@@ -1,23 +1,38 @@
 package com.example.detecto.data;
 
-//import com.example.demo.exception.ErrorEnum;
-import lombok.Builder;
+import com.example.detecto.exception.ErrorEnum;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Data
-public class RespData {
-    boolean flag;
-    Object data;
+@AllArgsConstructor
+public class RespData<T> {
+    String flag;
+    String msg;
+    int code = 0;
+    T data;
 
-    @Builder
-    public RespData(boolean flag, Object data) {
-        this.flag = flag;
-        this.data = data;
+    public RespData() {
+        this.flag = "success";
+        this.msg = "";
+        this.code = 0;
     }
 
-    public ResponseEntity<?> get() {
+    public RespData(ErrorEnum error) {
+        this.flag = error.flag;
+        this.msg = error.msg;
+        this.code = error.code;
+        this.data = null;
+    }
+
+    public ResponseEntity<?> builder(){
         return new ResponseEntity<RespData>(this, HttpStatus.OK);
     }
+
+    public ResponseEntity<?> exceptionBuilder(){
+        return new ResponseEntity<RespData>(this, HttpStatus.BAD_REQUEST);
+    }
 }
+

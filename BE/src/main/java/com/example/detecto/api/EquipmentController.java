@@ -1,9 +1,8 @@
 package com.example.detecto.api;
 
+import com.example.detecto.data.RespData;
 import com.example.detecto.dto.EquipmentEditDto;
 import com.example.detecto.dto.EquipmentResponseDto;
-import com.example.detecto.exception.DoesNotExistData;
-import com.example.detecto.exception.InvalidData;
 import com.example.detecto.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,28 +20,43 @@ public class EquipmentController {
 
     @GetMapping("/{name}")
     public ResponseEntity<?> checkName(@PathVariable String name){
-        if(equipmentService.checkName(name)) return new ResponseEntity<String>("available", HttpStatus.OK);
+        RespData<Void> response = new RespData<>();
 
-        return new ResponseEntity<String>("unavailable", HttpStatus.OK);
+        if(equipmentService.checkName(name)) {
+            response.setMsg("available");
+            return response.builder();
+        }
+        response.setMsg("unavailable");
+
+        return response.builder();
     }
     // 장비명 중복 체크
     @GetMapping
     public ResponseEntity<?> read(){
-        List<EquipmentResponseDto> data = equipmentService.read();
+        RespData<List> response = new RespData<>();
 
-        return new ResponseEntity<List<EquipmentResponseDto>>(data, HttpStatus.OK);
+        List<EquipmentResponseDto> data = equipmentService.read();
+        response.setData(data);
+
+        return response.builder();
     }
 
     @PutMapping
     public ResponseEntity<?> edit(@ModelAttribute EquipmentEditDto equipmentEditDto){
+        RespData<Void> response = new RespData<>();
+
         equipmentService.edit(equipmentEditDto);
-        return new ResponseEntity<String>("success", HttpStatus.OK);
+
+        return response.builder();
     }
 
     @DeleteMapping("/{name}")
     public ResponseEntity<?> delete(@PathVariable String name){
+        RespData<Void> response = new RespData<>();
+
         equipmentService.delete(name);
-        return new ResponseEntity<String>("success", HttpStatus.OK);
+
+        return response.builder();
     }
 
 }
