@@ -7,6 +7,12 @@ function useMWebsocket(url: string, offsetValue: number) {
   const [imgDate, setImgDate] = useState<string>();
 
   const connectWebScoket = async () => {
+    if (ws) {
+      ws.close();
+      await new Promise(resolve => {
+        if (ws) ws.onclose = resolve;
+      });
+    }
     const newws = new WebSocket(url);
 
     newws.onopen = () => {
@@ -33,6 +39,7 @@ function useMWebsocket(url: string, offsetValue: number) {
       setImgDate(timestampString);
       console.log(data)
       if (ws) {
+        console.log(ws)
         ws.send(JSON.stringify({ offset: offsetValue }));
         await new Promise(resolve => setTimeout(resolve, 10));
       }
@@ -52,10 +59,11 @@ function useMWebsocket(url: string, offsetValue: number) {
   }, []);
 
   useEffect(() => {
-    if (ws && ws.readyState === WebSocket.OPEN) {
+
+    if (ws) {
       ws.send(JSON.stringify({ offset: offsetValue }));
     }
-  }, [offsetValue, ws]);
+  }, [offsetValue]);
 
   return [imgUrl, imgDate];
 }
