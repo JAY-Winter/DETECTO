@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import { Switch, css } from '@mui/material';
+import { LinearProgress, Switch, css } from '@mui/material';
 import React from 'react';
 import { EquipmentType } from 'EquipmentTypes';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditDropdown from './EditDropdown';
 import { mobileV } from '@/utils/Mixin';
+import useAxios from '@/hooks/useAxios';
+import { RequestObj } from 'AxiosRequest';
 
 type EquipmentCardProps = {
   equipment: EquipmentType,
@@ -13,17 +15,55 @@ type EquipmentCardProps = {
   onToggleActiveness: (willToggleID: number) => void,
 }
 
-// const dummy = "주며, 우리의 소금이라 동산에는 천지는 못하다 것이다. 무엇을 밝은 이상 소담스러운 갑 풀이 싶이 아름다우냐? 바로 것은 얼마나 청춘이 우리 실로 능히 아름다우냐? 할지라도 뛰노는 노래하며 소금이라 능히 수 않는 위하여 이상이 봄바람이다. 얼마나 광야에서 가치를 이 위하여서 있다. 천하를 생생하며, 황금시대를 같이, 피어나기 가치를 품으며, 이성은 교향악이다. 두손을 가진 가장 역사를 끓는 튼튼하며, 장식하는 주며, 청춘을 황금시대다. 것은 얼마나 그들에게 그러므로 많이 얼음과 대한 산야에 불어 아름다우냐? 원질이 가치를 것은 인간은 무엇을 천지는 무엇을 소금이라 것이다. 것이다.보라, 대고, 무엇을 무엇이 유소년에게서 듣는다.";
-
+type progressDataType = {
+  data: number
+}
 
 function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCardProps) {
   const [isShowDropdown, setIsShowDropdown] = useState(false);
   const editRef = useRef<HTMLDivElement>(null);
+  const [data, isCheckLoading, setCheckRequestObj] = useAxios({baseURL: "https://detec.store:5000/"});
+  const [progress, setProgress] = useState(0);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+
   const toggleEditDropdown = () => {
     setIsShowDropdown(!isShowDropdown);
   }
 
+  const getProgress = () => {
+    const requestObj: RequestObj = {
+      url: '/check',
+      method: 'get'
+    }
+    if (isCheckLoading === false) {
+      setCheckRequestObj(requestObj);
+    }
+  }
+
   useEffect(() => {
+    if (isCheckLoading === false) {
+      if (data !== null) {
+        const progressData = data as progressDataType;
+        console.log("EquipmentCard의 data:", progressData.data);
+        if (progressData.data === -1) {
+          setProgress(100);
+          if (intervalId !== null) {
+            clearInterval(intervalId);
+          }
+        } else {
+          setProgress(progressData.data * 10);
+        }
+      }
+    }
+  }, [data, isCheckLoading])
+
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 setInterval 시작
+    const id = setInterval(() => {
+      getProgress();
+    }, 1000);
+    setIntervalId(id);
+
     const handleClickOutside = (e: MouseEvent) => {
       if (editRef.current && !editRef.current.contains(e.target as Node)) {
         setIsShowDropdown(false);
@@ -31,11 +71,16 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
     }
     document.addEventListener('mousedown', handleClickOutside);
 
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+      }
+    }
   }, [])
 
   return (
-    <EqCardDiv ischecked={equipment.isActive.toString()}>
+    <EqCardDiv ischecked={equipment.isActive}>
       <div css={headerContainer}>
         <div css={titleContainer}>
           <h2>{equipment.name}</h2>
@@ -56,9 +101,12 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
       </div>
       <div css={footerContainer}>
         <ProgressBarDiv>
-          <ProgressBarSpan />
+          <LinearProgress variant="determinate" value={progress} />
         </ProgressBarDiv>
-        <ProgressContextDiv>학습 진행률: 60%</ProgressContextDiv>
+        { progress < 100 ? 
+          <ProgressContextDiv>학습 진행률: {progress}%</ProgressContextDiv> :
+          <ProgressContextDiv>학습 완료</ProgressContextDiv>
+        }
       </div>
     </EqCardDiv>
   );
@@ -66,13 +114,14 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
 
 export default EquipmentCard;
 
-const EqCardDiv = styled.div<{ ischecked: string }>`
+const EqCardDiv = styled.div<{ ischecked: boolean }>`
+  position: relative;
   width: 22rem;
   max-width: 100%;
   padding: 1rem;
   transition: 0.2s all ease;
   background-color: ${props => props.theme.palette.neutral.section};
-  -webkit-filter: grayscale(${props => (props.ischecked === "true" ? 0 : 0.8)});
+  opacity: ${props => props.ischecked === false ? 0.5 : 1};
   box-shadow: rgba(0, 0, 0, 0.125) 0px 4px 16px 0px;
   ${mobileV} {
     width: 100%;
@@ -139,13 +188,6 @@ const ProgressBarDiv = styled.div`
   width: 100%;
   height: 5px;
   background-color: ${props => props.theme.palette.neutral.card};
-  border-radius: 20px;
-`;
-
-const ProgressBarSpan = styled.div`
-  width: 60%;
-  height: 5px;
-  background-color: ${props => props.theme.palette.primary.main};
   border-radius: 20px;
 `;
 

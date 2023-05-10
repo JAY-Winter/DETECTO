@@ -6,5 +6,9 @@ import com.example.detecto.entity.User;
 import java.util.Optional;
 
 public interface UserService{
-    Optional<User> login(UserDto userDto);
+    User login(UserDto userDto);
+
+    void saveFcmToken(User user);
+
+    void deleteFcmToken(UserDto userDto);
 }

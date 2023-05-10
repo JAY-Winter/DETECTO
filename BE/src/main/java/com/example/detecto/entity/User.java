@@ -23,6 +23,9 @@ public class User {
     @Column(name = "user_image")
     private String userImage;
 
+    @Column(name = "fcm_token")
+    private String fcmToken;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_team")
@@ -33,11 +36,12 @@ public class User {
     private List<Report> reports = new ArrayList<>();
 
     @Builder
-    public User(int id, String password, String userName, String userImage){
+    public User(int id, String password, String userName, String userImage, String fcmToken){
         this.id = id;
         this.password = password;
         this.userName = userName;
         this.userImage = userImage;
+        this.fcmToken = fcmToken;
     }
 
     public void setTeam(Team team){
@@ -47,6 +51,10 @@ public class User {
 
         this.team = team;
         team.getUsers().add(this);
+    }
+
+    public void setFcmToken(String fcmToken){
+        this.fcmToken = fcmToken;
     }
 
 }

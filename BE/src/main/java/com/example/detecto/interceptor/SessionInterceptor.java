@@ -34,7 +34,7 @@
 //
 //    private boolean extracted(HttpServletResponse response) throws IOException {
 //        // 쿠키 삭제
-//        Cookie sessionCookie = new Cookie("JSESSIONID", "");
+//        Cookie sessionCookie = new Cookie("SESSIONID", "");
 //        sessionCookie.setMaxAge(0);
 //        sessionCookie.setHttpOnly(true);
 //        sessionCookie.setPath("/");

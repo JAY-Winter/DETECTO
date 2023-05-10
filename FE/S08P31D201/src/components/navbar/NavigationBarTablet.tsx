@@ -18,6 +18,7 @@ import LeftModal from '@components/common/LeftModal';
 import NavigationBar from './NavigationBar';
 import { useSetRecoilState } from 'recoil';
 import authState from '@/store/authState';
+import useSignOut from '@/hooks/useSignOut';
 
 
 type NavigationBarTabletProps = {
@@ -30,6 +31,7 @@ function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
   const [currentPathName, setCurrentPathName] = useState("");
   const [isShowLeftModal, setIsShowLeftModal] = useState(false);
   const setIsAuthenticated = useSetRecoilState(authState);
+  const setIsFire = useSignOut();
 
   const handleClickMenu = () => {
     // portal로 네비게이션 바 띄우기
@@ -44,7 +46,7 @@ function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
   const handleClickLogout = () => {
     const isConfirmToLogout = confirm("로그아웃 하시겠습니까??");
     if (isConfirmToLogout) {
-      setIsAuthenticated(false);
+      setIsFire(true);
     }
   }
 

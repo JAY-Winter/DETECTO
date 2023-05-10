@@ -19,6 +19,7 @@ import authState from '@/store/authState';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { UserInfo } from '@/store/userInfoStroe';
 import DefaultProfile from '@/assets/img/default-profile.svg'
+import useSignOut from '@/hooks/useSignOut';
 
 type NavigationBarProps = {
   setMode: React.Dispatch<React.SetStateAction<'dark' | 'light'>>,
@@ -31,18 +32,14 @@ function NavigationBar({setMode, isModal=false}: NavigationBarProps) {
   const [currentPathName, setCurrentPathName] = useState("");
   const setIsAuthenticated = useSetRecoilState(authState);
   const userInfo = useRecoilValue(UserInfo);
-
-  // 네비게이션 아이템 클릭했을 때의 핸들러 미리 정의
-  // const clickItemHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-  //   const rect = e.currentTarget.getBoundingClientRect();  // 클릭된 아이템의 레이아웃 정보를 알아낸다
-  //   const itemTopPos = rect.top;  // 클릭된 아이템의 최상위 지점을 알아낸다
-  // }
+  const [selectedItemOffsetTop, setSelectedItemOffsetTop] = useState(0);
+  const setIsFire = useSignOut();
 
   // 로그아웃 핸들러
   const handleClickLogout = () => {
     const isConfirmToLogout = confirm("로그아웃 하시겠습니까??");
     if (isConfirmToLogout) {
-      setIsAuthenticated(false);
+      setIsFire(true);
     }
   }
 
@@ -86,10 +83,11 @@ function NavigationBar({setMode, isModal=false}: NavigationBarProps) {
       <div css={bodyContainer}>
         {/* 네비게이션 아이템들 */}
         <ul css={listContainer}>
-          <ListItem renderMode='desktop' icon={<SpaceDashboardOutlinedIcon/>} label={"히스토리"} pathName="/history" currentPathName={currentPathName} />
-          <ListItem renderMode='desktop' icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} />
-          <ListItem renderMode='desktop' icon={<ArticleOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} />
-          <ListItem renderMode='desktop' icon={<VideocamOutlinedIcon/>} label={"모니터링"} pathName="/monitor" currentPathName={currentPathName} />
+          <StyledIndicatorDiv selectedItemOffsetTop={selectedItemOffsetTop}/>
+          <ListItem renderMode='desktop' icon={<SpaceDashboardOutlinedIcon/>} label={"히스토리"} pathName="/history" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
+          <ListItem renderMode='desktop' icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
+          <ListItem renderMode='desktop' icon={<ArticleOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
+          <ListItem renderMode='desktop' icon={<VideocamOutlinedIcon/>} label={"모니터링"} pathName="/monitor" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
         </ul>
         
         <div css={footerContainer}>
@@ -161,13 +159,16 @@ const profileImageStyle = css`
   box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.15);
 `
 
-// const StyledIndicatorDibv = styled.div`
-//   position: absolute;
-//   width: 7px;
-//   height: 50px;
-//   border-radius: 0px 30px 30px 0px;
-//   background-color: ${props => props.theme.palette.primary.main};
-// `
+const StyledIndicatorDiv = styled.div<{selectedItemOffsetTop: number}>`
+  position: absolute;
+  transition: 0.3s;
+  top: ${props => props.selectedItemOffsetTop-8 + "px"};
+  left: -20px;
+  width: 7px;
+  height: 45px;
+  border-radius: 0px 10px 10px 0px;
+  background-color: ${props => props.theme.palette.primary.main};
+`
 
 const bodyContainer = css`
   width: 100%;
@@ -178,6 +179,7 @@ const bodyContainer = css`
 `
 
 const listContainer = css`
+  position: relative;
   padding-left: 20px;
   list-style: none;
   margin-top: 50px;
