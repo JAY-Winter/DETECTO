@@ -50,7 +50,7 @@ function App() {
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/manage" element={<EquipmentManagePage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/monitor" element={<CCTVPage />} />
+            <Route path="/monitor" element={<MonitorPage />} />
             <Route path="/more" element={<MorePage setMode={setMode} />} />
           </Routes>
         </RouterContainerDiv>

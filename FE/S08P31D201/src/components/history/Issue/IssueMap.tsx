@@ -3,23 +3,25 @@ import * as d3 from 'd3';
 import { rgb } from 'd3-color';
 import useResize from '@/hooks/useResize';
 import { CoordinationItemData } from 'ChartTypes';
+import { Button } from '@mui/material';
+import axios from 'axios';
 
 const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 
-function IssueMap({ data }: { data: {x: number, y: number} | undefined }) {
+function IssueMap({ data }: { data: {id: number, area: number, x: number; y: number } | undefined }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const mainDiv = useRef(null);
   const size = useResize(mainDiv);
-  const [coordinate, setCoordinate] = useState({x: -10, y: -10})
+  const [coordinate, setCoordinate] = useState({ x: -10, y: -10 });
+
 
   useEffect(() => {
-    if (data)
-    setCoordinate({x: data.x, y: data.y})
-  }, [])
+    if (data) setCoordinate({ x: data.x, y: data.y });
+  }, []);
 
   useEffect(() => {
     d3.select(svgRef.current).selectAll('*').remove();
-    if (Array.isArray(data) && data.length > 0) {
+    if (data) {
       const svg = d3.select(svgRef.current);
 
       const { width } = size;
@@ -32,6 +34,20 @@ function IssueMap({ data }: { data: {x: number, y: number} | undefined }) {
       const g = svg
         .append('g')
         .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+      const defs = svg.append('defs');
+
+      // g바깥으로 나가는 요소들은 안보이게 처리
+      defs
+        .append('clipPath')
+        .attr('id', `clip`)
+        .append('rect')
+        .attr('x', margin.left)
+        .attr('y', 0)
+        .attr('width', width - margin.right - margin.left)
+        .attr('height', height + margin.top);
+
+      svg.attr('clip-path', 'url(#clip)');
 
       // Add X axis
       const x = d3.scaleLinear().domain([0, 100]).range([0, mapWidth]);
@@ -169,27 +185,26 @@ function IssueMap({ data }: { data: {x: number, y: number} | undefined }) {
       // Add dots
       const redDot = g
         .append('g')
-        .selectAll('dot')
-        .data(data)
-        .enter()
+        // .selectAll('dot')
+        // .data(data)
+        // .enter()
         .append('circle')
-        .attr('class', function (d) {
-          return 'dot ' + d.reportItem;
-        })
+        // .attr('class', function (d) {
+        //   return 'dot ' + d.reportItem;
+        // })
         .attr('cx', function (d) {
-          return x(coordinate.x);
+          return x(coordinate.x < 0 ? -10 : coordinate.x);
         })
         .attr('cy', function (d) {
-          return y(coordinate.y);
+          return y(coordinate.y < 0 ? -10 : coordinate.y);
         })
-        .attr('r', 10)
+        .attr('r', 7)
         .style('fill', 'red');
 
       function dotMove(event: any) {
         const [mouseX, mouseY] = d3.pointer(event);
         const xValue = x.invert(mouseX);
         const yValue = y.invert(mouseY);
-        console.log(xValue, yValue);
         redDot
           .attr('cx', function (d) {
             return x(xValue);
@@ -203,29 +218,37 @@ function IssueMap({ data }: { data: {x: number, y: number} | undefined }) {
         const [mouseX, mouseY] = d3.pointer(event);
         const xValue = x.invert(mouseX);
         const yValue = y.invert(mouseY);
-        console.log(xValue, yValue)
-        setCoordinate({x: xValue, y: yValue})
+        setCoordinate({ x: xValue, y: yValue });
       }
-
 
       const rect = g
         .append('rect')
         .attr('width', width)
-        .attr('height', height)
-        .attr('fill', 'transparent');
+        .attr('height', height + margin.top)
+        .attr('fill', 'transparent')
+        .attr('clip-path', 'url(#clip)');
 
       if (coordinate.x === -10 && coordinate.y === -10) {
         rect.on('pointermove', dotMove).on('click', dotClick);
-      }
-      else {
+      } else {
         rect.on('pointermove', null).on('click', dotClick);
       }
     }
   }, [size, data, coordinate]);
 
+  console.log({id: -1, x: Math.ceil(coordinate.x), y: Math.ceil(coordinate.y)})
+  const coordinateHandler = () => {
+    axios({
+      method: 'post',
+      url: 'https://k8d201.p.ssafy.io/api/report/coord',
+      data: {id: -1, x: Math.ceil(coordinate.x), y: Math.ceil(coordinate.y)}
+    })
+  }
+
   return (
     <div ref={mainDiv}>
       <svg ref={svgRef}></svg>
+      <Button variant='contained' sx={{width: '100%'}} onClick={coordinateHandler}>위치 수정</Button>
     </div>
   );
 }

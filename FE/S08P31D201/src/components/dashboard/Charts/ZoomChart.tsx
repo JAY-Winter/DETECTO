@@ -41,7 +41,7 @@ function ZoomChart({
       .attr('x', 0)
       .attr('y', 0)
       .attr('width', width - margin.right - margin.left)
-      .attr('height', height);
+      .attr('height', height - margin.top - margin.bottom);
 
     // fill graident
     const gradient = defs
