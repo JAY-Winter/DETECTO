@@ -6,9 +6,11 @@ import com.example.detecto.dto.ReportSearchResponseDto;
 import com.example.detecto.dto.ReportSearchResponseTeamDto;
 import com.example.detecto.dto.ReportSearchResponseUserDto;
 import com.example.detecto.entity.Report;
+import com.example.detecto.exception.DatabaseFetchException;
 import com.example.detecto.repository.ReportRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,16 +36,16 @@ public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
 
     @Override
-    public RespData search(ReportSearchDto reportSearchDto) {
+    public List<ReportSearchResponseDto> search(ReportSearchDto reportSearchDto) {
 
         LocalDateTime startDateTime = null;
         LocalDateTime endDateTime = null;
 
-        if(reportSearchDto.getStartDate() != null){
+        if (reportSearchDto.getStartDate() != null) {
             LocalDate receivedDate = reportSearchDto.getStartDate();
             startDateTime = receivedDate.atTime(LocalTime.of(00, 00)); // 날짜에 원하는 시간을 추가 (예: 00시 00분)
         }
-        if(reportSearchDto.getEndDate() != null){
+        if (reportSearchDto.getEndDate() != null) {
             LocalDate receivedDate = reportSearchDto.getEndDate();
             endDateTime = receivedDate.atTime(LocalTime.of(23, 59)); // 날짜에 원하는 시간을 추가 (예: 23시 59분)
         }
@@ -58,7 +60,9 @@ public class ReportServiceImpl implements ReportService {
             whereClause.and(equipment.name.in(reportSearchDto.getEquipments()));
         }
 
-        List<Report> reports = queryFactory
+        List<Report> reports;
+        try {
+            reports = queryFactory
                 .selectFrom(report)
                 .leftJoin(report.user, user).fetchJoin()
                 .leftJoin(user.team, team).fetchJoin()
@@ -67,28 +71,32 @@ public class ReportServiceImpl implements ReportService {
                 .where(whereClause)
                 .distinct()
                 .fetch();
+        } catch (PersistenceException e) {
+            // JPA 관련 예외 처리
+            log.error("Error while fetching reports: ", e);
+            throw new DatabaseFetchException("reports fetch 중 에러가 발생하였습니다.");
+        } catch (Exception e) {
+            // 기타 예외 처리
+            log.error("Unexpected error while fetching reports: ", e);
+            throw new DatabaseFetchException("reports fetch 중 예기치 못한 에러가 발생하였습니다.");
+        }
 
-        for(Report report1 : reports){
+        for (Report report1 : reports) {
             System.out.println(report1);
         }
 
-        List<ReportSearchResponseDto> data = reports.stream().map(rd -> {
-            ReportSearchResponseUserDto rs_user = new ReportSearchResponseUserDto(rd.getUser());
-            ReportSearchResponseTeamDto rs_team = new ReportSearchResponseTeamDto(rd.getUser().getTeam());
+        return reports.stream()
+                .map(rd -> {
+                    ReportSearchResponseUserDto rs_user = new ReportSearchResponseUserDto(rd.getUser());
+                    ReportSearchResponseTeamDto rs_team = new ReportSearchResponseTeamDto(rd.getUser().getTeam());
 
-            List<String> equipmentNames = rd.getReportItems().stream()
-                    .map(item -> item.getEquipment().getName())
-                    .collect(Collectors.toList());
+                    List<String> equipmentNames = rd.getReportItems().stream()
+                            .map(item -> item.getEquipment().getName())
+                            .collect(Collectors.toList());
 
-            return new ReportSearchResponseDto(rd.getId(), rd.getTime(), rd.getX(), rd.getY(),
-                    rs_user, rs_team, equipmentNames);
-        }).collect(Collectors.toList());
-
-        RespData result = RespData.builder()
-                .flag(true)
-                .data(data)
-                .build();
-
-        return result;
+                    return new ReportSearchResponseDto(rd.getId(), rd.getTime(), rd.getX(), rd.getY(),
+                            rs_user, rs_team, equipmentNames);
+                })
+                .collect(Collectors.toList());
     }
 }
