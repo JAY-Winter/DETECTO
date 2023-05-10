@@ -1,4 +1,3 @@
-import useMWebsocket from '@/hooks/useMWebsocket';
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -8,7 +7,7 @@ function MonitorPage() {
   const ws = useRef<WebSocket>();
 
   // const [img1, date1] = useMWebsocket(`ws://k8d201.p.ssafy.io:7005/ws?cctvnumber=0&partition=129`, currentOffset)
-  async function connectWebSocket() {
+  async function connectWebSocket(offset: number) {
     if (ws.current) {
       ws.current.close();
       await new Promise(resolve => {
@@ -27,7 +26,7 @@ function MonitorPage() {
       console.log(data);
 
       setImg('data:image/jpeg;base64,' + data['frame']);
-      setCurrentOffset(data.offset)
+      setCurrentOffset(data.offset);
 
       const timestamp = data.timestamp;
       var timestampDate = new Date(timestamp);
@@ -36,16 +35,23 @@ function MonitorPage() {
       var seconds = timestampDate.getSeconds();
       var timestampString = hours + ':' + minutes + ':' + seconds;
 
-      // sliderValue.innerText = timestampString;
-
-      // slider.value = data.offset;
-
-      websocket.send(JSON.stringify({ offset: currentOffset }));
-      await new Promise(resolve => setTimeout(resolve, 10));
+      setTimeout(() => {
+        websocket.send(JSON.stringify({ offset: currentOffset }));
+      }, 10);
+      // await new Promise(resolve => setTimeout(resolve, 100000));
     };
 
     websocket.onclose = () => {
       console.log('close됨');
+    };
+
+    websocket.onopen = () => {
+      console.log('WebSocket connection established.');
+      // websocket.send(JSON.stringify({ offset: offset }));
+    };
+
+    websocket.onerror = event => {
+      console.error('WebSocket error observed:', event);
     };
 
     ws.current = websocket;
@@ -59,7 +65,7 @@ function MonitorPage() {
       console.log(res.data);
       setCurrentOffset(res.data);
     });
-    connectWebSocket();
+    connectWebSocket(currentOffset);
     return () => {
       if (ws.current && ws.current.OPEN) {
         ws.current.close();
@@ -69,21 +75,28 @@ function MonitorPage() {
 
   const buttonH = async (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(ws.current);
+    const newOffset = Number(e.currentTarget.value);
+    setCurrentOffset(newOffset);
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      connectWebSocket()
-      ws.current.send(JSON.stringify({ offset: e.currentTarget.value }));
-      
+      console.log(currentOffset);
+      ws.current.send(JSON.stringify({ offset: newOffset }));
     } else {
-      console.error("웹소켓이 열려있지 않습니다.");
+      console.error('웹소켓이 열려있지 않습니다.');
     }
   };
-  
 
   return (
     <div>
       MonitorPage
       <img src={img} alt="" />
-      <input type="range" onChange={buttonH} min={0} max={100} step={1} value={currentOffset} />
+      <input
+        type="range"
+        onChange={buttonH}
+        min={0}
+        max={100}
+        step={1}
+        value={currentOffset}
+      />
     </div>
   );
 }
