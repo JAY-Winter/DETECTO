@@ -85,16 +85,20 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
         except ConnectionClosedError:
             print('Connection closed')
             break
+        except json.JSONDecodeError as e:
+            print(f"Invalid JSON string: {e}")
+            break
 
 ################################################################
-def get_total_offset(partition: Optional[int] = None, return_dict: dict = None):
+def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
     consumer = KafkaConsumer(
         bootstrap_servers=['k8d201.p.ssafy.io:9092'],
         auto_offset_reset='earliest',
         enable_auto_commit=False,
         value_deserializer=lambda x: json.loads(x.decode('utf-8')),
     )
-    topic = 'cctvs'
+    year = 23
+    topic = f'cctv.{cctvnumber}.{year}'
     partition_list = [TopicPartition(topic, partition)]
     
     end_offsets: dict = consumer.end_offsets([partition_list[0]])
@@ -103,8 +107,8 @@ def get_total_offset(partition: Optional[int] = None, return_dict: dict = None):
         return val
     
 ################################################################
-@app.websocket("/ws/{partition}")
-async def websocket_endpoint(websocket: WebSocket, partition: int):
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: int):
     await websocket.accept()
 
     manager = Manager()
@@ -119,9 +123,10 @@ async def websocket_endpoint(websocket: WebSocket, partition: int):
         auto_offset_reset='earliest',
         enable_auto_commit=False,
         value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-        group_id=None
+        group_id='cctv_consumer'
     )
-    topic = 'cctvs'
+    year = 23
+    topic = f'cctv.{cctvnumber}.{year}'
     try:
         await consume_message(websocket, consumer, topic, partition, total_offsets)
     except Exception as e:
@@ -130,31 +135,19 @@ async def websocket_endpoint(websocket: WebSocket, partition: int):
     await websocket.close()
 
 ################################################################
-@app.get("/ws/max_offset/{partition}")
-async def get_max_offset(partition: Optional[int] = None):
-    loop = asyncio.get_running_loop()
-
-    def run_in_executor(partition):
-        consumer = KafkaConsumer(
-            bootstrap_servers=['k8d201.p.ssafy.io:9092'],
-            value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-            group_id=None  # group_id를 None으로 설정합니다.
-        )
-
-        topic = 'cctvs'
-        partitions = consumer.partitions_for_topic(topic)
-        partition_list = [TopicPartition(topic, p) for p in sorted(list(partitions))]
-
-        if partition is not None and partition not in partitions:
-            return {"error": f"Partition {partition} does not exist for topic {topic}"}
-
-        partition_offsets = {}
-        for p in partition_list:
-            if partition is None or p.partition == partition:
-                partition_end_offset = consumer.end_offsets([p])[p]
-                partition_offsets[p.partition] = partition_end_offset
-
-        return {"offsets": partition_offsets}
-
-    result = await loop.run_in_executor(None, run_in_executor, partition)
-    return result
+@app.get("/ws/max_offset")
+async def get_max_offset(cctvnumber: int, partition: int):
+    consumer = KafkaConsumer(
+        bootstrap_servers=['k8d201.p.ssafy.io:9092'],
+        auto_offset_reset='earliest',
+        enable_auto_commit=False,
+        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+        group_id='get_max_offset'  # group_id를 None으로 설정합니다.
+    )
+    year = 23
+    topic = f'cctv.{cctvnumber}.{year}'
+    tp = TopicPartition(topic, partition)
+    consumer.assign([tp])
+    consumer.seek_to_end(tp)
+    end_offset = consumer.position(tp)
+    return {"offsets": end_offset}
