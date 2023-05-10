@@ -1,12 +1,10 @@
 package com.example.detecto.service;
 
 import com.example.detecto.data.RespData;
-import com.example.detecto.dto.ReportSearchDto;
-import com.example.detecto.dto.ReportSearchResponseDto;
-import com.example.detecto.dto.ReportSearchResponseTeamDto;
-import com.example.detecto.dto.ReportSearchResponseUserDto;
+import com.example.detecto.dto.*;
 import com.example.detecto.entity.Report;
 import com.example.detecto.exception.DatabaseFetchException;
+import com.example.detecto.exception.DoesNotExistData;
 import com.example.detecto.repository.ReportRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -94,9 +92,17 @@ public class ReportServiceImpl implements ReportService {
                             .map(item -> item.getEquipment().getName())
                             .collect(Collectors.toList());
 
-                    return new ReportSearchResponseDto(rd.getId(), rd.getTime(), rd.getX(), rd.getY(),
+                    return new ReportSearchResponseDto(rd.getId(), rd.getTime(), rd.getX(), rd.getY(), rd.getCctvArea(),
                             rs_user, rs_team, equipmentNames);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void coord(ReportCoordDto reportCoordDto) {
+        Report r = reportRepository.findById(reportCoordDto.getId()).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+        r.setCoord(reportCoordDto);
+
+        reportRepository.save(r);
     }
 }
