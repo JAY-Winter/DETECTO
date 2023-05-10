@@ -5,9 +5,18 @@ from main.tools.cloud import cloud
 from main.tools.database import db
 from main.repository.repository import Report, ReportItem, Equipment
 
+object_storage = cloud().client
+object_storage.put_bucket_acl(Bucket="detec", ACL='public-read')
 
+category = {
+        "body" : 1,
+        "arm" : 2,
+        "hands" : 3,
+        "face" : 4,
+        "head": 5
+    }
 def save_non_wear(cctv_id,human_detect, yolo_image):
-
+    equip = Equipment.query.all()
     current_time = datetime.utcnow()
 
     for human in human_detect:
@@ -16,7 +25,7 @@ def save_non_wear(cctv_id,human_detect, yolo_image):
         if len(non_wearing_class) != 0:
             id = 0
             # 위반 위치 레포트 저장
-            new_report = Report(cctv_area=cctv_id,user_id=-1, time=current_time,
+            new_report = Report(cctv_area=int(cctv_id),user_id=-1, time=current_time,
                                 x=int(-1), y=int(-1))
             db.session.add(new_report)
             db.session.flush()
@@ -25,8 +34,6 @@ def save_non_wear(cctv_id,human_detect, yolo_image):
             db.session.commit()
 
             # 위반 이미지 저장
-            object_storage = cloud().client
-            object_storage.put_bucket_acl(Bucket="detec", ACL='public-read')
 
             filename = f"{id}.jpg"
             cv2.imwrite(filename, yolo_image)
@@ -37,14 +44,14 @@ def save_non_wear(cctv_id,human_detect, yolo_image):
                                         'ACL': 'public-read'})
 
             # 미착용 클래스
-            equip = Equipment.query.all()
             print(equip)
             # 미착용 클래스 저장
             for i in range(len(non_wearing_class)):
-                equip_name = equip[non_wearing_class[i]].name
-                print('----', non_wearing_class[i], equip_name)
+                equip_name = equip[int(non_wearing_class[i])].name
+                type = category[equip_name]
+                result = db.session.query(Equipment).filter(Equipment.type == type, Equipment.able == 1).first()
                 new_report = ReportItem(
-                    equipment_name=equip_name, report_id=id)
+                    equipment_name=result.name, report_id=id)
                 db.session.add(new_report)
 
             db.session.commit()

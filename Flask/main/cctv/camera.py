@@ -29,6 +29,9 @@ class Camera():
         img_bytes = img_encoded.tobytes()
         files = {'file': ('image.jpg', img_bytes, 'image/jpeg')}
         data = {'id': self.__cctvNum}
+        ############## TODO KAFKA 연동 #############
+        
+        ###########################################
         response = requests.post(
             self.__flaskUrl + '/upload', files=files, data=data)
 
