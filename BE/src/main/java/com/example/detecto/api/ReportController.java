@@ -2,15 +2,13 @@ package com.example.detecto.api;
 
 
 import com.example.detecto.data.RespData;
+import com.example.detecto.dto.ReportCoordDto;
 import com.example.detecto.dto.ReportSearchDto;
 import com.example.detecto.dto.ReportSearchResponseDto;
 import com.example.detecto.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +27,14 @@ public class ReportController {
         response.setData(data);
 
         return response.builder();
+    }
+
+    @PostMapping("/coord")
+    public ResponseEntity<?> coord(@RequestBody ReportCoordDto reportCoordDto){
+        RespData<List> response = new RespData<>();
+
+        reportService.coord(reportCoordDto);
+
+        return  response.builder();
     }
 }

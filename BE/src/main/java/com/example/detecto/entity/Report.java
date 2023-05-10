@@ -1,5 +1,6 @@
 package com.example.detecto.entity;
 
+import com.example.detecto.dto.ReportCoordDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -53,6 +54,11 @@ public class Report {
 
         this.user = user;
         user.getReports().add(this);
+    }
+
+    public void setCoord(ReportCoordDto reportCoordDto){
+        this.x = reportCoordDto.getX();
+        this.y = reportCoordDto.getY();
     }
 
 }
