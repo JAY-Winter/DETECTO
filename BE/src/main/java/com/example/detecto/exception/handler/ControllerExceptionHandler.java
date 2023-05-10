@@ -46,28 +46,28 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(AlreadyExistData.class)
-    public void alreadyBoundException(Exception e) {
-        createErrorResponse(ErrorEnum.ALREADY_EXIST_DATA_ERROR, e);
+    public ResponseEntity<?> alreadyBoundException(Exception e) {
+        return createErrorResponse(ErrorEnum.ALREADY_EXIST_DATA_ERROR, e);
     }
 
     @ExceptionHandler(DoesNotExistServer.class)
-    public void doesNotExistServer(Exception e){
-        createErrorResponse(ErrorEnum.DOES_NOT_EXIST_SERVER_ERROR, e);
+    public ResponseEntity<?> doesNotExistServer(Exception e){
+        return createErrorResponse(ErrorEnum.DOES_NOT_EXIST_SERVER_ERROR, e);
     }
 
     @ExceptionHandler(InvalidData.class)
-    public void invalidData(Exception e){
-        createErrorResponse(ErrorEnum.INVALID_DATA_ERROR, e);
+    public ResponseEntity<?> invalidData(Exception e){
+        return createErrorResponse(ErrorEnum.INVALID_DATA_ERROR, e);
     }
 
     @ExceptionHandler(DatabaseFetchException.class)
-    public void databaseFetchException(Exception e){
-        createErrorResponse(ErrorEnum.FETCH_EXCEPTION_ERROR, e);
+    public ResponseEntity<?> databaseFetchException(Exception e){
+        return createErrorResponse(ErrorEnum.FETCH_EXCEPTION_ERROR, e);
     }
 
     @ExceptionHandler(AuthFailException.class)
-    public void authFailException(Exception e){
-        createErrorResponse(ErrorEnum.AUTH_FAIL_ERROR, e);
+    public ResponseEntity<?> authFailException(Exception e){
+        return createErrorResponse(ErrorEnum.AUTH_FAIL_ERROR, e);
     }
 
 
@@ -84,6 +84,7 @@ public class ControllerExceptionHandler {
 //                .build();
         RespData<Void> data = new RespData(errorEnum);
         data.setMsg(e.getMessage());
+
         return data.exceptionBuilder();
     }
 }
