@@ -115,7 +115,7 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     total_offsets = manager.dict()
     total_offsets[partition] = get_total_offset(cctvnumber=cctvnumber ,partition=partition)
 
-    p = Process(target=get_total_offset, args=(partition, total_offsets))
+    p = Process(target=get_total_offset, args=(cctvnumber ,partition, total_offsets))
     p.start()
 
     consumer = KafkaConsumer(
