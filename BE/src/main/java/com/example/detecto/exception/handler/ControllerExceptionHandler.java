@@ -41,8 +41,8 @@ public class ControllerExceptionHandler {
 //    }
 
     @ExceptionHandler(DoesNotExistData.class)
-    public void doesNotExistData(Exception e) {
-        createErrorResponse(ErrorEnum.DOES_NOT_EXIST_DATA_ERROR, e);
+    public ResponseEntity<?> doesNotExistData(Exception e) {
+        return createErrorResponse(ErrorEnum.DOES_NOT_EXIST_DATA_ERROR, e);
     }
 
     @ExceptionHandler(AlreadyExistData.class)
