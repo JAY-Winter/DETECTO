@@ -75,11 +75,11 @@ public class UserController {
             }
         }
 
-        if (myCookieValue != null) {
-            return response.builder();
-        } else {
+        if(myCookieValue == null){
             throw new AuthFailException("Authenticated fail");
         }
+
+        return response.builder();
     }
 
     @PostMapping("/logout")
