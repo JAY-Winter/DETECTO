@@ -33,7 +33,7 @@ function HistorySafetyIssue() {
     setReportData(response.data.data)
   }
   
-  const [data, isLoading, setRequestObj] = useAxios({tryHandler: historyTryhandler})
+  const [data, isLoading, setRequestObj] = useAxios({tryHandler: historyTryhandler, baseURL: 'https://k8d201.p.ssafy.io/api/'})
   
   useEffect(() => {
     const startDate = historyDate.startDay.toISOString().slice(0, 10)
