@@ -1,18 +1,18 @@
 import cv2
-import requests
+import requests, time
 from main.constants.constant import FLASK_URL, CCTV_NUMBER, CAMERA_INDEX
 
 
 class Camera():
-    def __init__(self, shared_signal):
+    def __init__(self):
         self.__cap = None
         self.__cctvNum = CCTV_NUMBER
         self.__flaskUrl = FLASK_URL
-        self.__signal = shared_signal
+        # self.__signal = shared_signal
 
-    @property
-    def signal(self):
-        return self.__signal
+    # @property
+    # def signal(self):
+    #     return self.__signal
 
     # close camera
     def close_camera(self):
@@ -41,15 +41,20 @@ class Camera():
 
     def main(self):
         cam = cv2.VideoCapture(cv2.CAP_DSHOW + CAMERA_INDEX)
+        next_capture_time = time.perf_counter()
         print('[*] Open camera', cam)
         while cam.isOpened():
             ret, frame = cam.read()
             if not ret:
                 print('[X] no ret!')
-
-            with self.__signal.get_lock():  # Acquire the lock before accessing the value
-                if self.__signal.value:
-                    # 이미지 전송 또는 다른 작업 수행
-                    self.capture(frame=frame)
-                    self.__signal.value = False
-                    # print(frame)
+            current_time = time.perf_counter()
+            if current_time >= next_capture_time:
+                self.capture(frame=frame)
+                next_capture_time = current_time + 0.5
+            
+            # with self.__signal.get_lock():  # Acquire the lock before accessing the value
+            #     if self.__signal.value:
+            #         # 이미지 전송 또는 다른 작업 수행
+                    
+            #         self.__signal.value = False
+            #         # print(frame)

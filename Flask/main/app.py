@@ -35,8 +35,7 @@ def create_app():
     # CCTV로부터 영상(이미지)를 받아오기
     @app.route('/upload', methods=['POST'])
     def upload():
-        global cctv_images
-        cctv_images = upload_image(request, model)
+        upload_image(request, model)
         return {"result": "이미지 업로드 성공"}
 
     # html로 detecting된 영상 전송

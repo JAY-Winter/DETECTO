@@ -11,7 +11,7 @@ sum_dict = dict()   # 5초 간 각 클래스별 감지 개수
 
 
 # 미착용 감지 로직
-def detect_non_wearing(pro, lists):
+def detect_non_wearing(pro, yolo_class):
     global sum_dict
     non_wearing_class = []
 
@@ -20,14 +20,10 @@ def detect_non_wearing(pro, lists):
 
     # 1. 4대 set으로 합치기
     no_wear = set()
-    for detected_list in lists:                 # 이미지 한 장씩
-        # 빈 배열 return
-        if len(detected_list) <= 0:
-            continue
-        for i in range(len(detected_list)):     # 이미지의 감지 클래스 하나씩
-            detected_class = int(detected_list[i].item())
-            if detected_class in pro:
-                no_wear.add(detected_class)
+    for i in range(len(yolo_class)):     # 이미지의 감지 클래스 하나씩
+        detected_class = int(yolo_class[i].item())
+        if detected_class in pro:
+            no_wear.add(detected_class)
 
     # 2. queue에 삽입
     dq.append(no_wear)
