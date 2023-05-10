@@ -4,6 +4,7 @@ from main.tools.database import db
 class Report(db.Model):
     __tablename__ = "report"
     id = db.Column(db.Integer, primary_key=True)
+    cctv_area = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     time = db.Column(db.TIMESTAMP(6))
     x = db.Column(db.Integer, nullable=False)
@@ -30,3 +31,8 @@ class User(db.Model):
 class Equipment(db.Model):
     __tablename__ = 'equipment'
     name = db.Column(db.String(255), primary_key=True, nullable=True)
+    type = db.Column(db.Integer, nullable=True)
+    able = db.Column(db.Integer, nullable=True)
+    training = db.Column(db.Integer, nullable=True)
+    description = db.Column(db.String(255), nullable=True)
+    url = db.Column(db.String(255), nullable=True)
