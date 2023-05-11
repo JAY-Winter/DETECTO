@@ -1,14 +1,17 @@
 package com.example.detecto.service;
 
+import com.example.detecto.dto.EpochDto;
 import com.example.detecto.dto.EquipmentEditDto;
 import com.example.detecto.dto.EquipmentResponseDto;
 import com.example.detecto.entity.Equipment;
+import com.example.detecto.exception.AlreadyExistData;
 import com.example.detecto.exception.DoesNotExistData;
 import com.example.detecto.exception.InvalidData;
 import com.example.detecto.repository.EquipmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class EquipmentServiceImpl implements EquipmentService{
 
     private final EquipmentRepository equipmentRepository;
+    private final WebClient webClient;
 
     @Override
     public boolean checkName(String name) {
@@ -38,11 +42,34 @@ public class EquipmentServiceImpl implements EquipmentService{
 
     @Override
     public List<EquipmentResponseDto> read() {
-        List<Equipment> equipments = equipmentRepository.findByType(1);
+        List<Equipment> equipments = equipmentRepository.findByType(0);
 
         return equipments.stream()
-                .map(e -> new EquipmentResponseDto(e))
+                .map(e -> {
+                    EquipmentResponseDto er = new EquipmentResponseDto(e);
+                    if(e.getAble() == 0){
+                        int epoch = callEpoch();
+                        er.setEpoch(epoch);
+                    }else{
+                        er.setEpoch(-1);
+                    }
+
+                    return er;
+                })
                 .collect(Collectors.toList());
+    }
+
+
+    public int callEpoch() {
+        String url = "https://detec.store:5000/check";
+
+        EpochDto epoch = webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(EpochDto.class)
+                .block();
+
+        return epoch.getData();
     }
 
     @Override
@@ -52,6 +79,9 @@ public class EquipmentServiceImpl implements EquipmentService{
         }
         if(equipmentEditDto.getAble() > 1 || equipmentEditDto.getAble() < 0) {
             throw new InvalidData("able 값으로 0 또는 1 값을 넣어주세요");
+        }
+        if(equipmentRepository.findByTypeCount(equipmentEditDto.getType()) > 0 && equipmentEditDto.getAble() == 1){
+            throw new AlreadyExistData("같은 type의 equipment가 이미 able상태입니다.");
         }
 
         Equipment equipment = equipmentRepository.findById(equipmentEditDto.getName()).get();
