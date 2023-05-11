@@ -1,6 +1,5 @@
 package com.example.detecto.service;
 
-import com.example.detecto.data.RespData;
 import com.example.detecto.dto.*;
 import com.example.detecto.entity.Report;
 import com.example.detecto.exception.DatabaseFetchException;
