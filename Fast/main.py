@@ -88,7 +88,14 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
         except json.JSONDecodeError as e:
             print(f"Invalid JSON string: {e}")
             break
-
+        except StopIteration:
+            print("Stop iteration")
+            start_offset = 0
+            break
+        except IndexError:
+            print("Index error")
+            start_offset = 0
+            break
 ################################################################
 def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
     consumer = KafkaConsumer(
@@ -107,7 +114,7 @@ def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dic
         return val
     
 ################################################################
-@app.websocket("/ws")
+@app.websocket("/wss")
 async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: int):
     await websocket.accept()
 
@@ -135,7 +142,7 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     await websocket.close()
 
 ################################################################
-@app.get("/ws/max_offset")
+@app.get("/wss/max_offset")
 async def get_max_offset(cctvnumber: int, partition: int):
     consumer = KafkaConsumer(
         bootstrap_servers=['k8d201.p.ssafy.io:9092'],

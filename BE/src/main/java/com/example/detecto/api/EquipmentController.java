@@ -7,6 +7,7 @@ import com.example.detecto.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -41,10 +42,10 @@ public class EquipmentController {
     }
 
     @PutMapping
-    public ResponseEntity<?> edit(@ModelAttribute EquipmentEditDto equipmentEditDto){
+    public ResponseEntity<?> edit(@RequestPart("file") MultipartFile file, @RequestBody EquipmentEditDto dto){
         RespData<Void> response = new RespData<>();
 
-        equipmentService.edit(equipmentEditDto);
+        equipmentService.edit(file,dto);
 
         return response.builder();
     }

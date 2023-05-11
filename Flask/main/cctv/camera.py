@@ -48,7 +48,7 @@ class Camera():
 
         kafka_data = {
             'frame': encoded_frame,
-            'timestamp': base64.b64encode(bytes(str(datetime.datetime.now()), 'utf-8')).decode('utf-8'),
+            'timestamp': base64.b64encode(bytes(str(datetime.now()), 'utf-8')).decode('utf-8'),
         }
 
         kafka_producer.send(

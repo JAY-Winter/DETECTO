@@ -6,7 +6,7 @@ function IssueImage({reportid}: {reportid: string}) {
     <div
       style={{
         width: '100%',
-        height: 'fit-content',
+        height: 'fit-contents',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

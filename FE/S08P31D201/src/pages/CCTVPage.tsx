@@ -21,7 +21,7 @@ function CCTVPage() {
         });
       }
 
-      websocket = new WebSocket(`ws://k8d201.p.ssafy.io:7005/ws/3`);
+      websocket = new WebSocket(`ws://k8d201.p.ssafy.io:7005/ws?cctvnumber=0&partition=129`);
       websocket.onmessage = async event => {
         const frameData = event.data;
         const data = JSON.parse(frameData);

@@ -238,10 +238,11 @@ function IssueMap({ data }: { data: {id: number, area: number, x: number; y: num
 
   console.log({id: -1, x: Math.ceil(coordinate.x), y: Math.ceil(coordinate.y)})
   const coordinateHandler = () => {
+    if (data)
     axios({
       method: 'post',
       url: 'https://k8d201.p.ssafy.io/api/report/coord',
-      data: {id: -1, x: Math.ceil(coordinate.x), y: Math.ceil(coordinate.y)}
+      data: {id: data.id, x: Math.ceil(coordinate.x), y: Math.ceil(coordinate.y)}
     })
   }
 
