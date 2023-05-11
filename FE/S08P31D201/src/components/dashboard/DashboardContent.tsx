@@ -122,7 +122,7 @@ function DashboardContent() {
   useEffect(() => {
     axios({
       method: 'GET',
-      url: 'https://k8d201.p.ssafy.io/api/report?startDate=2023-04-01&endDate=2023-05-10&equipments=',
+      url: 'https://k8d201.p.ssafy.io/api/report?startDate=2023-04-01&endDate=2023-05-11&equipments=',
     }).then(res => {
       if (res.data.data.length !== 0) {
         console.log(res.data.data);
