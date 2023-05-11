@@ -12,7 +12,7 @@ const styles = css`
     padding: 0;
     text-decoration: none;
     box-sizing: border-box;
-    font-family: 'Pretendard Variable';
+    font-family: 'Pretendard';
   }
 `;
 

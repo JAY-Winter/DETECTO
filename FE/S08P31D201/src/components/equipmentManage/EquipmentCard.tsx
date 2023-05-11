@@ -8,11 +8,12 @@ import EditDropdown from './EditDropdown';
 import { mobileV } from '@/utils/Mixin';
 import useAxios from '@/hooks/useAxios';
 import { RequestObj } from 'AxiosRequest';
+import CloseIcon from '@mui/icons-material/Close';
 
 type EquipmentCardProps = {
   equipment: EquipmentType,
   onDelete: (willDeleteName: string) => void,
-  onToggleActiveness: (willDeleteName: string) => void,
+  onToggleActiveness: (willToggleType: number, willToggleName: string) => void,
 }
 
 type progressDataType = {
@@ -23,7 +24,7 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
   const [isShowDropdown, setIsShowDropdown] = useState(false);
   const editRef = useRef<HTMLDivElement>(null);
   const [data, isCheckLoading, setCheckRequestObj] = useAxios({baseURL: "https://detec.store:5000/"});
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(100);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const toggleEditDropdown = () => {
@@ -40,11 +41,24 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
     }
   }
 
+  const cancelProgress = () => {
+    const isConfirm = confirm("학습을 취소하시겠습니까??");
+    if (isConfirm) {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+      }
+      const requestObj: RequestObj = {
+        url: `stop/${equipment.name}`,
+        method: 'get'
+      }
+      setCheckRequestObj(requestObj);
+    }
+  }
+
   useEffect(() => {
     if (isCheckLoading === false) {
       if (data !== null) {
         const progressData = data as progressDataType;
-        console.log("EquipmentCard의 data:", progressData.data);
         if (progressData.data === -1) {
           setProgress(100);
           if (intervalId !== null) {
@@ -61,13 +75,12 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
     // 컴포넌트가 마운트될 때 setInterval 시작
     console.log(equipment);
     if (equipment.epoch >= 0 && equipment.training == false) {
-      console.log("학습중임:", equipment.name);
       const id = setInterval(() => {
         fetchProgress();
       }, 1000);
       setIntervalId(id);
     } else {
-      setProgress(100);
+      setProgress(10);
     }
     
 
@@ -91,7 +104,7 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
       <div css={headerContainer}>
         <div css={titleContainer}>
           <h2>{equipment.name}</h2>
-          <Switch checked={equipment.able} onChange={() => onToggleActiveness(equipment.name)} />
+          <Switch checked={equipment.able} onChange={() => onToggleActiveness(equipment.type, equipment.name)} />
         </div>
         <div ref={editRef}>
           <button css={menuButtonStyle} onClick={toggleEditDropdown}>
@@ -107,9 +120,12 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
         <p css={descContainer}>{equipment.description === "" ? "(설명이 없습니다)" : equipment.description}</p>
       </div>
       <div css={footerContainer}>
-        <ProgressBarDiv>
-          <LinearProgress variant="determinate" value={progress} />
-        </ProgressBarDiv>
+        <ProgressBarContainerDiv>
+          <ProgressBarDiv>
+            <LinearProgress variant="determinate" value={progress} />
+          </ProgressBarDiv>
+          <CloseIcon onClick={cancelProgress} />
+        </ProgressBarContainerDiv>
         { progress < 100 ? 
           <ProgressContextDiv>학습 진행률: {progress}%</ProgressContextDiv> :
           <ProgressContextDiv>학습 완료</ProgressContextDiv>
@@ -173,6 +189,18 @@ const footerContainer = css`
   margin-top: 10px;
 `
 
+const ProgressBarContainerDiv = styled.div`
+  display: flex;
+  align-items: center;
+  svg {
+    cursor: pointer;
+    &:hover {
+      color: gray;
+    }
+    transition: color 0.3s ease;
+  }
+`
+
 const imageStyle = css`
   width: 100%;
   height: 250px;
@@ -192,6 +220,7 @@ const descContainer = css`
 `
 
 const ProgressBarDiv = styled.div`
+  /* display: flex; */
   width: 100%;
   height: 5px;
   background-color: ${props => props.theme.palette.neutral.card};

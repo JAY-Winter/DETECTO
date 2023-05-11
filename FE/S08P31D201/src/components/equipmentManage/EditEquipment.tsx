@@ -21,6 +21,7 @@ function EditEquipment({ fetchEquipments, onClose }: EditEquipmentProps) {
   const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [data, isLoading, setRequestObj] = useAxios({baseURL: "https://detec.store:5000/"});
+  const [duplicatedData, isDuplicatedLoading, setDuplicatedObj] = useAxios({baseURL: "https://k8d201.p.ssafy.io/api/"})
 
   const submit = () => {
     if (selectedZip === null) {
@@ -67,6 +68,13 @@ function EditEquipment({ fetchEquipments, onClose }: EditEquipmentProps) {
       setErrorMessage("");
     }
     setEquipmentName(name);
+    if (name !== "") {
+      const requestObj: RequestObj = {
+        url: `equipment/${name}`,
+        method: 'get'
+      }
+      setDuplicatedObj(requestObj);
+    }
   }
 
   // 장비 설명 입력 핸들링
@@ -84,13 +92,25 @@ function EditEquipment({ fetchEquipments, onClose }: EditEquipmentProps) {
   // 장비 등록 여부 감지하여 모달창 닫히도록 하는 effect hook
   useEffect(() => {
     if (isLoading === false && data !== null) {
-      console.log("업로드 완료!");
+      console.log("업로드 완료!", data);
       
       // 보호구 목록 비동기 요청하기
       fetchEquipments();
       onClose();
     }
   }, [data, isLoading])
+
+  useEffect(() => {
+    if (isDuplicatedLoading === false && duplicatedData !== null && 'data' in duplicatedData) {
+      if (duplicatedData.data === true) {
+        setErrorMessage("");
+      } else {
+        setIsErrorName(true);
+        setIsValid(false);
+        setErrorMessage("중복된 장비명 입니다");
+      }
+    }
+  }, [duplicatedData, isDuplicatedLoading])
 
   return (
     <EditEquipmentForm>
