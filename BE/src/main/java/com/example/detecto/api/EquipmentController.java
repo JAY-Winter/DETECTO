@@ -19,13 +19,13 @@ public class EquipmentController {
 
     @GetMapping("/{name}")
     public ResponseEntity<?> checkName(@PathVariable String name){
-        RespData<Void> response = new RespData<>();
+        RespData<Boolean> response = new RespData<>();
 
         if(equipmentService.checkName(name)) {
-            response.setMsg("available");
+            response.setData(true);
             return response.builder();
         }
-        response.setMsg("unavailable");
+        response.setData(false);
 
         return response.builder();
     }
