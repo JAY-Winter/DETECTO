@@ -5,22 +5,21 @@ import DragAndDrop from './DragAndDrop';
 import useAxios from '@/hooks/useAxios';
 import { RequestObj } from 'AxiosRequest';
 
-
 type EditEquipmentProps = {
-  addItemHandler: (name: string, desc: string, img: string) => void,
+  fetchEquipments: () => void,
   onClose: () => void
 }
 
-function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
+function EditEquipment({ fetchEquipments, onClose }: EditEquipmentProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedZip, setSelectedZip] = useState<File | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [equipmentName, setEquipmentName] = useState("");
   const [equipmentDesc, setEquipmentDesc] = useState("");
+  const [equipmentType, setEquipmentType] = useState(1);
   const [isErrorName, setIsErrorName] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [data, isLoading, setRequestObj] = useAxios({baseURL: "https://detec.store:5000/"});
 
   const submit = () => {
@@ -36,6 +35,7 @@ function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
     formData.append('img', selectedImage ?? "");
     formData.append('name', equipmentName);
     formData.append('description', equipmentName);
+    formData.append('type', `${equipmentType}`);
 
     // requestObj 생성
     const reqeusetObj: RequestObj = {
@@ -47,9 +47,11 @@ function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
       }
     }
 
+    // POST 요청
     setRequestObj(reqeusetObj);
   }
 
+  // 징비명 입력 핸들링
   const handleNameinput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value.trim();
     if (name === "") {
@@ -67,35 +69,25 @@ function EditEquipment({ addItemHandler, onClose }: EditEquipmentProps) {
     setEquipmentName(name);
   }
 
+  // 장비 설명 입력 핸들링
   const handleDescinput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEquipmentDesc(e.target.value);
   }
 
+  // 장비명, 학습 데이터 올바르게 입력되었는지 점검하는 watcher 역할의 effect hook
   useEffect(() => {
     if (selectedZip !== null && equipmentName.trim() !== "") {
       setIsValid(true);
     }
   }, [equipmentName, selectedZip])
-  
-  useEffect(() => {
-    if (selectedImage && selectedImage.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const imageURL = e.target?.result as string ?? "";
-        setImageSrc(imageURL);
-      }
-      reader.readAsDataURL(selectedImage);
-    } else {
-      setImageSrc(null);
-    }
-  }, [selectedImage])
 
+  // 장비 등록 여부 감지하여 모달창 닫히도록 하는 effect hook
   useEffect(() => {
     if (isLoading === false && data !== null) {
       console.log("업로드 완료!");
-      if (imageSrc !== null) {
-        addItemHandler(equipmentName, equipmentDesc, imageSrc);
-      }
+      
+      // 보호구 목록 비동기 요청하기
+      fetchEquipments();
       onClose();
     }
   }, [data, isLoading])

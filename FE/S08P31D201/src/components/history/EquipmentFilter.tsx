@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Button, Paper } from '@mui/material';
 import { RestartAlt } from '@mui/icons-material';
@@ -11,10 +11,10 @@ import { HistoryEqAtom } from '@/store/HistoryFilter';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { EquipmentsAtom } from '@/store/EquipmentStore';
+import useEquipments from '@/hooks/useEquipments';
 
 function HistoryEquipmentFilter() {
-  const equipments = useRecoilValue(EquipmentsAtom);
-
+  const [equipments, fetchEquipments] = useEquipments();
   const setFilterEq = useSetRecoilState(HistoryEqAtom);
 
   // 모바일 드롭다운 State

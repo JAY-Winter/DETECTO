@@ -3,17 +3,17 @@ import styled from '@emotion/styled'
 import React, { useRef } from 'react'
 
 type EditDropdown = {
-  id: number,
-  onDelete: (willDeleteID: number) => void,
+  name: string,
+  onDelete: (willDeleteName: string) => void,
   setIsShowDropdown: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function EditDropdown({ id, onDelete, setIsShowDropdown }: EditDropdown) {
+function EditDropdown({ name, onDelete, setIsShowDropdown }: EditDropdown) {
   const ref = useRef<HTMLDivElement>(null);
 
   const clickDeleteItem = () => {
     setIsShowDropdown(false);
-    onDelete(id)
+    onDelete(name)
   }
 
   return (

@@ -11,8 +11,8 @@ import { RequestObj } from 'AxiosRequest';
 
 type EquipmentCardProps = {
   equipment: EquipmentType,
-  onDelete: (willDeleteID: number) => void,
-  onToggleActiveness: (willToggleID: number) => void,
+  onDelete: (willDeleteName: string) => void,
+  onToggleActiveness: (willDeleteName: string) => void,
 }
 
 type progressDataType = {
@@ -30,7 +30,7 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
     setIsShowDropdown(!isShowDropdown);
   }
 
-  const getProgress = () => {
+  const fetchProgress = () => {
     const requestObj: RequestObj = {
       url: '/check',
       method: 'get'
@@ -51,7 +51,7 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
             clearInterval(intervalId);
           }
         } else {
-          setProgress(progressData.data * 10);
+          setProgress(progressData.data);
         }
       }
     }
@@ -59,10 +59,17 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 setInterval 시작
-    const id = setInterval(() => {
-      getProgress();
-    }, 1000);
-    setIntervalId(id);
+    console.log(equipment);
+    if (equipment.epoch >= 0 && equipment.training == false) {
+      console.log("학습중임:", equipment.name);
+      const id = setInterval(() => {
+        fetchProgress();
+      }, 1000);
+      setIntervalId(id);
+    } else {
+      setProgress(100);
+    }
+    
 
     const handleClickOutside = (e: MouseEvent) => {
       if (editRef.current && !editRef.current.contains(e.target as Node)) {
@@ -80,24 +87,24 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
   }, [])
 
   return (
-    <EqCardDiv ischecked={equipment.isActive}>
+    <EqCardDiv ischecked={equipment.able}>
       <div css={headerContainer}>
         <div css={titleContainer}>
           <h2>{equipment.name}</h2>
-          <Switch checked={equipment.isActive} onChange={() => onToggleActiveness(equipment.id)} />
+          <Switch checked={equipment.able} onChange={() => onToggleActiveness(equipment.name)} />
         </div>
         <div ref={editRef}>
           <button css={menuButtonStyle} onClick={toggleEditDropdown}>
             <MoreVertIcon color="action" />
           </button>
           {isShowDropdown &&
-            <EditDropdown id={equipment.id} onDelete={onDelete} setIsShowDropdown={setIsShowDropdown}/>
+            <EditDropdown name={equipment.name} onDelete={onDelete} setIsShowDropdown={setIsShowDropdown}/>
           }
         </div>
       </div>
       <div css={bodyContainer}>
-        <img css={imageStyle} src={equipment.img} />
-        <p css={descContainer}>{equipment.desc === "" ? "(설명이 없습니다)" : equipment.desc}</p>
+        <img css={imageStyle} src={equipment.url} />
+        <p css={descContainer}>{equipment.description === "" ? "(설명이 없습니다)" : equipment.description}</p>
       </div>
       <div css={footerContainer}>
         <ProgressBarDiv>

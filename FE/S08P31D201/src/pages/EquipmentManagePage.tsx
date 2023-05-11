@@ -1,44 +1,42 @@
 import EquipmentCard from '@components/equipmentManage/EquipmentCard';
 import styled from '@emotion/styled';
 import { AddCircleOutline } from '@mui/icons-material';
-import { EquipmentType } from 'EquipmentTypes';
-import { useRecoilState } from 'recoil';
-import { EquipmentsAtom } from '@/store/EquipmentStore';
-import { getRandomNumber } from '@/utils/RandomDataGenerator';
 import { useState } from 'react';
 import ModalPortal from '@components/common/ModalPortal';
 import CenterModal from '@components/common/CenterModal';
 import EditEquipment from '@components/equipmentManage/EditEquipment';
 import { mobileV } from '@/utils/Mixin';
+import useEquipments from '@/hooks/useEquipments';
 
 function EquipmentManagePage() {
-  const [equipments, setEquipment] = useRecoilState(EquipmentsAtom);
   const [isShowEditModal, setIsShowEditModal] = useState(false);
+  const [equipments, fetchEquipments] = useEquipments();
 
   // 장비 삭제 핸들러: 카드로부터 ID를 입력받아 삭제한다
-  const deleteHandler = (willDeleteID: number) => {
+  const deleteHandler = (willDeleteName: string) => {
     const decision = confirm("삭제하시겠습니까??");
     if (decision) {
-      setEquipment((oldState) => {
-        return oldState.filter(item => item.id !== willDeleteID);
-      })
+      // setEquipments((oldState) => {
+      //   return oldState.filter(item => item.name !== willDeleteName);
+      // })
     }
   }
 
-  // 장비 활성화 여부 토글링 핸들러: 카드로부터 ID를 입력받아 토글링한다
-  const toggleHandler = (willToggleID: number) => {
-    setEquipment((oldState) => {
-      const newState = oldState.map(item => {
-        const newItem = {...item};
-        if (newItem.id === willToggleID) {
-          newItem.isActive = !newItem.isActive;
-        }
-        return newItem;
-      })
-      return newState;
-    })
+  // 장비 활성화 여부 토글링 핸들러: 카드로부터 장비명을 입력받아 토글링한다
+  const toggleHandler = (willDeleteName: string) => {
+    // setEquipments((oldState) => {
+    //   const newState = oldState.map(item => {
+    //     const newItem = {...item};
+    //     if (newItem.name === willDeleteName) {
+    //       newItem.able = !newItem.able;
+    //     }
+    //     return newItem;
+    //   })
+    //   return newState;
+    // })
   }
   
+  // 편집 모달 핸들러
   const showModal = () => {
     setIsShowEditModal(!isShowEditModal);
   }
@@ -47,33 +45,22 @@ function EquipmentManagePage() {
     setIsShowEditModal(false);
   }
 
-  const addItemHandler = (name: string, desc: string, img: string) => {
-    const newItem: EquipmentType = {
-      id: getRandomNumber(1, 10000000),
-      name: name,
-      desc: desc,
-      img: img,
-      isActive: true
-    }
-
-    setEquipment((oldState) => {
-      return [...oldState, newItem];
-    })
-  }
-
   return (
     <>
       { isShowEditModal &&
       <ModalPortal>
         <CenterModal onClose={closeModalHandler}>
-          <EditEquipment addItemHandler={addItemHandler} onClose={closeModalHandler}/>
+          <EditEquipment fetchEquipments={fetchEquipments} onClose={closeModalHandler}/>
         </CenterModal>
       </ModalPortal>
       }
+      {/* <pre>
+        {JSON.stringify(equipments, null, 2)}
+      </pre> */}
       <EquipmentManageDiv>
         <h1>보호구 관리</h1>
         <EquipmentCardDiv>
-          {equipments.map(equipment => <EquipmentCard key={equipment.id} equipment={equipment} onDelete={deleteHandler} onToggleActiveness={toggleHandler} />)}
+          {equipments.map(equipment => <EquipmentCard key={equipment.name} equipment={equipment} onDelete={deleteHandler} onToggleActiveness={toggleHandler} />)}
           <EquipmentAddButton onClick={showModal}>
             <AddCircleOutline color="disabled" />
           </EquipmentAddButton>
