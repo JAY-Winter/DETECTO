@@ -42,7 +42,7 @@ public class EquipmentController {
     }
 
     @PutMapping
-    public ResponseEntity<?> edit(@RequestPart("file") MultipartFile file, @RequestBody EquipmentEditDto dto){
+    public ResponseEntity<?> edit(@RequestPart(value = "file", required = false) MultipartFile file, @RequestBody EquipmentEditDto dto){
         RespData<Void> response = new RespData<>();
 
         equipmentService.edit(file,dto);
