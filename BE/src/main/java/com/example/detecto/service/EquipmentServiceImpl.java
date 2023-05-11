@@ -88,7 +88,7 @@ public class EquipmentServiceImpl implements EquipmentService{
 //        }
         Equipment equipment = equipmentRepository.findById(equipmentEditDto.getName()).get();
         String url = equipment.getUrl();
-        if(file == null) {
+        if(file != null) {
             String fileName = "item" + "/" + equipment.getName() + ".jpg";
             File uploadFile = null;
             try {
