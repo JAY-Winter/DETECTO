@@ -2,6 +2,7 @@ package com.example.detecto.service;
 
 import com.example.detecto.dto.EquipmentEditDto;
 import com.example.detecto.dto.EquipmentResponseDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface EquipmentService {
 
     List<EquipmentResponseDto> read();
 
-    void edit(EquipmentEditDto equipmentEditDto);
+    void edit(MultipartFile file, EquipmentEditDto equipmentEditDto);
 
     void delete(String name);
 }
