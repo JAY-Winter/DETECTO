@@ -20,13 +20,13 @@ public class EquipmentController {
 
     @GetMapping("/{name}")
     public ResponseEntity<?> checkName(@PathVariable String name){
-        RespData<Void> response = new RespData<>();
+        RespData<Boolean> response = new RespData<>();
 
         if(equipmentService.checkName(name)) {
-            response.setMsg("available");
+            response.setData(true);
             return response.builder();
         }
-        response.setMsg("unavailable");
+        response.setData(false);
 
         return response.builder();
     }
@@ -42,7 +42,7 @@ public class EquipmentController {
     }
 
     @PutMapping
-    public ResponseEntity<?> edit(@RequestPart("file") MultipartFile file, @RequestBody EquipmentEditDto dto){
+    public ResponseEntity<?> edit(@RequestPart(value = "file", required = false) MultipartFile file, @RequestBody EquipmentEditDto dto){
         RespData<Void> response = new RespData<>();
 
         equipmentService.edit(file,dto);
