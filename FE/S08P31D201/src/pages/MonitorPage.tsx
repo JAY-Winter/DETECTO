@@ -1,35 +1,67 @@
-import useMWebsocket from '@/hooks/useMWebsocket';
-import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react'
+import { tabletV } from '@/utils/Mixin';
+import styled from '@emotion/styled';
+import { Card } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
+import Monitor from '@components/monitor/Monitor';
+
+const cctvidlist = [0, 1, 2];
 
 function MonitorPage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const sliderRef = useRef<HTMLInputElement>(null);
-  const sliderValueRef = useRef<HTMLDivElement>(null);
-  const [img, setImg] = useState<string>();
-  const [currentOffset, setCurrentOffset] = useState(0);
-
-  const [img1, date1] = useMWebsocket(`ws://k8d201.p.ssafy.io:7005/ws/3`, currentOffset)
-
-  useEffect(() => {
-    axios({
-      method:'get',
-      url: 'http://k8d201.p.ssafy.io:7005/ws/max_offset/3'
-    }).then(res => {
-      console.log(res.data)
-      setCurrentOffset(res.data)})
-  }, [])
-
-  // const buttonH = (e) => {
-  //   console.log(e.target.value)
-  //   setCurrentOffset(e.target.value)
-  // }
-
   return (
-    <div>MonitorPage
-      {/* <input type="range" onChange={buttonH} min={0} max={100} step={1} /> */}
-    </div>
-  )
+    <MonitorContainer>
+      <MonitorHeader>
+        <Card>
+          <VideocamOutlinedIcon />
+        </Card>
+        <h1>모니터링</h1>
+      </MonitorHeader>
+      <MonitorContentsDiv>
+        {cctvidlist.map(id => {
+          return <Monitor key={'cctvScreen' + id} monitorId={id} />;
+        })}
+      </MonitorContentsDiv>
+    </MonitorContainer>
+  );
 }
 
-export default MonitorPage
+export default MonitorPage;
+
+const MonitorContainer = styled.div`
+  /* width: 100%; */
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  align-items: center;
+  padding: 2.5rem 2rem;
+  ${tabletV} {
+    align-items: normal;
+  }
+`;
+
+const MonitorHeader = styled.div`
+  display: flex;
+  /* padding: 2rem; */
+  width: 100%;
+  margin: 0rem 0rem 2rem;
+
+  .MuiCard-root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem;
+    margin-right: 0.5rem;
+
+    background-color: ${props => props.theme.palette.primary.main};
+
+    svg {
+      color: ${props => props.theme.palette.primary.contrastText};
+    }
+  }
+`;
+
+const MonitorContentsDiv = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
