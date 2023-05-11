@@ -11,6 +11,7 @@ import com.example.detecto.repository.EquipmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -86,7 +87,11 @@ public class EquipmentServiceImpl implements EquipmentService{
 
         Equipment equipment = equipmentRepository.findById(equipmentEditDto.getName()).get();
 
+        // 여기 부분에서 MultipartFile img = equipmentEditDto.getImg(); 을 네이버 클라우드 스토리지에 저장하고 이미지 URL 받아오면 됨
+
+
         equipment.setDescription(equipmentEditDto.getDescription());
+        //equipment.setUrl(); 여기에 네이버 클라우드 스토리지에 저장한 이미지 URL 넣으면 됨
         equipment.setAble(equipmentEditDto.getAble());
 
         equipmentRepository.save(equipment);

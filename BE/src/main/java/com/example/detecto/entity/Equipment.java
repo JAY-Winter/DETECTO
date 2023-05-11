@@ -42,15 +42,9 @@ public class Equipment {
 
     public void setDescription(String description) { this.description = description; }
 
-    public void setType(int type){
-        this.type = type;
-    }
-
     public void setAble(int able){
         this.able = able;
     }
 
-    public void setTraining(int training){
-        this.training = training;
-    }
+    public void setUrl(String url) {this.url = url;}
 }
