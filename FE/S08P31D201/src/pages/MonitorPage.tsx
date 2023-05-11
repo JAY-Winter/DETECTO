@@ -1,104 +1,67 @@
-import axios from 'axios';
+import { tabletV } from '@/utils/Mixin';
+import styled from '@emotion/styled';
+import { Card } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
+import Monitor from '@components/monitor/Monitor';
+
+const cctvidlist = [0, 1, 2];
 
 function MonitorPage() {
-  const [img, setImg] = useState<string>();
-  const [currentOffset, setCurrentOffset] = useState(0);
-  const ws = useRef<WebSocket>();
-
-  // const [img1, date1] = useMWebsocket(`ws://k8d201.p.ssafy.io:7005/ws?cctvnumber=0&partition=129`, currentOffset)
-  async function connectWebSocket(offset: number) {
-    if (ws.current) {
-      ws.current.close();
-      await new Promise(resolve => {
-        if (ws.current) ws.current.onclose = resolve;
-      });
-    }
-
-    const websocket = new WebSocket(
-      `ws://k8d201.p.ssafy.io:7005/ws?cctvnumber=0&partition=129`
-    );
-
-    websocket.onmessage = async event => {
-      const frameData = event.data;
-      const data = JSON.parse(frameData);
-
-      console.log(data);
-
-      setImg('data:image/jpeg;base64,' + data['frame']);
-      setCurrentOffset(data.offset);
-
-      const timestamp = data.timestamp;
-      var timestampDate = new Date(timestamp);
-      var hours = timestampDate.getHours();
-      var minutes = timestampDate.getMinutes();
-      var seconds = timestampDate.getSeconds();
-      var timestampString = hours + ':' + minutes + ':' + seconds;
-
-      setTimeout(() => {
-        websocket.send(JSON.stringify({ offset: currentOffset }));
-      }, 10);
-      // await new Promise(resolve => setTimeout(resolve, 100000));
-    };
-
-    websocket.onclose = () => {
-      console.log('close됨');
-    };
-
-    websocket.onopen = () => {
-      console.log('WebSocket connection established.');
-      // websocket.send(JSON.stringify({ offset: offset }));
-    };
-
-    websocket.onerror = event => {
-      console.error('WebSocket error observed:', event);
-    };
-
-    ws.current = websocket;
-  }
-
-  useEffect(() => {
-    axios({
-      method: 'get',
-      url: 'https://k8d201.p.ssafy.io/ws/max_offset?cctvnumber=0&partition=129',
-    }).then(res => {
-      console.log(res.data);
-      setCurrentOffset(res.data);
-    });
-    connectWebSocket(currentOffset);
-    return () => {
-      if (ws.current && ws.current.OPEN) {
-        ws.current.close();
-      }
-    };
-  }, []);
-
-  const buttonH = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(ws.current);
-    const newOffset = Number(e.currentTarget.value);
-    setCurrentOffset(newOffset);
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      console.log(currentOffset);
-      ws.current.send(JSON.stringify({ offset: newOffset }));
-    } else {
-      console.error('웹소켓이 열려있지 않습니다.');
-    }
-  };
-
   return (
-    <div>
-      MonitorPage
-      <img src={img} alt="" />
-      <input
-        type="range"
-        onChange={buttonH}
-        min={0}
-        max={100}
-        step={1}
-        value={currentOffset}
-      />
-    </div>
+    <MonitorContainer>
+      <MonitorHeader>
+        <Card>
+          <VideocamOutlinedIcon />
+        </Card>
+        <h1>모니터링</h1>
+      </MonitorHeader>
+      <MonitorContentsDiv>
+        {cctvidlist.map(id => {
+          return <Monitor key={'cctvScreen' + id} monitorId={id} />;
+        })}
+      </MonitorContentsDiv>
+    </MonitorContainer>
   );
 }
 
 export default MonitorPage;
+
+const MonitorContainer = styled.div`
+  /* width: 100%; */
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  align-items: center;
+  padding: 2.5rem 2rem;
+  ${tabletV} {
+    align-items: normal;
+  }
+`;
+
+const MonitorHeader = styled.div`
+  display: flex;
+  /* padding: 2rem; */
+  width: 100%;
+  margin: 0rem 0rem 2rem;
+
+  .MuiCard-root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem;
+    margin-right: 0.5rem;
+
+    background-color: ${props => props.theme.palette.primary.main};
+
+    svg {
+      color: ${props => props.theme.palette.primary.contrastText};
+    }
+  }
+`;
+
+const MonitorContentsDiv = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;

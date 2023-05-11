@@ -87,7 +87,7 @@ function HistorySafetyIssue() {
               ? reportData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : reportData
             ).map(row => (
-              <Row key={row.time} row={row} />
+              <Row key={row.id} row={row} />
             ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
@@ -122,7 +122,7 @@ function HistorySafetyIssue() {
           <MobileSortButton />
         </MobileSortDiv>
         {reportData.slice(mobilePage * 5 - 5, mobilePage * 5).map(issue => {
-          return <IssueCard {...issue} key={issue.time} />;
+          return <IssueCard {...issue} key={issue.id} />;
         })}
         <Pagination
           count={Math.ceil(reportData.length / 5)}

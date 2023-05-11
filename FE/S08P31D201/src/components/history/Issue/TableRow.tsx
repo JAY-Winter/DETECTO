@@ -12,12 +12,14 @@ const TableCollapseCard = ({
   x,
   y,
   reportid,
+  area,
   teamList,
   violate_member,
 }: {
   x: number;
   y: number;
   reportid: number;
+  area: number;
   teamList: TeamType;
   violate_member?: ReportUserType;
 }) => {
@@ -30,6 +32,7 @@ const TableCollapseCard = ({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center',
+        height: 'fit-contents'
       }}
     >
       <div
@@ -56,14 +59,14 @@ const TableCollapseCard = ({
         }}
       >
         <h2>위치</h2> 
-        {/* <IssueMap
+        <IssueMap
           data={{
             id: reportid,
-
+            area: area,
             x: x,
             y: y,
           }}
-        /> */}
+        />
       </div>
     </Box>
   );
@@ -95,6 +98,7 @@ function Row(props: { row: ReportType }) {
               x={row.x}
               y={row.y}
               reportid={row.id}
+              area={row.cctvArea}
               violate_member={row.user}
               teamList={row.team}
             />
