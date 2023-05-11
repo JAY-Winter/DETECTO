@@ -7,6 +7,7 @@ import IssueImage from './IssueImage';
 import ScatterChart from '@components/dashboard/Charts/ScatterChart';
 import { ReportType, TeamType, ReportUserType } from 'ReportTypes';
 import IssueMap from './IssueMap';
+import IssueWorkerImage from './IssueWorkerImage';
 
 const TableCollapseCard = ({
   x,
@@ -52,6 +53,13 @@ const TableCollapseCard = ({
         }}
       >
         <MemberCard teamList={teamList} violate_member={violate_member} />
+      </div>
+      <div
+        style={{
+          width: '50%',
+        }}
+      >
+        <IssueWorkerImage reportid={reportid.toString()} />
       </div>
       <div
         style={{
