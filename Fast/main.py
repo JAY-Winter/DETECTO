@@ -12,12 +12,13 @@ from kafka import KafkaConsumer, TopicPartition
 from fastapi.middleware.cors import CORSMiddleware
 from websockets.exceptions import ConnectionClosedError
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from kafka.errors import KafkaError
 
 app = FastAPI()
 
 # CORS 설정
 origins = [
-    'localhost:5173'
+    'localhost:5173',
 ]
 
 app.add_middleware(
@@ -38,16 +39,35 @@ def encoding(data):
     frame_encoded = base64.b64encode(buffer).decode('utf-8')
     return frame_encoded
 
+class NoMessageError(Exception):
+    message = ""
+
+    def __init__(self, message):
+        self.message = message
+        print(message)
+
+
 ################################################################
 async def consume_message(websocket, consumer, topic, partition, total_offsets):
-    start_offset = 0 
-    partition_list = [TopicPartition(topic, partition)]
-    total_offsets = total_offsets[partition]
+    start_offset = 0
+    try:     
+        partition_list = [TopicPartition(topic, partition)]
+        total_offsets = total_offsets[partition]
+        print(partition_list)
+    except KafkaError as e:
+        print(e)
+
     while True:
         consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
+        message = consumer.poll(timeout_ms=2000)
+        if not message:
+            await websocket.send_text("No message in partition")
+            break
         try:
+            message = consumer.poll(timeout_ms=1000)
             for message in consumer:
+                print('cnsume')
                 data = message.value
                 frame_encoded = encoding(data)
                 context = {
@@ -86,14 +106,12 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
         except json.JSONDecodeError as e:
             print(f"Invalid JSON string: {e}")
             break
-        except StopIteration:
-            print("Stop iteration")
-            start_offset = 0
+        except Exception as e:
+            # 기타 예외 처리 (모든 예외를 포괄하는 경우)
+            # 처리할 작업을 수행합니다.
+            print(e)
             break
-        except IndexError:
-            print("Index error")
-            start_offset = 0
-            break
+
 ################################################################
 def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
     consumer = KafkaConsumer(
