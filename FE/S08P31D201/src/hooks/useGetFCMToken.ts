@@ -15,13 +15,16 @@ function useGetFCMToken() {
         vapidKey:
           "BKszBO0YDR9Cs_PKDtwskomTr9mkcamydkhz_UWUCZrJQJBcQ3BUaRvcxboXhjw10rVUknAu23jMBT5iLdFNj8o",
       });
-      console.log(token);
 
       // 받아온 토큰값을 서버로 전송
-      // const requestObj: RequestObj = {
-      //   url: "",
-      //   method: "post"
-      // }
+      const requestObj: RequestObj = {
+        url: "",
+        method: "post",
+        body: {
+          fcmToken: token
+        }
+      }
+      setRequestObj(requestObj);
     }
   }
 
