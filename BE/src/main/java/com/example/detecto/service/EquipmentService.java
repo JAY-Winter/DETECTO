@@ -15,4 +15,6 @@ public interface EquipmentService {
     void edit(MultipartFile file, EquipmentEditDto equipmentEditDto);
 
     void delete(String name);
+
+    void editList(List<EquipmentEditDto> dtos);
 }

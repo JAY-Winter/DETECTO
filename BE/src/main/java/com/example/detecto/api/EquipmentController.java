@@ -5,12 +5,14 @@ import com.example.detecto.dto.EquipmentEditDto;
 import com.example.detecto.dto.EquipmentResponseDto;
 import com.example.detecto.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/equipment")
@@ -42,10 +44,19 @@ public class EquipmentController {
     }
 
     @PutMapping
-    public ResponseEntity<?> edit(@RequestPart(value = "file", required = false) MultipartFile file, @RequestBody EquipmentEditDto dto){
+    public ResponseEntity<?> edit(@RequestPart(value = "file", required = false) MultipartFile file, @RequestBody List<EquipmentEditDto> dtos){
         RespData<Void> response = new RespData<>();
 
-        equipmentService.edit(file,dto);
+        if(dtos.size() == 0){
+            return response.builder();
+        }
+
+        if(dtos.size() > 1){
+            equipmentService.editList(dtos);
+        }else{
+            equipmentService.edit(file,dtos.get(0));
+        }
+
 
         return response.builder();
     }
