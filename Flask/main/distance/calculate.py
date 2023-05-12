@@ -4,10 +4,23 @@ from main.distance.is_detect import detect_non_wearing
 from main.distance.draw_map import draw_map
 from main.distance.cal_from_cctv_to_head import cal_from_cctv_to_head, get_mean_coord
 from main.distance.save_non_wear import save_non_wear
-
+from datetime import datetime
+from kafka import KafkaProducer
+import json, base64
 
 # 미착용 클래스 번호
 pro = set({1, 2, 3, 6, 7})
+year = 23
+today = datetime.now()
+partition_key = today.timetuple().tm_yday - 1
+
+
+kafka_producer = KafkaProducer(
+    bootstrap_servers='k8d201.p.ssafy.io:9092',
+    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+    acks='all', 
+    retries=5,
+)
 
 def findHuman(boxes):
     center_box = []
@@ -58,11 +71,10 @@ def distance(point1, point2):
 
 # 이미지 처리
 def calculate(cctv_id,img, model, face_model):
-
+    
     # yolo_images = []
-    yolo_classes = []
     # distances = np.zeros((5))
-
+    kafka_topic = f'cctv.{cctv_id}.{year}'
     # 사진마다 YOLO 적용
     # for i in imglist:
     img = cv2.resize(img, (640, 640))
@@ -70,6 +82,18 @@ def calculate(cctv_id,img, model, face_model):
 
     yolo_image = results[0].plot()
     human_detect = findHuman(results[0].boxes)
+    encoded_frame = base64.b64encode(yolo_image).decode('utf8')
+
+    kafka_data = {
+        'frame': encoded_frame,
+        'timestamp': base64.b64encode(bytes(str(datetime.now()), 'utf-8')).decode('utf-8'),
+    }
+
+    kafka_producer.send(
+        topic=kafka_topic,
+        value=kafka_data,
+        partition=partition_key,
+    )
     # yolo_class = results[0].boxes.cls
 
     # cctv ~ 사람 거리

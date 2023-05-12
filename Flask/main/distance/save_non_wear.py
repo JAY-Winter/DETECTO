@@ -46,7 +46,7 @@ def save_non_wear(cctv_id,human_detect, yolo_image, real_image, face_model):
             db.session.commit()
 
             # 위반 이미지 저장
-            if id == -1:
+            if cls == -1:
                 filename = f"rh{id}.jpg"
                 cv2.imwrite(filename, cropped_image)
             filename = f"{id}.jpg"

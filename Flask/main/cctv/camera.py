@@ -23,7 +23,7 @@ class Camera():
 
     # open camera
     def capture(self, frame):
-        frame = cv2.resize(frame, (640, 480))
+        frame = cv2.resize(frame, (640, 640))
 
         # 프레임 이미지를 flask 서버로 전송
         _, img_encoded = cv2.imencode('.jpg', frame)
