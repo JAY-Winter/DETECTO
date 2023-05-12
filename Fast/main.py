@@ -40,6 +40,12 @@ def encoding(data):
 
 ################################################################
 async def consume_message(websocket, consumer, topic, partition, total_offsets):
+    consumer = KafkaConsumer(
+        bootstrap_servers=['k8d201.p.ssafy.io:9092'],
+        auto_offset_reset='earliest',
+        enable_auto_commit=False,
+        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+    )
     start_offset = 0 
     partition_list = [TopicPartition(topic, partition)]
     total_offsets = total_offsets[partition]
@@ -156,9 +162,3 @@ async def get_max_offset(cctvnumber: int, partition: int):
 
 
 if __name__ == '__main__':
-    consumer = KafkaConsumer(
-        bootstrap_servers=['k8d201.p.ssafy.io:9092'],
-        auto_offset_reset='earliest',
-        enable_auto_commit=False,
-        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-    )
