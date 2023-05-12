@@ -36,19 +36,20 @@ def findHuman(boxes):
             continue
         min_dist = float('inf')
         min_idx = -1
-
+        min_h_box = []
         for idx, h_box in enumerate(human_box):
             if h_box[0] <= x <= h_box[2] and h_box[1] <= y <= h_box[3]:
                 center_h_box = ((h_box[0] + h_box[2]) / 2, (h_box[1] + h_box[3]) / 2)
                 dist = distance((x, y), center_h_box)
                 if dist < min_dist:
+                    min_h_box = h_box
                     min_dist = dist
                     min_idx = idx
 
         if min_idx != -1:
             if min_idx not in human_detect:
                 human_detect[min_idx] = []
-            human_detect[min_idx].append(cls)
+            human_detect[min_idx].append([cls,min_h_box[0],min_h_box[1],min_h_box[2],min_h_box[3]])
 
     return human_detect
 
@@ -56,7 +57,7 @@ def distance(point1, point2):
     return np.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
 
 # 이미지 처리
-def calculate(cctv_id,img, model):
+def calculate(cctv_id,img, model, face_model):
 
     # yolo_images = []
     yolo_classes = []
@@ -85,6 +86,6 @@ def calculate(cctv_id,img, model):
     # print('mean: ', mean_coord)
 
     # DB에 미착용자 저장
-    save_non_wear(cctv_id,human_detect, yolo_image)
+    save_non_wear(cctv_id,human_detect, yolo_image, img, face_model)
 
     return

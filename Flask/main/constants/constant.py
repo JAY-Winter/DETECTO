@@ -15,6 +15,7 @@ MESSAGE_QUEUE = {
     'PW': 'guest',
 }
 MODEL_PATH = 'model/best.pt'
+MODEL_FACE_PATH = 'model/best_face.pt'
 
 CCTV_MAX = 4
 CCTV_TRIGGER_TIME = 5
