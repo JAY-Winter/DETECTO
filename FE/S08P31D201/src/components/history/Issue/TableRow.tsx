@@ -1,84 +1,10 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import { Box, Collapse, TableCell, TableRow } from '@mui/material';
+import { Collapse, TableCell, TableRow } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import MemberCard from './MemberCard';
-import IssueImage from './IssueImage';
-import ScatterChart from '@components/dashboard/Charts/ScatterChart';
-import { ReportType, TeamType, ReportUserType } from 'ReportTypes';
-import IssueMap from './IssueMap';
-import IssueWorkerImage from './IssueWorkerImage';
+import { ReportType } from 'ReportTypes';
+import TableCollapseCard from './TableCollapseCard';
 
-const TableCollapseCard = ({
-  x,
-  y,
-  reportid,
-  area,
-  teamList,
-  violate_member,
-}: {
-  x: number;
-  y: number;
-  reportid: number;
-  area: number;
-  teamList: TeamType;
-  violate_member?: ReportUserType;
-}) => {
-  return (
-    <Box
-      sx={{
-        margin: 1,
-        display: 'flex',
-        flexWrap: 'wrap',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-        height: 'fit-contents'
-      }}
-    >
-      <div
-        style={{
-          width: '50%',
-          height: '300px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <IssueImage reportid={reportid.toString()} />
-      </div>
-      <div
-        style={{
-          width: '50%',
-        }}
-      >
-        <MemberCard teamList={teamList} violate_member={violate_member} />
-      </div>
-      <div
-        style={{
-          width: '50%',
-        }}
-      >
-        <IssueWorkerImage reportid={reportid.toString()} />
-      </div>
-      <div
-        style={{
-          width: '50%',
-        }}
-      >
-        <h2>위치</h2> 
-        <IssueMap
-          data={{
-            id: reportid,
-            area: area,
-            x: x,
-            y: y,
-          }}
-        />
-      </div>
-    </Box>
-  );
-};
 
 function Row(props: { row: ReportType }) {
   const { row } = props;
