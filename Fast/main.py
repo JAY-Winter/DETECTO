@@ -13,13 +13,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from websockets.exceptions import ConnectionClosedError
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
-
 app = FastAPI()
 
 # CORS 설정
 origins = [
-    "http://localhost",
-    "http://localhost:7001",
+    "*"
 ]
 
 app.add_middleware(
@@ -114,7 +112,7 @@ def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dic
         return val
     
 ################################################################
-@app.websocket("/wss")
+@app.websocket("/fast")
 async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: int):
     await websocket.accept()
 
@@ -142,7 +140,7 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     await websocket.close()
 
 ################################################################
-@app.get("/wss/max_offset")
+@app.get("/fast/max_offset")
 async def get_max_offset(cctvnumber: int, partition: int):
     consumer = KafkaConsumer(
         bootstrap_servers=['k8d201.p.ssafy.io:9092'],
