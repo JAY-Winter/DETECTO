@@ -1,8 +1,5 @@
 import styled from '@emotion/styled';
-import {
-  Button,
-  Card,
-} from '@mui/material';
+import { Button, Card } from '@mui/material';
 
 import { SpaceDashboard } from '@mui/icons-material';
 import DashboardContent from '@components/dashboard/DashboardContent';
@@ -13,9 +10,7 @@ function DashboardPage() {
   return (
     <DashboardContainer>
       <DashboardHeader>
-        <Card>
-          <SpaceDashboard />
-        </Card>
+        <SpaceDashboard />
         <h1>대시보드</h1>
       </DashboardHeader>
       <DashboardDatePicker />
@@ -36,29 +31,20 @@ const DashboardContainer = styled.div`
   height: 100%;
   align-items: center;
   padding: 2.5rem 2rem;
-  ${ tabletV } {
+  ${tabletV} {
     align-items: normal;
   }
 `;
 
 const DashboardHeader = styled.div`
   display: flex;
-  /* padding: 2rem; */
+  align-items: center;
   width: 100%;
   margin: 0rem 0rem 2rem;
 
-  .MuiCard-root {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.3rem;
-    margin-right: 0.5rem;
-
-    background-color: ${props => props.theme.palette.primary.main};
-
-    svg {
-      color: ${props => props.theme.palette.primary.contrastText};
-    }
+  svg {
+    font-size: 2.5rem;
+    margin-right: 1rem;
   }
 `;
 

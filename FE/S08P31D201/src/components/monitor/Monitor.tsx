@@ -4,6 +4,8 @@ import styled from '@emotion/styled';
 import { Button, IconButton } from '@mui/material';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import CircleIcon from '@mui/icons-material/Circle';
+import { tabletV } from '@/utils/Mixin';
 
 function Monitor({ monitorId }: { monitorId: number }) {
   const [img, setImg] = useState<string>();
@@ -11,7 +13,9 @@ function Monitor({ monitorId }: { monitorId: number }) {
   const ws = useRef<WebSocket>();
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
   const [maxoffset, setMaxOffset] = useState<number>();
-  const [pause, setPause] = useState<boolean>(false)
+  const [pause, setPause] = useState<boolean>(false);
+
+  const [hoverd, setHoverd] = useState<boolean>(false);
 
   async function connectWebSocket(offset: number) {
     if (ws.current) {
@@ -22,7 +26,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
     }
 
     const websocket = new WebSocket(
-      `wss://k8d201.p.ssafy.io:7005/wss?cctvnumber=${monitorId}&partition=129`
+      `wss://k8d201.p.ssafy.io:7005/fast?cctvnumber=${monitorId}&partition=129`
     );
 
     // const websocket = new WebSocket(
@@ -73,7 +77,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
   useEffect(() => {
     axios({
       method: 'get',
-      url: `https://k8d201.p.ssafy.io/wss/max_offset?cctvnumber=${monitorId}&partition=129`,
+      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=129`,
     }).then(res => {
       setMaxOffset(res.data.offsets);
     });
@@ -90,43 +94,69 @@ function Monitor({ monitorId }: { monitorId: number }) {
 
     currentOffset.current = newOffset;
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      setPause(false)
+      setPause(false);
       ws.current.send(JSON.stringify({ offset: currentOffset.current - 1 }));
     } else {
       console.error('웹소켓이 열려있지 않습니다.');
     }
   };
 
-  if (ws.current && ws.current.readyState !== WebSocket.OPEN) {
-    return <div>로딩중입니당...</div>;
-  }
+  // if (ws.current && ws.current.readyState !== WebSocket.OPEN) {
+  //   return <div>로딩중입니당...</div>;
+  // }
 
   const pauseHandler = () => {
     setPause(prev => {
       if (prev) {
         if (ws.current)
-        ws.current.send(JSON.stringify({ offset: currentOffset.current - 1 }));
+          ws.current.send(
+            JSON.stringify({ offset: currentOffset.current - 1 })
+          );
       } else {
         if (timeoutId.current) {
           clearTimeout(timeoutId.current);
         }
       }
-      return !prev
-    })
+      return !prev;
+    });
+  };
+
+  const hoverHandler = () => {
+    setHoverd(true)
+  }
+
+  const mouseLeaveHandler = () => {
+    setHoverd(false)
   }
 
   return (
-    <MonitorDiv>
-      <img src={img} alt="" />
-      <PauseButton color='primary' onClick={pauseHandler}>{pause ? <PlayArrowIcon /> : <PauseIcon />}</PauseButton>
-      <input
-        type="range"
-        onChange={buttonH}
-        min={0}
-        max={maxoffset}
-        step={1}
-        value={currentOffset.current - 1}
+    <MonitorDiv onMouseEnter={hoverHandler} onMouseLeave={mouseLeaveHandler}>
+      <img
+        src={
+          'https://i.ytimg.com/vi/qe0gepQh8N0/maxresdefault.jpg'
+        }
+        alt=""
       />
+      <MonitorTitle hoverd={hoverd}>{monitorId}번 카메라</MonitorTitle>
+      <MonitorBottom hoverd={hoverd}>
+        <input
+          type="range"
+          onChange={buttonH}
+          min={0}
+          max={maxoffset}
+          step={1}
+          value={currentOffset.current - 1}
+        />
+        <div>
+          <PauseButton color="primary" onClick={pauseHandler}>
+            {pause ? <PlayArrowIcon /> : <PauseIcon />}
+          </PauseButton>
+          <RealTimeButton variant='contained'>
+            <CircleIcon />
+            실시간
+          </RealTimeButton>
+        </div>
+      </MonitorBottom>
     </MonitorDiv>
   );
 }
@@ -136,26 +166,83 @@ export default Monitor;
 const MonitorDiv = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: relative;
 
-  width: 50%;
+  overflow: hidden;
+
+  width: 100%;
 
   input {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: calc(100% - 4rem);
-    margin: 1rem;
+    width: 100%;
   }
 
   img {
     width: 100%;
   }
+
+  ${tabletV} {
+    width: 100%
+  }
+`;
+
+const MonitorTitle = styled.div<{hoverd: boolean}>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1rem;
+  padding: 0.2rem;
+
+  transition: 1s ease all;
+
+  transform: ${props => {
+    if (props.hoverd) {
+      return 'translate(0, 0)'
+    } else {
+      return 'translate(0, -5rem)'
+    }
+  }};
+
+  background-color: #00000098;
+  border-radius: 0.5rem;
+
+  color: white;
+  font-size: 1.5rem;
+`;
+
+const MonitorBottom = styled.div<{hoverd: boolean}>`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 100%;
+  height: fit-content;
+  bottom: 0;
+  left: 0;
+
+  background-color: #00000098;
+
+  transition: 1s ease all;
+
+  transform: ${props => {
+    if (props.hoverd) {
+      return 'translate(0, 0)'
+    } else {
+      return 'translate(0, 5rem)'
+    }
+  }};
 `;
 
 const PauseButton = styled(IconButton)`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  margin: 0.2rem
+  width: fit-content;
+`;
+
+const RealTimeButton = styled(Button)`
+  font-size: 0.7rem;
+
+  svg {
+    font-size: 0.4rem;
+    margin-right: 0.5rem;
+    color: ${props => props.theme.palette.error.main}
+  }
 `;
