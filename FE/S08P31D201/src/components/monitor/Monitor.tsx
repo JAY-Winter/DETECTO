@@ -14,6 +14,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
   const [maxoffset, setMaxOffset] = useState<number>();
   const [pause, setPause] = useState<boolean>(false);
+  const [time, setTime] = useState<string>("")
 
   const [hoverd, setHoverd] = useState<boolean>(false);
 
@@ -26,7 +27,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
     }
 
     const websocket = new WebSocket(
-      `wss://k8d201.p.ssafy.io:7005/fast?cctvnumber=${monitorId}&partition=129`
+      `wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=129`
     );
 
     // const websocket = new WebSocket(
@@ -46,6 +47,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
       var minutes = timestampDate.getMinutes();
       var seconds = timestampDate.getSeconds();
       var timestampString = hours + ':' + minutes + ':' + seconds;
+      setTime(timestampString)
 
       if (timeoutId.current) {
         clearTimeout(timeoutId.current);
@@ -133,7 +135,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
     <MonitorDiv onMouseEnter={hoverHandler} onMouseLeave={mouseLeaveHandler}>
       <img
         src={
-          'https://i.ytimg.com/vi/qe0gepQh8N0/maxresdefault.jpg'
+          img
         }
         alt=""
       />
@@ -155,6 +157,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
             <CircleIcon />
             실시간
           </RealTimeButton>
+          {time}
         </div>
       </MonitorBottom>
     </MonitorDiv>
@@ -231,6 +234,8 @@ const MonitorBottom = styled.div<{hoverd: boolean}>`
       return 'translate(0, 5rem)'
     }
   }};
+
+  color: white;
 `;
 
 const PauseButton = styled(IconButton)`
