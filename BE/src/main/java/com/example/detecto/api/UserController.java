@@ -1,6 +1,7 @@
 package com.example.detecto.api;
 
 import com.example.detecto.data.RespData;
+import com.example.detecto.dto.EquipmentEditDto;
 import com.example.detecto.dto.UserDto;
 import com.example.detecto.dto.UserResponseDto;
 import com.example.detecto.entity.User;
@@ -14,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -104,6 +107,13 @@ public class UserController {
         res.setHeader("Set-Cookie", "SESSIONID=; Path=/; HttpOnly; Max-Age=0");
         userService.delete(userDto);
         // 로그아웃 성공에 대한 응답을 반환합니다.
+        return response.builder();
+    }
+
+    @PutMapping("/{id}/theme")
+    public ResponseEntity<?> themeEdit(@PathVariable int id){
+        RespData<Void> response = new RespData<>();
+        userService.themeEdit(id);
         return response.builder();
     }
 }

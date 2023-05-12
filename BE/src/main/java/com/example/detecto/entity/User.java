@@ -75,4 +75,6 @@ public class User {
         this.sessionId = sessionId;
     }
 
+    public void setThemeType(ThemeType themeType){this.themeType = themeType; }
+
 }

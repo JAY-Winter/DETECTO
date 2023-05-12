@@ -11,4 +11,6 @@ public interface UserService{
     void save(User user);
 
     void delete(UserDto userDto);
+
+    void themeEdit(int id);
 }
