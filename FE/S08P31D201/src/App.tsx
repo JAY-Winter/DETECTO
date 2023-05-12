@@ -15,10 +15,17 @@ import DashboardPage from './pages/DashboardPage';
 import MorePage from './pages/MorePage';
 import AuthProvider from '@components/common/AuthProvider';
 import MonitorPage from './pages/MonitorPage';
-
+import { useRecoilValue } from 'recoil';
+import { UserInfo } from './store/userInfoStroe';
+import WorkerNavigationBar from '@components/navbar/WorkerNavigationBar';
+import WorkerNavigationBarTablet from '@components/navbar/WorkerNavigationBarTablet';
+import WorkerNavigationBarMobile from '@components/navbar/WorkerNavigationBarMobile';
+import FoulPage from './pages/FoulPage';
+import IssuePage from './pages/IssuePage';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
+  const userInfo = useRecoilValue(UserInfo);
 
   // useMemo(() => {
   //   // The dark mode switch would invoke this method
@@ -38,22 +45,42 @@ function App() {
     }
   }, [mode]);
 
+  console.log(userInfo);
+
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        <NavigationBar setMode={setMode} />
-        <NavigationBarTablet setMode={setMode} />
-        <RouterContainerDiv>
-          <Routes>
-            <Route path="/" element={<Navigate replace to="/history" />} />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/manage" element={<EquipmentManagePage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/monitor" element={<MonitorPage />} />
-            <Route path="/more" element={<MorePage setMode={setMode} />} />
-          </Routes>
-        </RouterContainerDiv>
-        <NavigationBarMobile />
+        {userInfo.type === 'admin' ? (
+          <>
+            <NavigationBar setMode={setMode} />
+            <NavigationBarTablet setMode={setMode} />
+            <RouterContainerDiv>
+              <Routes>
+                <Route path="/" element={<Navigate replace to="/history" />} />
+                <Route path="/history" element={<HistoryPage />} />
+                <Route path="/manage" element={<EquipmentManagePage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/monitor" element={<MonitorPage />} />
+                <Route path="/more" element={<MorePage setMode={setMode} />} />
+              </Routes>
+            </RouterContainerDiv>
+            <NavigationBarMobile />
+          </>
+        ) : (
+          <>
+            <WorkerNavigationBar setMode={setMode} />
+            <WorkerNavigationBarTablet setMode={setMode} />
+            <RouterContainerDiv>
+              <Routes>
+                <Route path="/" element={<Navigate replace to="/foul" />} />
+                <Route path="/foul" element={<FoulPage />} />
+                <Route path="/issue" element={<IssuePage />} />
+                <Route path="/more" element={<MorePage setMode={setMode} />} />
+              </Routes>
+            </RouterContainerDiv>
+            <WorkerNavigationBarMobile />
+          </>
+        )}
       </AuthProvider>
     </ThemeProvider>
   );

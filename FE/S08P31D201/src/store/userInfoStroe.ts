@@ -1,14 +1,15 @@
-import { UserType } from "UserTypes";
-import { atom } from "recoil";
+import { UserType } from 'UserTypes';
+import { atom } from 'recoil';
 
 const UserInfo = atom<UserType>({
-  key: "userInfo",
+  key: 'userInfo',
   default: {
     id: undefined,
     name: undefined,
     division: undefined,
-    img: undefined
-  }
-})
+    img: undefined,
+    type: undefined,
+  },
+});
 
 export { UserInfo };
