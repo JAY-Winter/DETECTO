@@ -68,17 +68,19 @@ function App() {
           </>
         ) : (
           <>
-            <WorkerNavigationBar setMode={setMode} />
-            <WorkerNavigationBarTablet setMode={setMode} />
+            <NavigationBar setMode={setMode} />
+            <NavigationBarTablet setMode={setMode} />
             <RouterContainerDiv>
               <Routes>
-                <Route path="/" element={<Navigate replace to="/foul" />} />
-                <Route path="/foul" element={<FoulPage />} />
-                <Route path="/issue" element={<IssuePage />} />
+                <Route path="/" element={<Navigate replace to="/history" />} />
+                <Route path="/history" element={<HistoryPage />} />
+                <Route path="/manage" element={<EquipmentManagePage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/monitor" element={<MonitorPage />} />
                 <Route path="/more" element={<MorePage setMode={setMode} />} />
               </Routes>
             </RouterContainerDiv>
-            <WorkerNavigationBarMobile />
+            <NavigationBarMobile />
           </>
         )}
       </AuthProvider>
