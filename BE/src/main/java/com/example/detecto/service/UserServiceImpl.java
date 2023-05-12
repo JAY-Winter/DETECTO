@@ -23,15 +23,16 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void saveFcmToken(User user) {
+    public void save(User user) {
         userRepository.save(user);
     }
 
     @Override
-    public void deleteFcmToken(UserDto userDto) {
+    public void delete(UserDto userDto) {
         User user = getUser(userDto);
 
         user.setFcmToken(null);
+        user.setSessionId(null);
         userRepository.save(user);
     }
 

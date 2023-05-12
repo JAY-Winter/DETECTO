@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface UserService{
     User login(UserDto userDto);
 
-    void saveFcmToken(User user);
+    void save(User user);
 
-    void deleteFcmToken(UserDto userDto);
+    void delete(UserDto userDto);
 }
