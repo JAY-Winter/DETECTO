@@ -206,17 +206,17 @@ function IssueMap({
 
       const rect = g
         .append('rect')
-        .attr('width', width / 2)
+        .attr('width', width / 2 - margin.left)
         .attr('height', height / 2 + margin.top)
         .attr('fill', 'transparent')
         .attr('clip-path', 'url(#clip)');
 
       if (data.area === 2) {
-        rect.attr('transform', `translate(0, 0)`)
+        rect.attr('x', 0).attr('y', 0);
       } else if (data.area === 1) {
-        rect.attr('transform', `translate(${width/2}, 0)`)
+        rect.attr('x', width / 2).attr('y', 0);
       } else {
-        rect.attr('transform', `translate(${width/2}, ${height/2})`)
+        rect.attr('x', width / 2).attr('y', height / 2);
       }
 
       if (coordinate.x === -10 && coordinate.y === -10) {

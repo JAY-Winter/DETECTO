@@ -25,23 +25,13 @@ function TableCollapseCard({
   violate_member?: ReportUserType;
 }) {
   return (
-    <Box
-      sx={{
-        margin: 1,
-        display: 'flex',
-        flexWrap: 'wrap',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-        height: 'fit-contents',
-      }}
-    >
-      <div>
+    <TableCollapseDiv>
+      <CollapseCardDiv>
         <IssueImage reportid={reportid.toString()} />
-      </div>
-      <div>
+      </CollapseCardDiv>
+      <CollapseCardDiv>
         <MemberCard teamList={teamList} violate_member={violate_member} />
-      </div>
+      </CollapseCardDiv>
       {/* <div
         style={{
           width: '50%',
@@ -49,19 +39,7 @@ function TableCollapseCard({
       >
         <IssueWorkerImage reportid={reportid.toString()} />
       </div> */}
-      <div>
-        <h2>위치</h2>
-        <h4>{area}번 카메라</h4>
-        <IssueMap
-          data={{
-            id: reportid,
-            area: area,
-            x: x,
-            y: y,
-          }}
-        />
-      </div>
-    </Box>
+    </TableCollapseDiv>
   );
 }
 
@@ -69,7 +47,16 @@ export default TableCollapseCard;
 
 const TableCollapseDiv = styled.div`
   display: flex;
-  > div {
-    flex-basis: 100%;
+  flex-wrap: wrap;
+  position: relative;
+  width: 100%;
+
+  >div {
+    flex-basis: 50%;
   }
 `;
+
+// width를 일정 수치 안주면 resize가 정상작동을 하지 않습니다
+const CollapseCardDiv = styled.div`
+  width: 100px;
+`

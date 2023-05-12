@@ -1,14 +1,17 @@
 import styled from '@emotion/styled';
 import { Card } from '@mui/material';
-import { CountItemData } from 'ChartTypes';
+import { CountItemData, CountTimeTeamData } from 'ChartTypes';
 import React, { useEffect, useState } from 'react';
 
 function HistoryCards({
   eqData,
+  teamData,
 }: {
-  eqData: CountItemData[] | undefined
+  eqData: CountItemData[] | undefined;
+  teamData: CountTimeTeamData[] | undefined;
 }) {
   const [topEq, setTopEq] = useState<string>();
+  const [topTeam, setTopTeam] = useState<string>();
 
   useEffect(() => {
     if (eqData) {
@@ -31,6 +34,27 @@ function HistoryCards({
     }
   }, [eqData]);
 
+  useEffect(() => {
+    if (teamData) {
+      const highestValueKey = teamData.reduce(
+        (
+          maxItem: {
+            teamName: any;
+            value: any;
+          },
+          currentItem: {
+            teamName: any;
+            value: any;
+          }
+        ) => {
+          return currentItem.value.length > maxItem.value.length ? currentItem : maxItem;
+        }
+      ).teamName;
+
+      setTopTeam(highestValueKey);
+    }
+  }, [teamData]);
+
   return (
     <HistoryCardDiv>
       <HistoryCard linearcolor="primary">
@@ -44,10 +68,10 @@ function HistoryCards({
       </HistoryCard>
       <HistoryCard linearcolor="error">
         <div className="content-main">
-          <div>1팀</div>
+          <div>{topTeam}</div>
         </div>
         <div className="content-sub">
-          <h1>1팀</h1>
+          <h1>{topTeam}</h1>
           <h4>위반 팀 1위</h4>
         </div>
       </HistoryCard>

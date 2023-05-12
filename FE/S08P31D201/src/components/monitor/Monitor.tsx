@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react'
 import { Button, IconButton } from '@mui/material';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -12,9 +13,9 @@ function Monitor({ monitorId }: { monitorId: number }) {
   const currentOffset = useRef<number>(0);
   const ws = useRef<WebSocket>();
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
-  const [maxoffset, setMaxOffset] = useState<number>();
+  const [maxoffset, setMaxOffset] = useState<number>(2);
   const [pause, setPause] = useState<boolean>(false);
-  const [time, setTime] = useState<string>("")
+  const [time, setTime] = useState<string>('');
 
   const [hoverd, setHoverd] = useState<boolean>(false);
 
@@ -27,7 +28,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
     }
 
     const websocket = new WebSocket(
-      `wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=129`
+      `wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=131`
     );
 
     // const websocket = new WebSocket(
@@ -39,6 +40,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
       const data = JSON.parse(frameData);
 
       setImg('data:image/jpeg;base64,' + data['frame']);
+      // setMaxOffset(data.total);
       currentOffset.current = data.offset;
 
       const timestamp = data.timestamp;
@@ -47,7 +49,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
       var minutes = timestampDate.getMinutes();
       var seconds = timestampDate.getSeconds();
       var timestampString = hours + ':' + minutes + ':' + seconds;
-      setTime(timestampString)
+      setTime(timestampString);
 
       if (timeoutId.current) {
         clearTimeout(timeoutId.current);
@@ -79,8 +81,9 @@ function Monitor({ monitorId }: { monitorId: number }) {
   useEffect(() => {
     axios({
       method: 'get',
-      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=129`,
+      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=131`,
     }).then(res => {
+      console.log(res.data);
       setMaxOffset(res.data.offsets);
     });
     connectWebSocket(currentOffset.current);
@@ -103,9 +106,18 @@ function Monitor({ monitorId }: { monitorId: number }) {
     }
   };
 
-  // if (ws.current && ws.current.readyState !== WebSocket.OPEN) {
-  //   return <div>로딩중입니당...</div>;
-  // }
+  if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
+  
+    return (
+      <LoadingDiv>
+        <div className="spinner-square">
+          <div className="square-1 square"></div>
+          <div className="square-2 square"></div>
+          <div className="square-3 square"></div>
+        </div>
+      </LoadingDiv>
+    );
+  }
 
   const pauseHandler = () => {
     setPause(prev => {
@@ -124,21 +136,22 @@ function Monitor({ monitorId }: { monitorId: number }) {
   };
 
   const hoverHandler = () => {
-    setHoverd(true)
-  }
+    setHoverd(true);
+  };
 
   const mouseLeaveHandler = () => {
-    setHoverd(false)
-  }
+    setHoverd(false);
+  };
+
+  const realTimeHandler = () => {
+    if (ws.current) {
+      ws.current.send(JSON.stringify({ offset: maxoffset - 1 }));
+    }
+  };
 
   return (
     <MonitorDiv onMouseEnter={hoverHandler} onMouseLeave={mouseLeaveHandler}>
-      <img
-        src={
-          img
-        }
-        alt=""
-      />
+      <img src={img} alt="" />
       <MonitorTitle hoverd={hoverd}>{monitorId}번 카메라</MonitorTitle>
       <MonitorBottom hoverd={hoverd}>
         <input
@@ -153,7 +166,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
           <PauseButton color="primary" onClick={pauseHandler}>
             {pause ? <PlayArrowIcon /> : <PauseIcon />}
           </PauseButton>
-          <RealTimeButton variant='contained'>
+          <RealTimeButton variant="contained" onClick={realTimeHandler}>
             <CircleIcon />
             실시간
           </RealTimeButton>
@@ -175,22 +188,18 @@ const MonitorDiv = styled.div`
 
   overflow: hidden;
 
-  width: 100%;
-
   input {
     width: 100%;
   }
 
   img {
     width: 100%;
-  }
-
-  ${tabletV} {
-    width: 100%
+    height: 100%;
+    object-fit: contain;
   }
 `;
 
-const MonitorTitle = styled.div<{hoverd: boolean}>`
+const MonitorTitle = styled.div<{ hoverd: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
@@ -201,9 +210,9 @@ const MonitorTitle = styled.div<{hoverd: boolean}>`
 
   transform: ${props => {
     if (props.hoverd) {
-      return 'translate(0, 0)'
+      return 'translate(0, 0)';
     } else {
-      return 'translate(0, -5rem)'
+      return 'translate(0, -5rem)';
     }
   }};
 
@@ -214,7 +223,7 @@ const MonitorTitle = styled.div<{hoverd: boolean}>`
   font-size: 1.5rem;
 `;
 
-const MonitorBottom = styled.div<{hoverd: boolean}>`
+const MonitorBottom = styled.div<{ hoverd: boolean }>`
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -229,9 +238,9 @@ const MonitorBottom = styled.div<{hoverd: boolean}>`
 
   transform: ${props => {
     if (props.hoverd) {
-      return 'translate(0, 0)'
+      return 'translate(0, 0)';
     } else {
-      return 'translate(0, 5rem)'
+      return 'translate(0, 5rem)';
     }
   }};
 
@@ -248,6 +257,63 @@ const RealTimeButton = styled(Button)`
   svg {
     font-size: 0.4rem;
     margin-right: 0.5rem;
-    color: ${props => props.theme.palette.error.main}
+    color: ${props => props.theme.palette.error.main};
+  }
+`;
+
+const loadingSpinner = keyframes`
+    0% {
+        height: 5rem;
+        background-color: rgb(111, 200, 240);
+    }
+    20% {
+        height: 5rem;
+    }
+    40% {
+        height: 7rem;
+        background-color: rgb(111, 200, 240);
+    }
+    80% {
+        height: 5rem;
+    }
+    100% {
+        height: 5rem;
+        background-color: rgb(111, 163, 240);
+    }
+`;
+const LoadingDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 600px;
+  height: 480px;
+
+  .spinner-square {
+    display: flex;
+    flex-direction: row;
+    width: 90px;
+    height: 120px;
+  }
+
+  .spinner-square > .square {
+    width: 17px;
+    height: 80px;
+    margin: auto auto;
+    border-radius: 4px;
+  }
+
+  .square-1 {
+    animation: ${loadingSpinner} 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) 0s
+      infinite;
+  }
+
+  .square-2 {
+    animation: ${loadingSpinner} 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95)
+      200ms infinite;
+  }
+
+  .square-3 {
+    animation: ${loadingSpinner} 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95)
+      400ms infinite;
   }
 `;
