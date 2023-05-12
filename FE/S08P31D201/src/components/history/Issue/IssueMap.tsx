@@ -5,15 +5,19 @@ import useResize from '@/hooks/useResize';
 import { CoordinationItemData } from 'ChartTypes';
 import { Button } from '@mui/material';
 import axios from 'axios';
+import { transform } from 'lodash';
 
 const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 
-function IssueMap({ data }: { data: {id: number, area: number, x: number; y: number } | undefined }) {
+function IssueMap({
+  data,
+}: {
+  data: { id: number; area: number; x: number; y: number } | undefined;
+}) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const mainDiv = useRef(null);
   const size = useResize(mainDiv);
   const [coordinate, setCoordinate] = useState({ x: -10, y: -10 });
-
 
   useEffect(() => {
     if (data) setCoordinate({ x: data.x, y: data.y });
@@ -42,9 +46,9 @@ function IssueMap({ data }: { data: {id: number, area: number, x: number; y: num
         .append('clipPath')
         .attr('id', `clip`)
         .append('rect')
-        .attr('x', margin.left)
+        .attr('x', 0)
         .attr('y', 0)
-        .attr('width', width - margin.right - margin.left)
+        .attr('width', width - margin.right)
         .attr('height', height + margin.top);
 
       svg.attr('clip-path', 'url(#clip)');
@@ -64,7 +68,7 @@ function IssueMap({ data }: { data: {id: number, area: number, x: number; y: num
         .attr('stroke', 'currentColor');
 
       g.append('line')
-        .attr('x1', 0)
+        .attr('x1', mapWidth / 2)
         .attr('y1', height)
         .attr('x2', mapWidth)
         .attr('y2', height)
@@ -83,7 +87,7 @@ function IssueMap({ data }: { data: {id: number, area: number, x: number; y: num
         .attr('x1', 0)
         .attr('y1', 0)
         .attr('x2', 0)
-        .attr('y2', height)
+        .attr('y2', height / 2)
         .attr('stroke', 'currentColor');
 
       g.append('line')
@@ -111,17 +115,10 @@ function IssueMap({ data }: { data: {id: number, area: number, x: number; y: num
         .arc()
         .innerRadius(0)
         .outerRadius(30)
-        .startAngle(Math.PI)
+        .startAngle(Math.PI * 2)
         .endAngle((Math.PI * 3) / 2);
 
       const cctv3: d3.Arc<any, d3.DefaultArcObject> = d3
-        .arc()
-        .innerRadius(0)
-        .outerRadius(30)
-        .startAngle(0)
-        .endAngle(Math.PI / 2);
-
-      const cctv4: d3.Arc<any, d3.DefaultArcObject> = d3
         .arc()
         .innerRadius(0)
         .outerRadius(30)
@@ -131,48 +128,34 @@ function IssueMap({ data }: { data: {id: number, area: number, x: number; y: num
       // Create CCTV Circle
       g.append('path')
         .attr('d', cctv1 as any)
-        .style('fill', 'currentColor')
-        .attr('transform', `translate(0,0)`);
-      g.append('text')
-        .attr('x', 10)
-        .attr('y', 10)
-        .attr('text-anchor', 'middle')
-        .attr('dominant-baseline', 'middle')
-        .style('fill', 'currentcolor')
-        .style('filter', 'invert(1)')
-        .text('3');
+        .style('fill', data.area === 1 ? 'red' : 'currentColor')
+        .attr('transform', `translate(${mapWidth / 2},0)`);
 
       g.append('path')
         .attr('d', cctv2 as any)
-        .style('fill', 'currentColor')
-        .attr('transform', `translate(${mapWidth}, 0)`);
+        .style('fill', data.area === 2 ? 'red' : 'currentColor')
+        .attr('transform', `translate(${mapWidth / 2}, ${height / 2})`);
+      g.append('path')
+        .attr('d', cctv3 as any)
+        .style('fill', data.area === 3 ? 'red' : 'currentColor')
+        .attr('transform', `translate(${mapWidth}, ${height})`);
 
       g.append('text')
-        .attr('x', mapWidth - 10)
+        .attr('x', mapWidth / 2 + 10)
         .attr('y', 10)
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
         .style('fill', 'currentcolor')
         .style('filter', 'invert(1)')
         .text('1');
-
-      g.append('path')
-        .attr('d', cctv3 as any)
-        .style('fill', 'currentColor')
-        .attr('transform', `translate(0, ${height})`);
       g.append('text')
-        .attr('x', 10)
-        .attr('y', height - 10)
+        .attr('x', mapWidth / 2 - 10)
+        .attr('y', height / 2 - 10)
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
         .style('fill', 'currentcolor')
         .style('filter', 'invert(1)')
-        .text('4');
-
-      g.append('path')
-        .attr('d', cctv4 as any)
-        .style('fill', 'currentColor')
-        .attr('transform', `translate(${mapWidth}, ${height})`);
+        .text('2');
       g.append('text')
         .attr('x', mapWidth - 10)
         .attr('y', height - 10)
@@ -180,7 +163,7 @@ function IssueMap({ data }: { data: {id: number, area: number, x: number; y: num
         .attr('dominant-baseline', 'middle')
         .style('fill', 'currentcolor')
         .style('filter', 'invert(1)')
-        .text('2');
+        .text('3');
 
       // Add dots
       const redDot = g
@@ -223,10 +206,18 @@ function IssueMap({ data }: { data: {id: number, area: number, x: number; y: num
 
       const rect = g
         .append('rect')
-        .attr('width', width)
-        .attr('height', height + margin.top)
+        .attr('width', width / 2)
+        .attr('height', height / 2 + margin.top)
         .attr('fill', 'transparent')
         .attr('clip-path', 'url(#clip)');
+
+      if (data.area === 2) {
+        rect.attr('transform', `translate(0, 0)`)
+      } else if (data.area === 1) {
+        rect.attr('transform', `translate(${width/2}, 0)`)
+      } else {
+        rect.attr('transform', `translate(${width/2}, ${height/2})`)
+      }
 
       if (coordinate.x === -10 && coordinate.y === -10) {
         rect.on('pointermove', dotMove).on('click', dotClick);
@@ -236,20 +227,34 @@ function IssueMap({ data }: { data: {id: number, area: number, x: number; y: num
     }
   }, [size, data, coordinate]);
 
-  console.log({id: -1, x: Math.ceil(coordinate.x), y: Math.ceil(coordinate.y)})
+  console.log({
+    id: -1,
+    x: Math.ceil(coordinate.x),
+    y: Math.ceil(coordinate.y),
+  });
   const coordinateHandler = () => {
     if (data)
-    axios({
-      method: 'post',
-      url: 'https://k8d201.p.ssafy.io/api/report/coord',
-      data: {id: data.id, x: Math.ceil(coordinate.x), y: Math.ceil(coordinate.y)}
-    })
-  }
+      axios({
+        method: 'post',
+        url: 'https://k8d201.p.ssafy.io/api/report/coord',
+        data: {
+          id: data.id,
+          x: Math.ceil(coordinate.x),
+          y: Math.ceil(coordinate.y),
+        },
+      });
+  };
 
   return (
     <div ref={mainDiv}>
       <svg ref={svgRef}></svg>
-      <Button variant='contained' sx={{width: '100%'}} onClick={coordinateHandler}>위치 수정</Button>
+      <Button
+        variant="contained"
+        sx={{ width: '100%' }}
+        onClick={coordinateHandler}
+      >
+        위치 수정
+      </Button>
     </div>
   );
 }

@@ -1,25 +1,50 @@
 import { tabletV } from '@/utils/Mixin';
 import styled from '@emotion/styled';
-import { Card } from '@mui/material';
+import { Button, Card } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import Monitor from '@components/monitor/Monitor';
 
-const cctvidlist = [0, 1, 2];
 
 function MonitorPage() {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [cctvList, setCctvList] = useState([0, 1, 2])
+
+  function enterFullScreen() {
+    if (containerRef.current) {
+      if (containerRef.current.requestFullscreen) {
+        containerRef.current.requestFullscreen();
+      }
+    }
+  }
+
+  useEffect(() => {
+    enterFullScreen()
+  }, [])
+
+  const cctvButtonHandler = (list: number[]) => {
+    setCctvList(list)
+  }
+
   return (
     <MonitorContainer>
       <MonitorHeader>
-        <Card>
-          <VideocamOutlinedIcon />
-        </Card>
+        <VideocamOutlinedIcon />
         <h1>모니터링</h1>
+        <Button onClick={enterFullScreen}>풀스크린 버튼</Button>
       </MonitorHeader>
-      <MonitorContentsDiv>
-        {cctvidlist.map(id => {
-          return <Monitor key={'cctvScreen' + id} monitorId={id} />;
-        })}
+      <MonitorContentsDiv ref={containerRef}>
+        <MonitorNav>
+          <Button variant='contained' onClick={() => cctvButtonHandler([0])}>1번</Button>
+          <Button variant='contained' onClick={() => cctvButtonHandler([1])}>2번</Button>
+          <Button variant='contained' onClick={() => cctvButtonHandler([2])}>3번</Button>
+          <Button variant='contained' onClick={() => cctvButtonHandler([0, 1, 2])}>전체</Button>
+        </MonitorNav>
+        <MonitorsDiv>
+          {cctvList.map(id => {
+            return <Monitor key={'cctvScreen' + id} monitorId={id} />;
+          })}
+        </MonitorsDiv>
       </MonitorContentsDiv>
     </MonitorContainer>
   );
@@ -42,26 +67,52 @@ const MonitorContainer = styled.div`
 
 const MonitorHeader = styled.div`
   display: flex;
-  /* padding: 2rem; */
+  align-items: center;
   width: 100%;
   margin: 0rem 0rem 2rem;
 
-  .MuiCard-root {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.3rem;
-    margin-right: 0.5rem;
-
-    background-color: ${props => props.theme.palette.primary.main};
-
-    svg {
-      color: ${props => props.theme.palette.primary.contrastText};
-    }
+  svg {
+    font-size: 2.5rem;
+    margin-right: 1rem;
   }
 `;
 
 const MonitorContentsDiv = styled.div`
   display: flex;
+
+  flex-direction: row;
+  position: relative;
+
+  :fullscreen-element {
+    background-color: white;
+  }
+`;
+
+const MonitorNav = styled.div`
+  display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  height: calc(100% - 2rem);
+  width: 100px;
+
+  background-color: ${props => props.theme.palette.neutral.card};
+  border-radius: 1rem;
+  margin: 1rem;
+  padding: 1rem;
+`;
+
+const MonitorsDiv = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  position: relative;
+  width: calc(100% - 100px);
+
+  >div {
+    flex-basis: 50%;
+  }
+
+  >div:only-child {
+    flex-basis: 100%;
+  }
 `;

@@ -4,7 +4,6 @@ import com.example.detecto.dto.EpochDto;
 import com.example.detecto.dto.EquipmentEditDto;
 import com.example.detecto.dto.EquipmentResponseDto;
 import com.example.detecto.entity.Equipment;
-import com.example.detecto.exception.AlreadyExistData;
 import com.example.detecto.exception.DoesNotExistData;
 import com.example.detecto.exception.InvalidData;
 import com.example.detecto.repository.EquipmentRepository;
@@ -113,5 +112,12 @@ public class EquipmentServiceImpl implements EquipmentService{
             throw new DoesNotExistData("해당 장비가 존재하지 않아요");
         }
         equipmentRepository.deleteById(name);
+    }
+
+    @Override
+    public void editList(List<EquipmentEditDto> dtos) {
+        for(EquipmentEditDto dto : dtos){
+            edit(null, dto);
+        }
     }
 }
