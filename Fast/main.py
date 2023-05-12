@@ -91,7 +91,10 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                     if not received_data:
                         continue
                     print('s')  
-                    received_data = json.loads(received_data)
+                    try:
+                        received_data = json.loads(received_data)
+                    except Exception as e:
+                        print('error', e)
                     print('e')
                     new_offset = received_data['offset']
                     print('a')
