@@ -57,7 +57,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
     except KafkaError as e:
         print(e)
 
-    while True:
+    while True: 
         print('while')
         consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
@@ -70,15 +70,20 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
             for message in consumer:
                 print('cnsume')
                 data = message.value
+                print('1')
                 frame_encoded = encoding(data)
+                print('2')
                 context = {
                     'frame': frame_encoded,
                     'total': total_offsets,
                     'offset': message.offset,
                     'timestamp': message.timestamp,
                 }
+                print(6)
                 context = json.dumps(context)
+                print(7)
                 await websocket.send_text(context)
+                print(8)
                 try:
                     received_data = await websocket.receive_text()  
                     received_data = json.loads(received_data)
@@ -98,6 +103,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                 except asyncio.CancelledError:
                     print("WebSocket connection closed")
                     break
+                print(9)
         except WebSocketDisconnect:
             print("WebSocket disconnected.")
             break
@@ -112,6 +118,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
             # 처리할 작업을 수행합니다.
             print(e)
             break
+        print(10)
 
 ################################################################
 def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
