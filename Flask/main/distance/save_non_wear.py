@@ -15,7 +15,7 @@ category = {
         "face" : 4,
         "head": 5
     }
-human_cls = [1001,1003,1002]
+human_cls = [1001,1002,1003]
 def save_non_wear(cctv_id,human_detect, yolo_image, real_image, face_model):
     equip = Equipment.query.all()
     current_time = datetime.utcnow()
