@@ -7,7 +7,7 @@ import Monitor from '@components/monitor/Monitor';
 
 
 function MonitorPage() {
-  const containerRef = useRef<HTMLDivElement>();
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [cctvList, setCctvList] = useState([0, 1, 2])
 
   function enterFullScreen() {
@@ -107,4 +107,12 @@ const MonitorsDiv = styled.div`
   flex-direction: row;
   position: relative;
   width: calc(100% - 100px);
+
+  >div {
+    flex-basis: 50%;
+  }
+
+  >div:only-child {
+    flex-basis: 100%;
+  }
 `;
