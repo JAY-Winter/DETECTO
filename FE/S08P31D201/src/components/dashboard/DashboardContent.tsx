@@ -17,22 +17,18 @@ import {
   CountTimeItemData,
   CountTimeTeamData,
 } from 'ChartTypes';
+import { useRecoilValue } from 'recoil';
+import DashboardDayAtom from '@/store/DashboardFilter'
 
-const dummyData: CoordinationItemData[] = [
-  {
-    reportItem: 'halmet',
-    x: -10,
-    y: -10,
-  },
-];
 
 function DashboardContent() {
   const [data, setData] = useState<CountTimeData[]>();
   const [eqdata, seteqData] = useState<CountItemData[]>();
-  const [codata, setCoData] = useState<CoordinationItemData[]>();
   const [ctidata, setCtiData] = useState<CountTimeItemData[]>();
   const [teamdata, setTeamData] = useState<CountTimeTeamData[]>();
   const [teamIndex, setTeamIndex] = useState(0);
+
+  const dashDate = useRecoilValue(DashboardDayAtom);
 
   // time => Date
   function processData(data: ReportType[]): NewReportType[] {
@@ -120,9 +116,11 @@ function DashboardContent() {
   }
 
   useEffect(() => {
+    const startDate = dashDate.startDay.toISOString().slice(0, 10)
+    const endDate = dashDate.endDay.toISOString().slice(0, 10)
     axios({
       method: 'GET',
-      url: 'https://k8d201.p.ssafy.io/api/report?startDate=2023-04-01&endDate=2023-05-11&equipments=',
+      url: `https://k8d201.p.ssafy.io/api/report?startDate=${startDate}&endDate=${endDate}&equipments=`,
     }).then(res => {
       if (res.data.data.length !== 0) {
         console.log(res.data.data);
@@ -136,12 +134,6 @@ function DashboardContent() {
         const eqData = countByReportItems(transformedData);
         seteqData(eqData);
 
-        // 안전장구별로 위치
-        const coData = transformedData.flatMap(d =>
-          d.reportItems.map(reportItem => ({ reportItem, x: d.x, y: d.y }))
-        );
-        setCoData(coData);
-
         // 안전 장구별 날짜 데이터
         const ctiData = countByTimeByReportItems(transformedData);
         setCtiData(ctiData);
@@ -150,13 +142,13 @@ function DashboardContent() {
         setTeamData(teamData);
       }
     });
-  }, []);
+  }, [dashDate]);
 
   return (
     <DashboardContentDiv>
       {data && (
         <>
-          <DashboardCards eqData={eqdata} />
+          <DashboardCards eqData={eqdata} teamData={teamdata} />
           <ChartCardDiv>
             <TotalChartDiv>
               <ZoomCard>
@@ -182,10 +174,6 @@ function DashboardContent() {
                   </EQCard>
                 ))}
             </EQChartDiv>
-            <ScatterCard>
-              <h1>위치</h1>
-              <ScatterChart data={codata} />
-            </ScatterCard>
             <TeamZoomCard>
               <h1>팀 별 기간 차트</h1>
               <div>

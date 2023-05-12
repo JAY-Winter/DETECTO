@@ -14,12 +14,6 @@ const styles = css`
     box-sizing: border-box;
     font-family: 'Pretendard';
   }
-
-  :not(:root):fullscreen::backdrop {
-            position: fixed;
-            inset: 0px;
-            background: white;
-          }
 `;
 
 export default GlobalStyles;

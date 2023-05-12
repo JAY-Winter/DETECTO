@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from '@emotion/react';
 
-function IssueImage({reportid}: {reportid: string}) {
+function IssueImage({ reportid }: { reportid: string }) {
   return (
     <div
       style={{
@@ -13,7 +13,11 @@ function IssueImage({reportid}: {reportid: string}) {
       }}
     >
       <h2>위반 사진</h2>
-      <img css={IssueImageStyle} src={`https://kr.object.ncloudstorage.com/detec/report/${reportid}.jpg`} alt="" />
+      <img
+        css={IssueImageStyle}
+        src={`https://kr.object.ncloudstorage.com/detec/report/${reportid}.jpg`}
+        alt=""
+      />
     </div>
   );
 }

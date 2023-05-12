@@ -5,10 +5,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import Monitor from '@components/monitor/Monitor';
 
-
 function MonitorPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [cctvList, setCctvList] = useState([0, 1, 2])
+  const [cctvList, setCctvList] = useState([0, 1, 2]);
 
   function enterFullScreen() {
     if (containerRef.current) {
@@ -19,12 +18,12 @@ function MonitorPage() {
   }
 
   useEffect(() => {
-    enterFullScreen()
-  }, [])
+    enterFullScreen();
+  }, []);
 
   const cctvButtonHandler = (list: number[]) => {
-    setCctvList(list)
-  }
+    setCctvList(list);
+  };
 
   return (
     <MonitorContainer>
@@ -35,10 +34,21 @@ function MonitorPage() {
       </MonitorHeader>
       <MonitorContentsDiv ref={containerRef}>
         <MonitorNav>
-          <Button variant='contained' onClick={() => cctvButtonHandler([0])}>1번</Button>
-          <Button variant='contained' onClick={() => cctvButtonHandler([1])}>2번</Button>
-          <Button variant='contained' onClick={() => cctvButtonHandler([2])}>3번</Button>
-          <Button variant='contained' onClick={() => cctvButtonHandler([0, 1, 2])}>전체</Button>
+          <Button variant="contained" onClick={() => cctvButtonHandler([0])}>
+            1번
+          </Button>
+          <Button variant="contained" onClick={() => cctvButtonHandler([1])}>
+            2번
+          </Button>
+          <Button variant="contained" onClick={() => cctvButtonHandler([2])}>
+            3번
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => cctvButtonHandler([0, 1, 2])}
+          >
+            전체
+          </Button>
         </MonitorNav>
         <MonitorsDiv>
           {cctvList.map(id => {
@@ -53,11 +63,8 @@ function MonitorPage() {
 export default MonitorPage;
 
 const MonitorContainer = styled.div`
-  /* width: 100%; */
   display: flex;
   flex-direction: column;
-
-  height: 100%;
   align-items: center;
   padding: 2.5rem 2rem;
   ${tabletV} {
@@ -83,8 +90,11 @@ const MonitorContentsDiv = styled.div`
   flex-direction: row;
   position: relative;
 
-  :fullscreen-element {
-    background-color: white;
+  justify-content: center;
+  align-items: center;
+
+  ${tabletV} {
+    flex-direction: column;
   }
 `;
 
@@ -99,6 +109,12 @@ const MonitorNav = styled.div`
   border-radius: 1rem;
   margin: 1rem;
   padding: 1rem;
+
+  ${tabletV} {
+    width: 100%;
+    height: fit-content;
+    justify-content: space-around;
+  }
 `;
 
 const MonitorsDiv = styled.div`
@@ -108,11 +124,23 @@ const MonitorsDiv = styled.div`
   position: relative;
   width: calc(100% - 100px);
 
-  >div {
+  > div {
     flex-basis: 50%;
+    height: 50vh;
   }
 
-  >div:only-child {
+  > div:only-child {
     flex-basis: 100%;
+    height: 100vh;
+  }
+
+  ${tabletV} {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    > div {
+      flex-basis: 100%;
+      height: 100%;
+    }
   }
 `;
