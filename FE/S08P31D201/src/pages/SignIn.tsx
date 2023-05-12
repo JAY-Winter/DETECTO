@@ -15,7 +15,6 @@ import wavemainSVG from '@/assets/img/wavemain.svg'
 import wavedarkSVG from '@/assets/img/wavedark.svg'
 import wavelightSVG from '@/assets/img/wavelight.svg'
 import { UserType } from 'UserTypes';
-import useGetFCMToken from '@/hooks/useGetFCMToken';
 
 
 function SignIn() {
@@ -83,7 +82,8 @@ function SignIn() {
       method: 'post',
       body: {
         id: Number(inputID),
-        password: inputPW
+        password: inputPW,
+        fcmToken: null
       }
     })
   }
