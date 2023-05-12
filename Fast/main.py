@@ -87,6 +87,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                 try:
                     print('r')
                     received_data = websocket.receive_text()
+                    print(received_data)
                     if not received_data:
                         continue
                     print('s')  
