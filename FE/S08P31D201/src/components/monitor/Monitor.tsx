@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import styled from '@emotion/styled';
 import { Button, IconButton } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+
+import CircleIcon from '@mui/icons-material/Circle';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import CircleIcon from '@mui/icons-material/Circle';
+import axios from 'axios';
+import styled from '@emotion/styled';
 import { tabletV } from '@/utils/Mixin';
 
 function Monitor({ monitorId }: { monitorId: number }) {
@@ -26,7 +27,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
     }
 
     const websocket = new WebSocket(
-      `wss://k8d201.p.ssafy.io:7005/fast?cctvnumber=${monitorId}&partition=129`
+      `wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=129`
     );
 
     // const websocket = new WebSocket(
