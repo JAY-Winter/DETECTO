@@ -26,6 +26,17 @@ public class User {
     @Column(name = "fcm_token")
     private String fcmToken;
 
+    @Column(name = "session_id")
+    private String sessionId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type")
+    private UserType userType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_theme")
+    private ThemeType themeType;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_team")
@@ -36,12 +47,15 @@ public class User {
     private List<Report> reports = new ArrayList<>();
 
     @Builder
-    public User(int id, String password, String userName, String userImage, String fcmToken){
+    public User(int id, String password, String userName, String userImage, String fcmToken, String sessionId, UserType userType, ThemeType themeType){
         this.id = id;
         this.password = password;
         this.userName = userName;
         this.userImage = userImage;
         this.fcmToken = fcmToken;
+        this.userType = userType;
+        this.themeType = themeType;
+        this.sessionId = sessionId;
     }
 
     public void setTeam(Team team){
@@ -55,6 +69,10 @@ public class User {
 
     public void setFcmToken(String fcmToken){
         this.fcmToken = fcmToken;
+    }
+
+    public void setSessionId(String sessionId){
+        this.sessionId = sessionId;
     }
 
 }
