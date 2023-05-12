@@ -58,6 +58,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
         print(e)
 
     while True:
+        print('while')
         consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
         message = consumer.poll(timeout_ms=2000)
