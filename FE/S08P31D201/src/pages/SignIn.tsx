@@ -31,9 +31,10 @@ function SignIn() {
         console.log(userInfo);
         const newUser: UserType = {
           id: userInfo.id,
-          name: userInfo.userName,
+          name: userInfo.name,
           division: userInfo.division,
           img: userInfo.img,
+          type: userInfo.type,
           theme: userInfo.theme
         }
         setUserInfo(newUser);
