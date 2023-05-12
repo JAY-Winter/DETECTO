@@ -38,7 +38,6 @@ function useAxios({ tryHandler, catchHandler, finallyHandler, baseURL }: useAxio
     } catch(e) {
       setIsLoading(false);
       if (axios.isAxiosError(e)) {
-        console.log("에러메시지:", e.message);
         // 에러메시지에 세션 관련 에러일 경우엔, auth 상태를 false로 변경하여 로그인 페이지로 보내기
         // setIsAuthenticated(false);
 

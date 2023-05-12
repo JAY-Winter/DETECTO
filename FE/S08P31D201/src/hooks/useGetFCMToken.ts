@@ -1,30 +1,28 @@
 import React from 'react'
 import { getToken } from "firebase/messaging";
 import { messaging } from '@/firebase-init';
-import useAxios from './useAxios';
-import { RequestObj } from 'AxiosRequest';
+import { useRecoilState } from 'recoil';
+import { UserInfo } from '@/store/userInfoStroe';
 
 function useGetFCMToken() {
-  const [data, isLoading, setRequestObj] = useAxios({baseURL: ""});
+  const [userInfo, setUserInfo] = useRecoilState(UserInfo);
 
   const requestPermission = async () => {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
-      // Generate Token
+      // 토큰 생성
       const token = await getToken(messaging, {
         vapidKey:
           "BKszBO0YDR9Cs_PKDtwskomTr9mkcamydkhz_UWUCZrJQJBcQ3BUaRvcxboXhjw10rVUknAu23jMBT5iLdFNj8o",
       });
 
-      // 받아온 토큰값을 서버로 전송
-      const requestObj: RequestObj = {
-        url: "",
-        method: "post",
-        body: {
+      // 생성한 토큰 userInfo에 저장
+      setUserInfo((oldState) => {
+        return {
+          ...oldState,
           fcmToken: token
         }
-      }
-      setRequestObj(requestObj);
+      })
     }
   }
 

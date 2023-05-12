@@ -1,7 +1,7 @@
 import SignIn from '@/pages/SignIn';
 import React, { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { useRecoilState } from 'recoil';
 import authState from '@/store/authState';
 import useAxios from '@/hooks/useAxios';
@@ -38,10 +38,8 @@ function AuthProvider({ children }: AuthProviderProps) {
         method: 'post'
       })
     } else if (isAuthenticated === true) {
-      console.log(`인증 성공! ${location.pathname}로 이동할 것임`);
       navigate(location.pathname);
     } else {
-      console.log("인증 실패...");
       navigate('/', { replace: true });
     }
   }, [isAuthenticated])
