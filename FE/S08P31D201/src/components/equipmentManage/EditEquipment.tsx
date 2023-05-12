@@ -4,18 +4,21 @@ import React, { useEffect, useState } from 'react'
 import DragAndDrop from './DragAndDrop';
 import useAxios from '@/hooks/useAxios';
 import { RequestObj } from 'AxiosRequest';
+import { EquipmentType } from 'EquipmentTypes';
 
 type EditEquipmentProps = {
+  equipment?: EquipmentType | null,
   fetchEquipments: () => void,
-  onClose: () => void
+  onClose: () => void,
+  setWillEditEquipment: React.Dispatch<React.SetStateAction<EquipmentType | null>>;
 }
 
-function EditEquipment({ fetchEquipments, onClose }: EditEquipmentProps) {
+function EditEquipment({ equipment, fetchEquipments, onClose, setWillEditEquipment }: EditEquipmentProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedZip, setSelectedZip] = useState<File | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [equipmentName, setEquipmentName] = useState("");
-  const [equipmentDesc, setEquipmentDesc] = useState("");
+  const [equipmentName, setEquipmentName] = useState(equipment?.name ?? "");
+  const [equipmentDesc, setEquipmentDesc] = useState(equipment?.description ?? "");
   const [equipmentType, setEquipmentType] = useState(1);
   const [isErrorName, setIsErrorName] = useState(false);
   const [isValid, setIsValid] = useState(false);
@@ -112,21 +115,37 @@ function EditEquipment({ fetchEquipments, onClose }: EditEquipmentProps) {
     }
   }, [duplicatedData, isDuplicatedLoading])
 
+  useEffect(() => {
+    return () => {
+      setWillEditEquipment(null);
+    }
+  }, [])
+
   return (
     <EditEquipmentForm>
       <div>
-        <DragAndDrop isDragging={isDragging} setIsDragging={setIsDragging} selectedFile={selectedZip} setSelectedFile={setSelectedZip} type='zip' />
+        { equipment === null && 
+          <DragAndDrop isDragging={isDragging} setIsDragging={setIsDragging} selectedFile={selectedZip} setSelectedFile={setSelectedZip} type='zip' />
+        }
         <br />
         <DragAndDrop isDragging={isDragging} setIsDragging={setIsDragging} selectedFile={selectedImage} setSelectedFile={setSelectedImage} type='image' />
-        <TextField fullWidth label="장비명(공백제외 최대 20자)" value={equipmentName} variant="standard" onChange={handleNameinput} margin="normal" error={isErrorName} helperText={errorMessage} />
+        <TextField fullWidth label="장비명(공백제외 최대 20자)" value={equipmentName} variant="standard" onChange={handleNameinput} margin="normal" error={isErrorName} helperText={errorMessage} disabled={equipment !== null} />
         <TextField fullWidth label="장비 설명(선택)" value={equipmentDesc} variant="standard" onChange={handleDescinput} />
       </div>
-      <Button fullWidth variant="contained" onClick={submit} disabled={!isValid || isLoading}>
+      {equipment === null ?
+        <Button fullWidth variant="contained" onClick={submit} disabled={!isValid || isLoading}>
+          {isLoading ?
+            <CircularProgress size="1.7rem"/> :
+            "등록하기"
+          }
+        </Button> : 
+        <Button fullWidth variant="contained" onClick={submit}>
         {isLoading ?
           <CircularProgress size="1.7rem"/> :
-          "등록하기"
+          "수정하기"
         }
-      </Button>
+        </Button>
+      }
     </EditEquipmentForm>
   )
 }
