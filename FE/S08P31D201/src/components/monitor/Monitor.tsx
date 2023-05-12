@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import styled from '@emotion/styled';
-import { keyframes } from '@emotion/react'
+import { keyframes } from '@emotion/react';
 import { Button, IconButton } from '@mui/material';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -85,8 +85,10 @@ function Monitor({ monitorId }: { monitorId: number }) {
     }).then(res => {
       console.log(res.data);
       setMaxOffset(res.data.offsets);
+      if (res.data.offsets !== 0) {
+        connectWebSocket(currentOffset.current);
+      }
     });
-    connectWebSocket(currentOffset.current);
     return () => {
       if (ws.current && ws.current.OPEN) {
         ws.current.close();
@@ -107,7 +109,6 @@ function Monitor({ monitorId }: { monitorId: number }) {
   };
 
   if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
-  
     return (
       <LoadingDiv>
         <div className="spinner-square">
