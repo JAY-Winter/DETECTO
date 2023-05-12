@@ -14,7 +14,7 @@ import { EquipmentsAtom } from '@/store/EquipmentStore';
 import useEquipments from '@/hooks/useEquipments';
 
 function HistoryEquipmentFilter() {
-  const [equipments, fetchEquipments] = useEquipments();
+  const [equipments, setEquipments, fetchEquipments] = useEquipments();
   const setFilterEq = useSetRecoilState(HistoryEqAtom);
 
   // 모바일 드롭다운 State

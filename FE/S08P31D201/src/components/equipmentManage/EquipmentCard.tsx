@@ -23,7 +23,8 @@ type progressDataType = {
 function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCardProps) {
   const [isShowDropdown, setIsShowDropdown] = useState(false);
   const editRef = useRef<HTMLDivElement>(null);
-  const [data, isCheckLoading, setCheckRequestObj] = useAxios({baseURL: "https://detec.store:5000/"});
+  const [checkData, isCheckLoading, setCheckRequestObj] = useAxios({baseURL: "https://detec.store:5000/"});
+  const [cancelData, isCancelLoading, setCancelRequestObj] = useAxios({baseURL: "https://detec.store:5000/"});
   const [progress, setProgress] = useState(100);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
@@ -51,25 +52,32 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
         url: `stop/${equipment.name}`,
         method: 'get'
       }
-      setCheckRequestObj(requestObj);
+      setCancelRequestObj(requestObj);
     }
   }
 
   useEffect(() => {
-    if (isCheckLoading === false) {
-      if (data !== null) {
-        const progressData = data as progressDataType;
-        if (progressData.data === -1) {
-          setProgress(100);
-          if (intervalId !== null) {
-            clearInterval(intervalId);
-          }
-        } else {
-          setProgress(progressData.data);
+    if (isCheckLoading === false && checkData !== null) {
+      const progressData = checkData as progressDataType;
+      if (progressData.data === -1) {
+        setProgress(100);
+        if (intervalId !== null) {
+          clearInterval(intervalId);
         }
+      } else {
+        setProgress(progressData.data);
       }
     }
-  }, [data, isCheckLoading])
+  }, [checkData, isCheckLoading])
+
+  useEffect(() => {
+    if (isCancelLoading === false && cancelData !== null) {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+        onDelete(equipment.name);
+      }
+    }
+  }, [cancelData, isCancelLoading])
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 setInterval 시작
@@ -80,7 +88,7 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
       }, 1000);
       setIntervalId(id);
     } else {
-      setProgress(10);
+      setProgress(100);
     }
     
 
@@ -124,7 +132,9 @@ function EquipmentCard({ equipment, onDelete, onToggleActiveness }: EquipmentCar
           <ProgressBarDiv>
             <LinearProgress variant="determinate" value={progress} />
           </ProgressBarDiv>
-          <CloseIcon onClick={cancelProgress} />
+          { progress < 100 &&
+            <CloseIcon onClick={cancelProgress} />
+          }
         </ProgressBarContainerDiv>
         { progress < 100 ? 
           <ProgressContextDiv>학습 진행률: {progress}%</ProgressContextDiv> :

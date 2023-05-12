@@ -12,17 +12,14 @@ import { RequestObj } from 'AxiosRequest';
 
 function EquipmentManagePage() {
   const [isShowEditModal, setIsShowEditModal] = useState(false);
-  const [equipments, fetchEquipments] = useEquipments();
-  const [data, isLoading, setRequestObj] = useAxios({baseURL: "https://k8d201.p.ssafy.io/api/"})
+  const [equipments, setEquipments, fetchEquipments] = useEquipments();
+  const [toggleData, isToggleLoading, setToggleRequestObj] = useAxios({baseURL: "https://k8d201.p.ssafy.io/api/"})
 
   // 장비 삭제 핸들러: 카드로부터 ID를 입력받아 삭제한다
   const deleteHandler = (willDeleteName: string) => {
-    const decision = confirm("삭제하시겠습니까??");
-    if (decision) {
-      // setEquipments((oldState) => {
-      //   return oldState.filter(item => item.name !== willDeleteName);
-      // })
-    }
+    setEquipments((oldState) => {
+      return oldState.filter(item => item.name !== willDeleteName);
+    })
   }
 
   // 장비 활성화 여부 토글링 핸들러: 카드로부터 장비명을 입력받아 토글링한다
@@ -49,14 +46,13 @@ function EquipmentManagePage() {
         }
       }
     }
+    // const temp = JSON.stringify(toggleEquipments, null, 0);
     const requestObj: RequestObj = {
       url: "equipment",
       method: "put",
-      body: {
-        toggleEquipments
-      }
+      body: toggleEquipments
     }
-    setRequestObj(requestObj);
+    setToggleRequestObj(requestObj);
   }
   
   // 편집 모달 핸들러
@@ -69,8 +65,10 @@ function EquipmentManagePage() {
   }
 
   useEffect(() => {
-    fetchEquipments();
-  }, [data])
+    if (isToggleLoading === false && toggleData !== null) {
+      fetchEquipments();
+    }
+  }, [toggleData, isToggleLoading])
 
   return (
     <>

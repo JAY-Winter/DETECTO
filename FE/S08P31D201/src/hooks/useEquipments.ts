@@ -37,7 +37,7 @@ function useEquipments() {
     }
   }, [fetchedData])
 
-  return [equipments, fetchEquipments] as const;
+  return [equipments, setEquipments, fetchEquipments] as const;
 }
 
 export default useEquipments
