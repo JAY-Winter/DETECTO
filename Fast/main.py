@@ -86,7 +86,9 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                 print(8)
                 try:
                     print('r')
-                    received_data = await websocket.receive_text()
+                    received_data = websocket.receive_text()
+                    if not received_data:
+                        continue
                     print('s')  
                     received_data = json.loads(received_data)
                     print('e')
@@ -109,6 +111,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                 except asyncio.CancelledError:
                     print("WebSocket connection closed")
                     break
+                
                 print(9)
         except WebSocketDisconnect:
             print("WebSocket disconnected.")
