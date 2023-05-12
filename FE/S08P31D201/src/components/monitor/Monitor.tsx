@@ -26,7 +26,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
     }
 
     const websocket = new WebSocket(
-      `wss://k8d201.p.ssafy.io:7005/wss?cctvnumber=${monitorId}&partition=129`
+      `wss://k8d201.p.ssafy.io:7005/fast?cctvnumber=${monitorId}&partition=129`
     );
 
     // const websocket = new WebSocket(
@@ -77,7 +77,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
   useEffect(() => {
     axios({
       method: 'get',
-      url: `https://k8d201.p.ssafy.io/wss/max_offset?cctvnumber=${monitorId}&partition=129`,
+      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=129`,
     }).then(res => {
       setMaxOffset(res.data.offsets);
     });
@@ -172,7 +172,7 @@ const MonitorDiv = styled.div`
 
   overflow: hidden;
 
-  width: 50%;
+  width: 100%;
 
   input {
     width: 100%;
