@@ -79,7 +79,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                     'offset': message.offset,
                     'timestamp': message.timestamp,
                 }
-                print(6)
+                print(3)
                 context = json.dumps(context)
                 print(7)
                 await websocket.send_text(context)
