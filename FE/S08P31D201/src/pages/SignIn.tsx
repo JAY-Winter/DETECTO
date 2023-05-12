@@ -28,15 +28,13 @@ function SignIn() {
       setIsAuthenticated(true);
       if (response.data) {
         const userInfo = response.data.data;
-        // TODO: user type
-        const type = 'admin'; // worker, admin
         const newUser: UserType = {
           id: userInfo.id,
           name: userInfo.userName,
           division: userInfo.division,
           img: userInfo.img,
           theme: userInfo.theme,
-          type: type,
+          type: userInfo.type,
         };
 
         setUserInfo(newUser);

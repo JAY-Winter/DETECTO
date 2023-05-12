@@ -50,7 +50,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        {userInfo.type === 'admin' ? (
+        {userInfo.type === 'ADMIN' ? (
           <>
             <NavigationBar setMode={setMode} />
             <NavigationBarTablet setMode={setMode} />
@@ -68,19 +68,17 @@ function App() {
           </>
         ) : (
           <>
-            <NavigationBar setMode={setMode} />
-            <NavigationBarTablet setMode={setMode} />
+            <WorkerNavigationBar setMode={setMode} />
+            <WorkerNavigationBarTablet setMode={setMode} />
             <RouterContainerDiv>
               <Routes>
-                <Route path="/" element={<Navigate replace to="/history" />} />
-                <Route path="/history" element={<HistoryPage />} />
-                <Route path="/manage" element={<EquipmentManagePage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/monitor" element={<MonitorPage />} />
+                <Route path="/" element={<Navigate replace to="/foul" />} />
+                <Route path="/foul" element={<FoulPage />} />
+                <Route path="/issue" element={<IssuePage />} />
                 <Route path="/more" element={<MorePage setMode={setMode} />} />
               </Routes>
             </RouterContainerDiv>
-            <NavigationBarMobile />
+            <WorkerNavigationBarMobile />
           </>
         )}
       </AuthProvider>

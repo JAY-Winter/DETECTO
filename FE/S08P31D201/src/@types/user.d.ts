@@ -6,6 +6,6 @@ declare module 'UserTypes' {
     division?: string;
     img?: string;
     theme?: 'light' | 'dark';
-    type?: 'worker' | 'admin';
+    type?: 'WORKER' | 'ADMIN';
   };
 }
