@@ -7,7 +7,9 @@ const UserInfo = atom<UserType>({
     id: undefined,
     name: undefined,
     division: undefined,
-    img: undefined
+    img: undefined,
+    type: undefined,
+    theme: 'light'
   }
 })
 

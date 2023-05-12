@@ -18,28 +18,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
-//    @ExceptionHandler(SQLException.class)
-//    public ResponseEntity<?> SqlException(SQLException ex) {
-//        RespData<Void> data = new RespData(ErrorEnum.SQL_ERROR);
-//        if (ex instanceof SQLSyntaxErrorException) {
-//            data = new RespData(ErrorEnum.SQL_SYNTAX_ERROR);
-//        }
-//        return data.builder();
-//    }
-//
-//    @ExceptionHandler(CustomJwtException.class)
-//    public ResponseEntity<?> JwtException() {
-//        RespData<Void> data = new RespData(ErrorEnum.JWT_ERROR);
-//        return data.builder();
-//    }
-//
-//    @ExceptionHandler(NoUserDataException.class)
-//    public ResponseEntity<?> NoObjectDataException() {
-//        RespData<Void> data = new RespData(ErrorEnum.NO_USER_ERROR);
-//        data.setData(null);
-//        return data.builder();
-//    }
-
     @ExceptionHandler(DoesNotExistData.class)
     public ResponseEntity<?> doesNotExistData(Exception e) {
         return createErrorResponse(ErrorEnum.DOES_NOT_EXIST_DATA_ERROR, e);
@@ -72,16 +50,7 @@ public class ControllerExceptionHandler {
 
 
     private ResponseEntity<?> createErrorResponse(ErrorEnum errorEnum, Exception e) {
-//        Map<String, String> map = new HashMap<>();
-//        log.error("error ", e.getClass().getName());
-//
-//        map.put("errName", e.getClass().getName());
-//        map.put("errMessage", e.toString());
-//
-//        RespData<Map> resData = RespData.builder()
-//                .flag(true)
-//                .data(map)
-//                .build();
+
         RespData<Void> data = new RespData(errorEnum);
         data.setMsg(e.getMessage());
 

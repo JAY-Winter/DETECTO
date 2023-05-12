@@ -40,15 +40,15 @@ class message_queue():
 
         try:
             print('[*] Waiting for messages. To exit press CTRL+C')
-            shared_signal = Value('b', False)
-            self.__camera = Camera(shared_signal)
+            # shared_signal = Value('b', False)
+            self.__camera = Camera()
 
             camera_process = Process(target=self.__camera.main)
             camera_process.start()
-
+            camera_process.join()
             [connection, channel] = self.connect_pika()
-            self.subscribe(channel)
-            channel.start_consuming()
+            # self.subscribe(channel)
+            # channel.start_consuming()
 
         finally:
             self.connect_close(connection)

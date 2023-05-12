@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 import { Button, IconButton } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+
+import CircleIcon from '@mui/icons-material/Circle';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import CircleIcon from '@mui/icons-material/Circle';
+import axios from 'axios';
+import styled from '@emotion/styled';
 import { tabletV } from '@/utils/Mixin';
 
 function Monitor({ monitorId }: { monitorId: number }) {

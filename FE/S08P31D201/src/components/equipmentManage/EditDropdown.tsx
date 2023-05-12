@@ -1,19 +1,29 @@
+import useAxios from '@/hooks/useAxios'
+import useEquipments from '@/hooks/useEquipments'
 import { keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
-import React, { useRef } from 'react'
+import { EquipmentType } from 'EquipmentTypes'
+import React, { useEffect, useRef } from 'react'
 
 type EditDropdown = {
-  id: number,
-  onDelete: (willDeleteID: number) => void,
-  setIsShowDropdown: React.Dispatch<React.SetStateAction<boolean>>
+  equipment: EquipmentType,
+  onDelete: (willDeleteName: string) => void,
+  setIsShowDropdown: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsShowEditModal: React.Dispatch<React.SetStateAction<boolean>>,
+  setWillEditEquipment: React.Dispatch<React.SetStateAction<EquipmentType | null>>;
 }
 
-function EditDropdown({ id, onDelete, setIsShowDropdown }: EditDropdown) {
+function EditDropdown({ equipment, onDelete, setIsShowDropdown, setIsShowEditModal, setWillEditEquipment }: EditDropdown) {
   const ref = useRef<HTMLDivElement>(null);
 
   const clickDeleteItem = () => {
     setIsShowDropdown(false);
-    onDelete(id)
+    onDelete(equipment.name)
+  }
+  const clickUpdateItem = () => {
+    setWillEditEquipment(equipment);
+    setIsShowDropdown(false);
+    setIsShowEditModal(true);
   }
 
   return (
@@ -22,7 +32,7 @@ function EditDropdown({ id, onDelete, setIsShowDropdown }: EditDropdown) {
         <li onClick={clickDeleteItem}>
           <p style={{color: "red"}}>삭제</p>
         </li>
-        <li>
+        <li onClick={clickUpdateItem}>
           <p>수정</p>
         </li>
       </ul>

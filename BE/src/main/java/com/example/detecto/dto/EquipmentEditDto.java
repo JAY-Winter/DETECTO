@@ -8,3 +8,4 @@ public class EquipmentEditDto {
     private String description;
     private int able;
 }
+
