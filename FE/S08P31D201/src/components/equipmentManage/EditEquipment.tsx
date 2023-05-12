@@ -38,7 +38,7 @@ function EditEquipment({ equipment, fetchEquipments, onClose, setWillEditEquipme
     formData.append('file', selectedZip);
     formData.append('img', selectedImage ?? "");
     formData.append('name', equipmentName);
-    formData.append('description', equipmentName);
+    formData.append('description', equipmentDesc);
     formData.append('type', `${equipmentType}`);
 
     // requestObj 생성
