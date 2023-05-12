@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void delete(UserDto userDto) {
-        User user = getUser(userDto);
+        User user = userRepository.findById(userDto.getId()).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
 
         user.setFcmToken(null);
         user.setSessionId(null);
