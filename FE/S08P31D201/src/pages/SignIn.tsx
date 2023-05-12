@@ -15,6 +15,8 @@ import wavemainSVG from '@/assets/img/wavemain.svg'
 import wavedarkSVG from '@/assets/img/wavedark.svg'
 import wavelightSVG from '@/assets/img/wavelight.svg'
 import { UserType } from 'UserTypes';
+import useGetFCMToken from '@/hooks/useGetFCMToken';
+
 
 function SignIn() {
   const theme = useTheme();
@@ -25,9 +27,9 @@ function SignIn() {
 
   const tryHandler = (response: AxiosResponse) => {
     if (response.status === 200) {
-      setIsAuthenticated(true);
       if (response.data) {
-        const userInfo = response.data.data
+        const userInfo = response.data.data;
+        console.log(userInfo);
         const newUser: UserType = {
           id: userInfo.id,
           name: userInfo.userName,
@@ -35,9 +37,10 @@ function SignIn() {
           img: userInfo.img,
           theme: userInfo.theme
         }
-        
         setUserInfo(newUser);
       }
+      
+      setIsAuthenticated(true);
     }
   }
 

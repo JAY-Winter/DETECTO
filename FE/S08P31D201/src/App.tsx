@@ -15,19 +15,13 @@ import DashboardPage from './pages/DashboardPage';
 import MorePage from './pages/MorePage';
 import AuthProvider from '@components/common/AuthProvider';
 import MonitorPage from './pages/MonitorPage';
+import useGetFCMToken from './hooks/useGetFCMToken';
 
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
-
-  // useMemo(() => {
-  //   // The dark mode switch would invoke this method
-  //   toggleColorMode: () => {
-  //     setMode((prevMode: PaletteMode) => prevMode === 'light' ? 'dark' : 'light');
-  //   }
-  // }, []);
-
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+  const [requestPermission] = useGetFCMToken();
 
   // 테마 따라 body 태그의 백그라운드 색상 결정
   useEffect(() => {
@@ -37,6 +31,11 @@ function App() {
       document.body.style.backgroundColor = '#121212';
     }
   }, [mode]);
+  
+  useEffect(() => {
+    // 알림 허용 권한 요청하고, 유저가 허용하면 FCM으로 부터 토큰값 받아온다
+    requestPermission();
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>
