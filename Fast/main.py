@@ -58,6 +58,8 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
         print(e)
 
     while True:
+        if is_empty:
+            break
         consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
         message = consumer.poll(timeout_ms=2000)
@@ -114,12 +116,6 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
 
 ################################################################
 def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
-    consumer = KafkaConsumer(
-        bootstrap_servers=['k8d201.p.ssafy.io:9092'],
-        auto_offset_reset='earliest',
-        enable_auto_commit=False,
-        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-    )
     year = 23
     topic = f'cctv.{cctvnumber}.{year}'
     partition_list = [TopicPartition(topic, partition)]
@@ -174,3 +170,6 @@ async def get_max_offset(cctvnumber: int, partition: int):
     consumer.seek_to_end(tp)
     end_offset = consumer.position(tp)
     return {"offsets": end_offset}
+
+
+if __name__ == '__main__':
