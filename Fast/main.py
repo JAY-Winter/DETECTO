@@ -85,16 +85,22 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                 await websocket.send_text(context)
                 print(8)
                 try:
-                    received_data = await websocket.receive_text()  
+                    print('r')
+                    received_data = await websocket.receive_text()
+                    print('s')  
                     received_data = json.loads(received_data)
-                    
+                    print('e')
                     new_offset = received_data['offset']
+                    print('a')
                     if start_offset != new_offset:
-                        start_offset = new_offset   
+                        start_offset = new_offset
+                        print('v')   
                         break
+                    
                     elif new_offset == total_offsets - 1:
                         print('new offset == total offsets')
                         start_offset = 0
+                        
                         break
                     elif message.offset == total_offsets - 1:
                         print('message offset == total_offsets')
