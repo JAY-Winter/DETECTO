@@ -58,7 +58,6 @@ async def consume_message(websocket, consumer, topic, partition):
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
         consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
-
         message = consumer.poll(timeout_ms=2000)
         if not message:
             print('not message')
@@ -70,7 +69,9 @@ async def consume_message(websocket, consumer, topic, partition):
                 print('not message')
                 start_offset = 0
                 break
-
+            if message.offset == total_offsets - 1:
+                start_offset = 0
+                break
             data = message.value
             frame_encoded = encoding(data)
             context = {
@@ -84,7 +85,7 @@ async def consume_message(websocket, consumer, topic, partition):
 
             try:
                 isSend = False
-                message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)  # 5초 타임아웃 설정
+                message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
                 if message:
                     message = json.loads(message)
                     new_offset = message.get('offset')
@@ -93,7 +94,6 @@ async def consume_message(websocket, consumer, topic, partition):
                     isSend = True
                     break
             except asyncio.TimeoutError:
-                print('No message received')
                 continue
         if isSend:
             print('start from new offset', new_offset)
