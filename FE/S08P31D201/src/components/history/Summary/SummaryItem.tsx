@@ -44,7 +44,7 @@ const SummaryDiv = styled('div')`
 
 const SummaryTitleDiv = styled('div')`
   width: 100%;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 0rem;
 `;
 
 const SummaryNumberDiv = styled('div')`
