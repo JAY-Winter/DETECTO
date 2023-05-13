@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from websockets.exceptions import ConnectionClosedError
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from kafka.errors import KafkaError
+import asyncio
 
 app = FastAPI()
 
@@ -61,13 +62,13 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
         print('while')
         consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
-        message = consumer.consume()
-        if not message:
-            await websocket.send_text("No message in partition")
-            break
+
         try:
-            # message = consumer.poll(timeout_ms=1000) # 이 줄은 제거합니다.
             for message in consumer:
+                if not message:
+                    await asyncio.sleep(1) 
+                    break
+                
                 print('cnsume')
                 data = message.value
                 print('1')
@@ -133,6 +134,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
             break
         print(10)
 
+
 ################################################################
 def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
     consumer = KafkaConsumer(
@@ -178,6 +180,7 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     except Exception as e:
         print(e)
     # p.join()
+    print("dddddddddddd")
     await websocket.close()
 
 ################################################################
