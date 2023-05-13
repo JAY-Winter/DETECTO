@@ -5,7 +5,8 @@ declare module 'UserTypes' {
     name?: string;
     division?: string;
     img?: string;
-    theme?: 'light' | 'dark';
     type?: 'WORKER' | 'ADMIN';
+    theme?: 'light' | 'dark';
+    fcmToken?: string;
   };
 }

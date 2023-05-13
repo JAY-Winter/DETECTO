@@ -4,7 +4,7 @@ import { Button, CircularProgress, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { tabletV } from '@/utils/Mixin';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import authState from '@/store/authState';
 import useAxios from '@/hooks/useAxios';
 import { UserInfo } from '@/store/userInfoStroe';
@@ -15,30 +15,31 @@ import wavemainSVG from '@/assets/img/wavemain.svg';
 import wavedarkSVG from '@/assets/img/wavedark.svg';
 import wavelightSVG from '@/assets/img/wavelight.svg';
 import { UserType } from 'UserTypes';
+import { RequestObj } from 'AxiosRequest';
 
 function SignIn() {
   const theme = useTheme();
   const [inputID, setInputID] = useState('');
   const [inputPW, setInputPW] = useState('');
   const setIsAuthenticated = useSetRecoilState(authState);
-  const setUserInfo = useSetRecoilState(UserInfo);
+  const [userInfo, setUserInfo] = useRecoilState(UserInfo);
 
   const tryHandler = (response: AxiosResponse) => {
     if (response.status === 200) {
-      setIsAuthenticated(true);
-      if (response.data) {
-        const userInfo = response.data.data;
+      if (response.data && 'data' in response.data) {
+        const responseUserInfo = response.data.data as UserType;
         const newUser: UserType = {
-          id: userInfo.id,
-          name: userInfo.userName,
-          division: userInfo.division,
-          img: userInfo.img,
-          theme: userInfo.theme,
-          type: userInfo.type,
+          id: responseUserInfo.id,
+          name: responseUserInfo.name,
+          division: responseUserInfo.division,
+          img: responseUserInfo.img,
+          type: responseUserInfo.type,
+          theme: responseUserInfo.theme,
         };
-
         setUserInfo(newUser);
       }
+
+      setIsAuthenticated(true);
     }
   };
 
@@ -72,7 +73,16 @@ function SignIn() {
   const handleChangeInputID = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    setInputID(e.target.value.trim());
+    const extractNumbers = (str: string) => {
+      const regex = /\d+/g;
+      const matches = str.match(regex);
+      if (matches === null) {
+        return '';
+      }
+      return matches.join('');
+    };
+
+    setInputID(extractNumbers(e.target.value.trim()));
   };
 
   // 비밀번호 입력 핸들러
@@ -84,14 +94,16 @@ function SignIn() {
 
   // 서버에게 ID, PW 정보 보내서 로그인 처리한다
   const submitSignInfo = () => {
-    setRequestObj({
+    const requestObj: RequestObj = {
       url: 'user/login',
       method: 'post',
       body: {
         id: Number(inputID),
         password: inputPW,
+        fcmToken: userInfo.fcmToken ?? null,
       },
-    });
+    };
+    setRequestObj(requestObj);
   };
 
   // 로그인 버튼 클릭 핸들링
@@ -123,7 +135,7 @@ function SignIn() {
         </div>
         <p>로그인</p>
         <TextField
-          label="아이디"
+          label="아이디(사번입력)"
           margin="normal"
           required
           fullWidth

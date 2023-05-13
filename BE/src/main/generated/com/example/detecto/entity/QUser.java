@@ -30,11 +30,17 @@ public class QUser extends EntityPathBase<User> {
 
     public final ListPath<Report, QReport> reports = this.<Report, QReport>createList("reports", Report.class, QReport.class, PathInits.DIRECT2);
 
+    public final StringPath sessionId = createString("sessionId");
+
     public final QTeam team;
+
+    public final EnumPath<ThemeType> themeType = createEnum("themeType", ThemeType.class);
 
     public final StringPath userImage = createString("userImage");
 
     public final StringPath userName = createString("userName");
+
+    public final EnumPath<UserType> userType = createEnum("userType", UserType.class);
 
     public QUser(String variable) {
         this(User.class, forVariable(variable), INITS);

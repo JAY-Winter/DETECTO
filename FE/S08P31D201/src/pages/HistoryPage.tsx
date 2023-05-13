@@ -1,3 +1,4 @@
+import useEquipments from '@/hooks/useEquipments';
 import { mobileV } from '@/utils/Mixin';
 import HistoryDatePicker from '@components/history/DatePicker';
 import HistoryEquipmentFilter from '@components/history/EquipmentFilter';

@@ -9,6 +9,8 @@ const UserInfo = atom<UserType>({
     division: undefined,
     img: undefined,
     type: undefined,
+    theme: 'light',
+    fcmToken: undefined,
   },
 });
 
