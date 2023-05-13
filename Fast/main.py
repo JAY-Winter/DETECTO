@@ -49,23 +49,23 @@ class NoMessageError(Exception):
 
 
 ################################################################
-async def consume_message(websocket, consumer, topic, partition, total_offsets):
+async def consume_message(websocket, consumer, topic, partition):
     flag = False
     start_offset = 0
     while True: 
         print(1)
         partition_list = [TopicPartition(topic, partition)]
         print(2)
-        total_offsets = total_offsets[partition]
         print(3)
+        total_offsets  = consumer.end_offsets(partition_list)[partition_list[0]] - 1
         consumer.assign(partition_list)
         print(4)
         if flag:
             flag = False
-            if start_offset >= consumer.end_offsets(partition_list)[partition_list[0]] - 1:
-                start_offset = consumer.end_offsets(partition_list)[partition_list[0]] - 1
+            if start_offset >= total_offsets:
+                start_offset = total_offsets
         else:
-            start_offset = consumer.end_offsets(partition_list)[partition_list[0]] - 1
+            start_offset = total_offsets
         print(start_offset)
         consumer.seek(partition_list[0], start_offset)
         message = consumer.poll(timeout_ms=3000)
@@ -110,11 +110,11 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                         print('v')   
                         break
                     
-                    elif new_offset == total_offsets - 1:
+                    elif new_offset == total_offsets:
                         print('new offset == total offsets')
                         start_offset = 0
                         break
-                    elif message.offset == total_offsets - 1:
+                    elif message.offset == total_offsets:
                         print('message offset == total_offsets')
                         start_offset = 0
                         break
@@ -142,35 +142,35 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
 
 
 ################################################################
-def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
-    consumer = KafkaConsumer(
-        bootstrap_servers=['k8d201.p.ssafy.io:9092'],
-        auto_offset_reset='earliest',
-        enable_auto_commit=False,
-        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-        group_id='cctv_consumer'
-    )
+# def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
+#     consumer = KafkaConsumer(
+#         bootstrap_servers=['k8d201.p.ssafy.io:9092'],
+#         auto_offset_reset='earliest',
+#         enable_auto_commit=False,
+#         value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+#         group_id='cctv_consumer'
+#     )
 
-    year = 23
-    topic = f'cctv.{cctvnumber}.{year}'
-    partition_list = [TopicPartition(topic, partition)]
+#     year = 23
+#     topic = f'cctv.{cctvnumber}.{year}'
+#     partition_list = [TopicPartition(topic, partition)]
     
-    end_offsets: dict = consumer.end_offsets([partition_list[0]])
-    for _, val in end_offsets.items():
-        # return_dict[partition] = val
-        return val
+#     end_offsets: dict = consumer.end_offsets([partition_list[0]])
+#     for _, val in end_offsets.items():
+#         # return_dict[partition] = val
+#         return val
     
 ################################################################
 @app.websocket("/fast")
 async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: int):
     await websocket.accept()
     print("ddddddd1")
-    manager = Manager()
-    total_offsets = manager.dict()
-    total_offsets[partition] = get_total_offset(cctvnumber=cctvnumber ,partition=partition)
+    # manager = Manager()
+    # total_offsets = manager.dict()
+    # total_offsets[partition] = get_total_offset(cctvnumber=cctvnumber ,partition=partition)
     print("ddddddd2")
 
-    p = Process(target=get_total_offset, args=(cctvnumber ,partition, total_offsets))
+    # p = Process(target=get_total_offset, args=(cctvnumber ,partition, total_offsets))
     print("ddddddd3")
     p.start()
     print("ddddddd4")
@@ -187,7 +187,7 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     print(topic)
     try:
         print("ddddddd")
-        await consume_message(websocket, consumer, topic, partition, total_offsets)
+        await consume_message(websocket, consumer, topic, partition)
         print("ddddddd")
     except Exception as e:
         print(e)
