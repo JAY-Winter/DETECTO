@@ -16,12 +16,19 @@ import MorePage from './pages/MorePage';
 import AuthProvider from '@components/common/AuthProvider';
 import MonitorPage from './pages/MonitorPage';
 import useGetFCMToken from './hooks/useGetFCMToken';
-
+import { useRecoilValue } from 'recoil';
+import { UserInfo } from './store/userInfoStroe';
+import WorkerNavigationBar from '@components/navbar/WorkerNavigationBar';
+import WorkerNavigationBarTablet from '@components/navbar/WorkerNavigationBarTablet';
+import WorkerNavigationBarMobile from '@components/navbar/WorkerNavigationBarMobile';
+import FoulPage from './pages/FoulPage';
+import IssuePage from './pages/IssuePage';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
   const [requestPermission] = useGetFCMToken();
+  const userInfo = useRecoilValue(UserInfo);
 
   // 테마 따라 body 태그의 백그라운드 색상 결정
   useEffect(() => {
@@ -31,28 +38,46 @@ function App() {
       document.body.style.backgroundColor = '#121212';
     }
   }, [mode]);
-  
+
   useEffect(() => {
     // 알림 허용 권한 요청하고, 유저가 허용하면 FCM으로 부터 토큰값 받아온다
     requestPermission();
-  }, [])
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        <NavigationBar setMode={setMode} />
-        <NavigationBarTablet setMode={setMode} />
-        <RouterContainerDiv>
-          <Routes>
-            <Route path="/" element={<Navigate replace to="/history" />} />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/manage" element={<EquipmentManagePage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/monitor" element={<MonitorPage />} />
-            <Route path="/more" element={<MorePage setMode={setMode} />} />
-          </Routes>
-        </RouterContainerDiv>
-        <NavigationBarMobile />
+        {userInfo.type === 'ADMIN' ? (
+          <>
+            <NavigationBar setMode={setMode} />
+            <NavigationBarTablet setMode={setMode} />
+            <RouterContainerDiv>
+              <Routes>
+                <Route path="/" element={<Navigate replace to="/history" />} />
+                <Route path="/history" element={<HistoryPage />} />
+                <Route path="/manage" element={<EquipmentManagePage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/monitor" element={<MonitorPage />} />
+                <Route path="/more" element={<MorePage setMode={setMode} />} />
+              </Routes>
+            </RouterContainerDiv>
+            <NavigationBarMobile />
+          </>
+        ) : (
+          <>
+            <WorkerNavigationBar setMode={setMode} />
+            <WorkerNavigationBarTablet setMode={setMode} />
+            <RouterContainerDiv>
+              <Routes>
+                <Route path="/" element={<Navigate replace to="/foul" />} />
+                <Route path="/foul" element={<FoulPage />} />
+                <Route path="/issue" element={<IssuePage />} />
+                <Route path="/more" element={<MorePage setMode={setMode} />} />
+              </Routes>
+            </RouterContainerDiv>
+            <WorkerNavigationBarMobile />
+          </>
+        )}
       </AuthProvider>
     </ThemeProvider>
   );

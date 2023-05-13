@@ -66,7 +66,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
             await websocket.send_text("No message in partition")
             break
         try:
-            message = consumer.poll(timeout_ms=1000)
+            # message = consumer.poll(timeout_ms=1000) # 이 줄은 제거합니다.
             for message in consumer:
                 print('cnsume')
                 data = message.value
@@ -177,7 +177,7 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
         await consume_message(websocket, consumer, topic, partition, total_offsets)
     except Exception as e:
         print(e)
-    p.join()
+    # p.join()
     await websocket.close()
 
 ################################################################

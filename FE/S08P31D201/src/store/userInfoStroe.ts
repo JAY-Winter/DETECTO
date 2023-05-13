@@ -1,8 +1,8 @@
-import { UserType } from "UserTypes";
-import { atom } from "recoil";
+import { UserType } from 'UserTypes';
+import { atom } from 'recoil';
 
 const UserInfo = atom<UserType>({
-  key: "userInfo",
+  key: 'userInfo',
   default: {
     id: undefined,
     name: undefined,
@@ -10,8 +10,8 @@ const UserInfo = atom<UserType>({
     img: undefined,
     type: undefined,
     theme: 'light',
-    fcmToken: undefined
-  }
-})
+    fcmToken: undefined,
+  },
+});
 
 export { UserInfo };
