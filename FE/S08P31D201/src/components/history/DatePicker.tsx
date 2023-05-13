@@ -32,7 +32,7 @@ function HistoryDatePicker() {
   };
 
   return (
-    <DatePaper>
+    <DatePaper elevation={0}>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
       <DateHeaderDiv
         onClick={() => {
@@ -81,8 +81,10 @@ function HistoryDatePicker() {
 export default HistoryDatePicker;
 
 const DatePaper = styled(Paper)`
+  background-color: ${props => props.theme.palette.neutral.section};
+  border-radius: 10px;
   width: 100%;
-  padding: 1rem;
+  padding: 1.5rem;
   margin: 1rem 0rem;
   transition: 0.2s all ease;
 `;

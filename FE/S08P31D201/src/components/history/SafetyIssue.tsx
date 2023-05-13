@@ -79,7 +79,7 @@ function HistorySafetyIssue() {
 
   return (
     <>
-      <IssueTableContainer>
+      <IssueTableContainer elevation={0}>
         <Table stickyHeader aria-label="collapsible table">
           <TableHeader />
           <TableBody>
@@ -137,6 +137,10 @@ function HistorySafetyIssue() {
 export default HistorySafetyIssue;
 
 const IssueTableContainer = styled(Paper)`
+  background-color: ${props => props.theme.palette.neutral.section};
+  thead, tr, th {
+    background-color: ${props => props.theme.palette.neutral.section};
+  }
   display: flex;
   width: 100%;
   transition: 0.2s ease all;

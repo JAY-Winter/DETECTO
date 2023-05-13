@@ -118,7 +118,7 @@ const EquipmentManageDiv = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   padding: 2.5rem 2rem;
   ${mobileV} {
     align-items: normal;
@@ -136,14 +136,15 @@ const EquipmentCardDiv = styled.div`
 `;
 
 const EquipmentAddButton = styled.button`
-  width: 22rem;
+  width: 100%;
   height: 100%;
   min-height: 400px;
   border: none;
+  border-radius: 10px;
   cursor: pointer;
-  background-color: ${props => props.theme.palette.neutral.card};
+  background-color: ${props => props.theme.palette.neutral.section};
   transition: background-color 0.3s ease;
   &:hover {
-    background-color: ${props => props.theme.palette.neutral.cardHover};
+    background-color: ${props => props.theme.palette.neutral.card};
   }
 `;
