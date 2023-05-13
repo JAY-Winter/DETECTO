@@ -1,10 +1,10 @@
-import cv2
+import cv2, json, base64
 import numpy as np
+from datetime import datetime
 from main.distance.is_detect import detect_non_wearing
 from main.distance.draw_map import draw_map
 from main.distance.cal_from_cctv_to_head import cal_from_cctv_to_head, get_mean_coord
 from main.distance.save_non_wear import save_non_wear
-
 
 # 미착용 클래스 번호
 pro = set({1, 2, 3, 6, 7})
@@ -57,7 +57,7 @@ def distance(point1, point2):
     return np.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
 
 # 이미지 처리
-def calculate(cctv_id,img, model, face_model):
+def calculate(kafka_producer,cctv_id,img, model, face_model):
 
     # yolo_images = []
     yolo_classes = []
@@ -67,8 +67,27 @@ def calculate(cctv_id,img, model, face_model):
     # for i in imglist:
     img = cv2.resize(img, (640, 640))
     results = model(img, conf=0.5)
-
+    year = 23
+    cctv_number = cctv_id
+    today = datetime.now()
+    partition_key = today.timetuple().tm_yday - 1
+    kafka_topic = f'cctv.{cctv_number}.{year}'
     yolo_image = results[0].plot()
+    _, img_encoded = cv2.imencode('.jpg', yolo_image)
+    
+    encoded_frame = base64.b64encode(img_encoded).decode('utf8')
+    
+    kafka_data = {
+        'frame': encoded_frame,
+        'timestamp': base64.b64encode(bytes(str(datetime.now()), 'utf-8')).decode('utf-8'),
+    }
+
+    kafka_producer.send(
+        topic=kafka_topic,
+        value=kafka_data,
+        partition=partition_key,
+    )
+    kafka_producer.flush()
     human_detect = findHuman(results[0].boxes)
     # yolo_class = results[0].boxes.cls
 

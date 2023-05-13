@@ -5,14 +5,19 @@ from .connect.check_cctv_connection import check_connection
 from ultralytics import YOLO
 from .constants.constant import MODEL_PATH, MODEL_FACE_PATH
 from main.tools.database  import db
-
+from kafka import KafkaProducer
+import json
 app = Flask(__name__)
 model = YOLO(MODEL_PATH)
 
 face_model = YOLO(MODEL_FACE_PATH)
-
+kafka_producer = KafkaProducer(
+            bootstrap_servers='k8d201.p.ssafy.io:9092',
+            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+            acks='all', 
+            retries=5,
+        )
 cctv_images = {}
-
 def create_app():
     global app
     cctv_list = set()  # 연결된 cctv 목록
@@ -36,7 +41,7 @@ def create_app():
     # CCTV로부터 영상(이미지)를 받아오기
     @app.route('/upload', methods=['POST'])
     def upload():
-        upload_image(request, model,face_model)
+        upload_image(kafka_producer,request, model,face_model)
         return {"result": "이미지 업로드 성공"}
 
     # html로 detecting된 영상 전송
