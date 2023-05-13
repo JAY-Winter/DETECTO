@@ -62,7 +62,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
     while True: 
         print('while')
         
-        message = consumer.consume()
+        message = consumer.poll(timeout_ms=1000)
         if not message:
             # await websocket.send_text("No message in partition")
             await asyncio.sleep(1) 
