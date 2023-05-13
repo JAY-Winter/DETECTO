@@ -50,17 +50,12 @@ class NoMessageError(Exception):
 
 ################################################################
 async def consume_message(websocket, consumer, topic, partition, total_offsets):
-    start_offset = 0
-    try:     
+    while True: 
         partition_list = [TopicPartition(topic, partition)]
         total_offsets = total_offsets[partition]
-        print(partition_list)
-    except KafkaError as e:
-        print(e)
-    consumer.assign(partition_list)
-    while True: 
-        
+        consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
+        start_offset = consumer.end_offsets(partition_list)[partition_list[0]] - 1
         message = consumer.poll(timeout_ms=3000)
         if not message:
             # await websocket.send_text("No message in partition")
@@ -127,7 +122,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
             # 처리할 작업을 수행합니다.
             print(e)
             break
-        start_offset = consumer.end_offsets(partition_list)[partition_list[0]] - 1
+        
 
 
 ################################################################
