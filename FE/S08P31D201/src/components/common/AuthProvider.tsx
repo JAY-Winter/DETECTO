@@ -2,9 +2,11 @@ import SignIn from '@/pages/SignIn';
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import authState from '@/store/authState';
 import useAxios from '@/hooks/useAxios';
+import { UserInfo } from '@/store/userInfoStroe';
+import { UserType } from 'UserTypes';
 
 type AuthProviderProps = {
   children: React.ReactNode;
@@ -14,16 +16,31 @@ function AuthProvider({ children }: AuthProviderProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useRecoilState(authState);
+  const setUserInfo = useSetRecoilState(UserInfo);
 
   // 쿠키값 유효할 경우 핸들러
   const tryHandler = (response: AxiosResponse) => {
-    if (response.status == 200) {
+    if (response.status === 200) {
+      if (response.data && 'data' in response.data) {
+        const responseUserInfo = response.data.data as UserType;
+        const newUser: UserType = {
+          id: responseUserInfo.id,
+          name: responseUserInfo.name,
+          division: responseUserInfo.division,
+          img: responseUserInfo.img,
+          type: responseUserInfo.type,
+          theme: responseUserInfo.theme,
+        };
+        setUserInfo(newUser);
+      }
+
       setIsAuthenticated(true);
     }
   };
 
   // 쿠키값 유효하지 않을경우 핸들러
   const catchHandler = (errorCode: number) => {
+    setUserInfo({});
     setIsAuthenticated(false);
   };
 
