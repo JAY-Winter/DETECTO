@@ -32,9 +32,10 @@ function AuthProvider({ children }: AuthProviderProps) {
           theme: responseUserInfo.theme,
         };
         setUserInfo(newUser);
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
       }
-
-      setIsAuthenticated(true);
     }
   };
 
