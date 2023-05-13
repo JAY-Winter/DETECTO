@@ -53,12 +53,14 @@ class NoMessageError(Exception):
 ################################################################
 async def consume_message(websocket, consumer, topic, partition):
     start_offset = 0
+    partition_list = [TopicPartition(topic, partition)]
+    total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
+
+    consumer.assign(partition_list)
     while websocket.application_state == WebSocketState.CONNECTED:
-        partition_list = [TopicPartition(topic, partition)]
-        total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
-        consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
         message = consumer.poll(timeout_ms=2000)
+        isSend = False
         if not message:
             print('not message')
             await websocket.send_text("No message in partition")
@@ -84,21 +86,20 @@ async def consume_message(websocket, consumer, topic, partition):
             await websocket.send_text(context)
 
             try:
-                isSend = False
                 message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
                 if message:
                     message = json.loads(message)
                     new_offset = message.get('offset')
-                    print('new offset: ', new_offset)
                     start_offset = new_offset
                     isSend = True
                     break
             except asyncio.TimeoutError:
                 continue
+
         if isSend:
-            print('start from new offset', new_offset)
             continue
-        start_offset = 0
+        else:
+            start_offset = 0
 
 ################################################################
 @app.websocket("/fast")
