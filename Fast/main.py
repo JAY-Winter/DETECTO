@@ -56,15 +56,16 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
         print(partition_list)
     except KafkaError as e:
         print(e)
-
+    consumer.assign(partition_list)
+    consumer.seek(partition_list[0], start_offset)
     while True: 
         print('while')
-        consumer.assign(partition_list)
-        consumer.seek(partition_list[0], start_offset)
+        
         message = consumer.consume()
         if not message:
-            await websocket.send_text("No message in partition")
-            break
+            # await websocket.send_text("No message in partition")
+            await asyncio.sleep(1) 
+            continue
         try:
             # message = consumer.poll(timeout_ms=1000) # 이 줄은 제거합니다.
             for message in consumer:
