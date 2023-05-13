@@ -50,13 +50,26 @@ class NoMessageError(Exception):
 
 ################################################################
 async def consume_message(websocket, consumer, topic, partition, total_offsets):
+    flag = False
+    start_offset = 0
     while True: 
+        print(1)
         partition_list = [TopicPartition(topic, partition)]
+        print(2)
         total_offsets = total_offsets[partition]
+        print(3)
         consumer.assign(partition_list)
-        start_offset = consumer.end_offsets(partition_list)[partition_list[0]] - 1
+        print(4)
+        if flag:
+            flag = False
+            if start_offset >= consumer.end_offsets(partition_list)[partition_list[0]] - 1:
+                start_offset = consumer.end_offsets(partition_list)[partition_list[0]] - 1
+        else:
+            start_offset = consumer.end_offsets(partition_list)[partition_list[0]] - 1
+        print(start_offset)
         consumer.seek(partition_list[0], start_offset)
         message = consumer.poll(timeout_ms=3000)
+        print(6)
         if not message:
             # await websocket.send_text("No message in partition")
             await asyncio.sleep(1) 
@@ -76,7 +89,9 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                 context = json.dumps(context)
                 await websocket.send_text(context)
                 try:
+                    print("여기서 멈추나요?")
                     received_data = await asyncio.wait_for(websocket.receive_text(), timeout=0.1)
+                    print("여기서 멈추나요?22")
 
                     # received_data = await websocket.receive_text()
                     print(received_data)
@@ -91,6 +106,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
 
                     if start_offset != new_offset:
                         start_offset = new_offset
+                        flag = True
                         print('v')   
                         break
                     
