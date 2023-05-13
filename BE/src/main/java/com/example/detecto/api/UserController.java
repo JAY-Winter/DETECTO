@@ -85,7 +85,7 @@ public class UserController {
         HttpSession session = req.getSession(false);
 
         if (session == null || !myCookieValue.equals(session.getId())) {
-            throw new AuthFailException("Authenticated fail");
+            throw new AuthFailException("Authenticated fail!");
         }
 
         User user = (User)session.getAttribute("user");
