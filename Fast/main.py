@@ -54,8 +54,8 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
         partition_list = [TopicPartition(topic, partition)]
         total_offsets = total_offsets[partition]
         consumer.assign(partition_list)
-        consumer.seek(partition_list[0], start_offset)
         start_offset = consumer.end_offsets(partition_list)[partition_list[0]] - 1
+        consumer.seek(partition_list[0], start_offset)
         message = consumer.poll(timeout_ms=3000)
         if not message:
             # await websocket.send_text("No message in partition")
