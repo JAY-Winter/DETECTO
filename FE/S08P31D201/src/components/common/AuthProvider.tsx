@@ -21,7 +21,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   // 쿠키값 유효할 경우 핸들러
   const tryHandler = (response: AxiosResponse) => {
     if (response.status === 200) {
-      if (response.data && 'data' in response.data) {
+      if (response.data && 'data' in response.data && response.data.data) {
         const responseUserInfo = response.data.data as UserType;
         const newUser: UserType = {
           id: responseUserInfo.id,
