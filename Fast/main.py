@@ -86,7 +86,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                 print(8)
                 try:
                     print('r')
-                    received_data = await websocket.receive_text() # await 키워드를 추가합니다.
+                    received_data = await websocket.receive_text()
                     print(received_data)
                     if not received_data:
                         continue
