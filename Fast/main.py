@@ -51,30 +51,26 @@ class NoMessageError(Exception):
 
 
 ################################################################
-async def consume_message(websocket, consumer, topic, partition, queue):
+async def consume_message(websocket, consumer, topic, partition):
     start_offset = 0
     while websocket.application_state == WebSocketState.CONNECTED:
-        print(queue)
         partition_list = [TopicPartition(topic, partition)]
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
         consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
-        message = consumer.poll(timeout_ms=2000)
 
+        message = consumer.poll(timeout_ms=2000)
         if not message:
             print('not message')
             await websocket.send_text("No message in partition")
             break
 
         for message in consumer:
-            if message.offset == total_offsets:
-                start_offset = 0
-                break
-            # print('offset', message.offset)
             if not message:
                 print('not message')
                 start_offset = 0
                 break
+
             data = message.value
             frame_encoded = encoding(data)
             context = {
@@ -86,31 +82,29 @@ async def consume_message(websocket, consumer, topic, partition, queue):
             context = json.dumps(context)
             await websocket.send_text(context)
 
-            if not queue.empty():
-                received_data = await queue.get()
-                print('received data', received_data)
-#           
-
+            try:
+                isSend = False
+                message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)  # 5초 타임아웃 설정
+                if message:
+                    message = json.loads(message)
+                    new_offset = message.get('offset')
+                    print('new offset: ', new_offset)
+                    start_offset = new_offset
+                    isSend = True
+                    break
+            except asyncio.TimeoutError:
+                print('No message received')
+                continue
+        if isSend:
+            print('start from new offset', new_offset)
+            continue
         start_offset = 0
-        print('while end')
-
-
-async def receive_messages(websocket, queue):
-    while websocket.application_state == WebSocketState.CONNECTED:
-        print('seconds',websocket)
-        # try:
-        message = await websocket.receive_text()
-        print(message)
-        await queue.put(message)
-        # except WebSocketDisconnect:
-            # print('websocket disconnect')
-            # break
 
 ################################################################
 @app.websocket("/fast")
 async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: int):
     await websocket.accept()
-    print('first',websocket)
+
     consumer = KafkaConsumer(
         bootstrap_servers=['k8d201.p.ssafy.io:9092'],
         auto_offset_reset='earliest',
@@ -120,19 +114,8 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     )
     year = 23
     topic = f'cctv.{cctvnumber}.{year}'
-    
-    queue = asyncio.Queue()
-    receive_task = asyncio.create_task(receive_messages(websocket, queue))
-    consume_task = asyncio.create_task(consume_message(websocket, consumer, topic, partition, queue))
-    
-    print('gather')
-    await asyncio.gather(receive_task, consume_task)
-    print('들어오나용')
-    # all_tasks = asyncio.all_tasks()
 
-    # for task in all_tasks:
-    #     print('task:', task)
-    # await consume_message(websocket, consumer, topic, partition, queue)
+    await consume_message(websocket, consumer, topic, partition)
     await websocket.close()
 
 ################################################################
@@ -152,26 +135,3 @@ async def get_max_offset(cctvnumber: int, partition: int):
     consumer.seek_to_end(tp)
     end_offset = consumer.position(tp)
     return {"offsets": end_offset}
-
-
-
-
-
-################################################################
-# def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
-#     consumer = KafkaConsumer(
-#         bootstrap_servers=['k8d201.p.ssafy.io:9092'],
-#         auto_offset_reset='earliest',
-#         enable_auto_commit=False,
-#         value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-#         group_id='cctv_consumer'
-#     )
-
-#     year = 23
-#     topic = f'cctv.{cctvnumber}.{year}'
-#     partition_list = [TopicPartition(topic, partition)]
-    
-#     end_offsets: dict = consumer.end_offsets([partition_list[0]])
-#     for _, val in end_offsets.items():
-#         # return_dict[partition] = val
-#         return val
