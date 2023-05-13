@@ -45,8 +45,6 @@ function App() {
     }
   }, [mode]);
 
-  console.log(userInfo);
-
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>

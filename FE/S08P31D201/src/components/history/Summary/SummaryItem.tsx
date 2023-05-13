@@ -36,7 +36,7 @@ const SummaryDiv = styled('div')`
   height: 5rem;
   font-size: 0.8rem;
   border-right: 2px solid ${props => props.theme.palette.neutral.card};
-  &:nth-last-child(1) {
+  &:nth-last-of-type(1) {
     margin-right: 0;
     border-right: none;
   }
