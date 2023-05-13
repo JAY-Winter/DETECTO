@@ -58,7 +58,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
     except KafkaError as e:
         print(e)
 
-    while True: 
+    while start_offset < total_offsets:  # 이 조건을 추가합니다.
         print('while')
         consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
