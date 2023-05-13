@@ -58,7 +58,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
 
       timeoutId.current = setTimeout(() => {
         if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-          ws.current.send(JSON.stringify({ offset: currentOffset.current }));
+          console.log('ws.current')
         }
       }, 100);
     };
