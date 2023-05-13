@@ -23,7 +23,7 @@ class Camera():
 
     # open camera
     def capture(self, frame):
-        frame = cv2.resize(frame, (640, 480))
+        frame = cv2.resize(frame, (640, 640))
 
         # 프레임 이미지를 flask 서버로 전송
         _, img_encoded = cv2.imencode('.jpg', frame)
@@ -31,32 +31,6 @@ class Camera():
         files = {'file': ('image.jpg', img_bytes, 'image/jpeg')}
         data = {'id': self.__cctvNum}
 
-        ############## TODO KAFKA 연동 #############
-        year = 23
-        cctv_number = self.__cctvNum
-        today = datetime.now()
-        partition_key = today.timetuple().tm_yday - 1
-        kafka_topic = f'cctv.{cctv_number}.{year}'
-        
-        kafka_producer = KafkaProducer(
-            bootstrap_servers='k8d201.p.ssafy.io:9092',
-            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
-            acks='all', 
-            retries=5,
-        )
-        encoded_frame = base64.b64encode(img_encoded).decode('utf8')
-
-        kafka_data = {
-            'frame': encoded_frame,
-            'timestamp': base64.b64encode(bytes(str(datetime.now()), 'utf-8')).decode('utf-8'),
-        }
-
-        kafka_producer.send(
-            topic=kafka_topic,
-            value=kafka_data,
-            partition=partition_key,
-        )
-        ###########################################
         response = requests.post(
             self.__flaskUrl + '/upload', files=files, data=data)
 

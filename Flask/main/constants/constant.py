@@ -15,6 +15,7 @@ MESSAGE_QUEUE = {
     'PW': 'guest',
 }
 MODEL_PATH = 'model/best.pt'
+MODEL_FACE_PATH = 'model/best_face.pt'
 
 CCTV_MAX = 4
 CCTV_TRIGGER_TIME = 5
@@ -26,8 +27,8 @@ CCTV_TRIGGER_TIME = 5
     - CCTV_NUMBER   : CCTV 번호 (ex. 1, 2, 3, 4번)
     - CAMERA_INDEX  : 0(내장캠), 1(유선캠)
 '''
-FLASK_URL = 'http://192.168.100.210:5000'
-# FLASK_URL = 'http://127.0.0.1:5000'
+# FLASK_URL = 'http://192.168.100.210:5000'
+FLASK_URL = 'http://127.0.0.1:5000'
 CCTV_NUMBER = 1
 CAMERA_INDEX = 0
 
