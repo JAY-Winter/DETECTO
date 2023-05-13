@@ -70,7 +70,6 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
             for message in consumer:
                 if not message:
                     break
-                
                 data = message.value
                 frame_encoded = encoding(data)
                 context = {
@@ -82,6 +81,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                 context = json.dumps(context)
                 await websocket.send_text(context)
                 try:
+                    print("여기서 멈춤 백퍼")
                     received_data = await websocket.receive_text()
                     print(received_data)
                     if not received_data:
@@ -101,7 +101,6 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                     elif new_offset == total_offsets - 1:
                         print('new offset == total offsets')
                         start_offset = 0
-                        
                         break
                     elif message.offset == total_offsets - 1:
                         print('message offset == total_offsets')
@@ -170,7 +169,9 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     year = 23
     topic = f'cctv.{cctvnumber}.{year}'
     try:
+        print("ddddddd")
         await consume_message(websocket, consumer, topic, partition, total_offsets)
+        print("ddddddd")
     except Exception as e:
         print(e)
     # p.join()
