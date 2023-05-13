@@ -164,13 +164,16 @@ def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dic
 @app.websocket("/fast")
 async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: int):
     await websocket.accept()
-
+    print("ddddddd1")
     manager = Manager()
     total_offsets = manager.dict()
     total_offsets[partition] = get_total_offset(cctvnumber=cctvnumber ,partition=partition)
+    print("ddddddd2")
 
     p = Process(target=get_total_offset, args=(cctvnumber ,partition, total_offsets))
+    print("ddddddd3")
     p.start()
+    print("ddddddd4")
 
     consumer = KafkaConsumer(
         bootstrap_servers=['k8d201.p.ssafy.io:9092'],
@@ -181,6 +184,7 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     )
     year = 23
     topic = f'cctv.{cctvnumber}.{year}'
+    print(topic)
     try:
         print("ddddddd")
         await consume_message(websocket, consumer, topic, partition, total_offsets)
