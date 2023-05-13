@@ -58,11 +58,10 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
     except KafkaError as e:
         print(e)
     consumer.assign(partition_list)
-    consumer.seek(partition_list[0], start_offset)
     while True: 
-        print('while')
         
-        message = consumer.poll(timeout_ms=1000)
+        consumer.seek(partition_list[0], start_offset)
+        message = consumer.poll(timeout_ms=3000)
         if not message:
             # await websocket.send_text("No message in partition")
             await asyncio.sleep(1) 
@@ -70,39 +69,30 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
         try:
             for message in consumer:
                 if not message:
-                    await asyncio.sleep(1) 
                     break
                 
-                print('cnsume')
                 data = message.value
-                print('1')
                 frame_encoded = encoding(data)
-                print('2')
                 context = {
                     'frame': frame_encoded,
                     'total': total_offsets,
                     'offset': message.offset,
                     'timestamp': message.timestamp,
                 }
-                print(3)
                 context = json.dumps(context)
-                print(7)
                 await websocket.send_text(context)
-                print(8)
                 try:
-                    print('r')
                     received_data = await websocket.receive_text()
                     print(received_data)
                     if not received_data:
                         continue
-                    print('s')  
                     try:
                         received_data = json.loads(received_data)
                     except Exception as e:
                         print('error', e)
-                    print('e')
+
                     new_offset = received_data['offset']
-                    print('a')
+
                     if start_offset != new_offset:
                         start_offset = new_offset
                         print('v')   
@@ -136,7 +126,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
             # 처리할 작업을 수행합니다.
             print(e)
             break
-        print(10)
+        start_offset = consumer.end_offsets(partition_list)[partition_list[0]] - 1
 
 
 ################################################################
@@ -184,7 +174,6 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     except Exception as e:
         print(e)
     # p.join()
-    print("dddddddddddd")
     await websocket.close()
 
 ################################################################
