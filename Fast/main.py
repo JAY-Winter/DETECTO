@@ -81,8 +81,9 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                 context = json.dumps(context)
                 await websocket.send_text(context)
                 try:
-                    print("여기서 멈춤 백퍼")
-                    received_data = await websocket.receive_text()
+                    received_data = await asyncio.wait_for(websocket.receive_text(), timeout=0.1)
+
+                    # received_data = await websocket.receive_text()
                     print(received_data)
                     if not received_data:
                         continue
@@ -109,7 +110,8 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
                 except asyncio.CancelledError:
                     print("WebSocket connection closed")
                     break
-                
+                except asyncio.TimeoutError:
+                        continue
                 print(9)
         except WebSocketDisconnect:
             print("WebSocket disconnected.")
