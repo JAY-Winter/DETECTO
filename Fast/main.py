@@ -57,16 +57,17 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
     except KafkaError as e:
         print(e)
 
-    while True: 
+    while start_offset < total_offsets:  # 이 조건을 추가합니다.
         print('while')
         consumer.assign(partition_list)
         consumer.seek(partition_list[0], start_offset)
-        message = consumer.consume()
+        
+        message = consumer.poll(timeout_ms=5000)
         if not message:
             await websocket.send_text("No message in partition")
-            break
+            continue
+
         try:
-            # message = consumer.poll(timeout_ms=1000) # 이 줄은 제거합니다.
             for message in consumer:
                 print('cnsume')
                 data = message.value
@@ -132,6 +133,7 @@ async def consume_message(websocket, consumer, topic, partition, total_offsets):
             print(e)
             break
         print(10)
+
 
 ################################################################
 def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
