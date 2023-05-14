@@ -70,12 +70,8 @@ async def consume_message(websocket, consumer, topic, partition):
             await asyncio.sleep(0.1)
             start_offset = start_offset - 1
         consumer.seek(partition_list[0], start_offset)
-        # message = consumer.poll(timeout_ms=2000)
         isSend = False
-        # if not message:
-        #     logger.info('not message')
-        #     await websocket.send_text("No message in partition")
-        #     break
+
         for message in consumer:
             if not message:
                 logger.info('not message')
