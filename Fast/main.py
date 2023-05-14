@@ -57,21 +57,18 @@ class NoMessageError(Exception):
 async def consume_message(websocket, consumer, topic, partition):
     start_offset = 0
     logger.info("여기옵니다")
-    partition_list = [TopicPartition(topic, partition)]
-    consumer.assign(partition_list)
     logger.info("여기옵니다")
     while websocket.application_state == WebSocketState.CONNECTED:
+        partition_list = [TopicPartition(topic, partition)]
+        consumer.assign(partition_list)
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
         logger.info(f"여기옵니다 start_offset : {start_offset} total_offsets : {total_offsets}")
         if start_offset == total_offsets:
             await asyncio.sleep(0.1)
             start_offset = start_offset - 1
         consumer.seek(partition_list[0], start_offset)
-        logger.info("아직 안멈춤 1")
         # message = consumer.poll(timeout_ms=2000)
-        logger.info("아직 안멈춤 2")
         isSend = False
-        logger.info("아직 안멈춤 3")
         # if not message:
         #     logger.info('not message')
         #     await websocket.send_text("No message in partition")
