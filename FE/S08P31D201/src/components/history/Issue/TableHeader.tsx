@@ -7,8 +7,6 @@ import {
   UnfoldMore,
 } from '@mui/icons-material';
 import useHistorySort from '@/hooks/useHistorySort';
-import { useRecoilValue } from 'recoil';
-import { HistoryIssue } from '@/store/HistoryIssue';
 
 function TableHeader() {
   const [sortField, order, changeSortHandler] = useHistorySort();
@@ -20,7 +18,7 @@ function TableHeader() {
   return (
     <TableHead>
       <TableRow>
-        <TableCell sx={{ width: '60%' }}>
+        <TableCell sx={{ width: '40%' }}>
           {sortField === 'Date' ? (
             <Button
               onClick={() => {
@@ -44,7 +42,7 @@ function TableHeader() {
             </Button>
           )}
         </TableCell>
-        <TableCell align="left" sx={{ width: '20%' }}>
+        <TableCell align="left" sx={{ width: '35%' }}>
           {sortField === 'Equipment' ? (
             <Button
               onClick={() => {
@@ -92,7 +90,7 @@ function TableHeader() {
             </Button>
           )}
         </TableCell>
-        {/* <PendingTableCell align="right" /> */}
+        <PendingTableCell align="right" sx={{ width: '5%' }} />
       </TableRow>
     </TableHead>
   );

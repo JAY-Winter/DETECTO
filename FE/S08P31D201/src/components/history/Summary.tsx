@@ -31,7 +31,6 @@ function Summary() {
       method: 'get',
       url: `report/count/${userInfo.id}`,
     });
-    console.log(`[DEBUG] ${data}, ${summary}`);
   }, []);
 
   return (
