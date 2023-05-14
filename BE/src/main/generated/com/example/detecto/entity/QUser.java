@@ -28,6 +28,10 @@ public class QUser extends EntityPathBase<User> {
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
+    public final StringPath image = createString("image");
+
+    public final StringPath name = createString("name");
+
     public final StringPath password = createString("password");
 
     public final ListPath<Report, QReport> reports = this.<Report, QReport>createList("reports", Report.class, QReport.class, PathInits.DIRECT2);
@@ -38,11 +42,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final EnumPath<com.example.detecto.entity.enums.ThemeType> themeType = createEnum("themeType", com.example.detecto.entity.enums.ThemeType.class);
 
-    public final StringPath userImage = createString("userImage");
-
-    public final StringPath userName = createString("userName");
-
-    public final EnumPath<com.example.detecto.entity.enums.UserType> userType = createEnum("userType", com.example.detecto.entity.enums.UserType.class);
+    public final EnumPath<com.example.detecto.entity.enums.UserType> type = createEnum("type", com.example.detecto.entity.enums.UserType.class);
 
     public QUser(String variable) {
         this(User.class, forVariable(variable), INITS);

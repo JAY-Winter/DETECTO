@@ -20,10 +20,10 @@ public class User {
     private int id;
 
     private String password;
-    @Column(name = "user_name")
-    private String userName;
-    @Column(name = "user_image")
-    private String userImage;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "image")
+    private String image;
 
     @Column(name = "fcm_token")
     private String fcmToken;
@@ -32,16 +32,16 @@ public class User {
     private String sessionId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_type")
-    private UserType userType;
+    @Column(name = "type")
+    private UserType type;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_theme")
+    @Column(name = "theme")
     private ThemeType themeType;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_team")
+    @JoinColumn(name = "team")
     private Team team;
 
     @JsonIgnore
@@ -53,13 +53,13 @@ public class User {
     private List<EMessage> EMessages = new ArrayList<>();
 
     @Builder
-    public User(int id, String password, String userName, String userImage, String fcmToken, String sessionId, UserType userType, ThemeType themeType){
+    public User(int id, String password, String name, String image, String fcmToken, String sessionId, UserType type, ThemeType themeType){
         this.id = id;
         this.password = password;
-        this.userName = userName;
-        this.userImage = userImage;
+        this.name = name;
+        this.image = image;
         this.fcmToken = fcmToken;
-        this.userType = userType;
+        this.type = type;
         this.themeType = themeType;
         this.sessionId = sessionId;
     }

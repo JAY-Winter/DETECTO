@@ -23,10 +23,10 @@ public class UserResponseDto {
 
     public UserResponseDto(User user){
         this.id = user.getId();
-        this.name = user.getUserName();
+        this.name = user.getName();
         this.division = user.getTeam().getTeamName();
-        this.img = user.getUserImage();
-        this.type = user.getUserType();
+        this.img = user.getImage();
+        this.type = user.getType();
         this.theme = user.getThemeType();
     }
 }
