@@ -65,7 +65,7 @@ async def consume_message(websocket, consumer, topic, partition):
         partition_list = [TopicPartition(topic, partition)]
         consumer.assign(partition_list)
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
-        logger.info(f"여기옵니다 start_offset : {start_offset} total_offsets : {total_offsets}")
+        # logger.info(f"여기옵니다 start_offset : {start_offset} total_offsets : {total_offsets}")
         if start_offset == total_offsets:
             await asyncio.sleep(0.1)
             start_offset = start_offset - 1
@@ -94,10 +94,9 @@ async def consume_message(websocket, consumer, topic, partition):
                         elif type == 3:
                             new_offset = msg.get('offset')
                             new_offset = min(new_offset,total_offsets)
-                        # isSend = True
                         break
                 except asyncio.TimeoutError:
-                    logger.info('7')
+                    print('7')
                 break
             data = message.value
             frame_encoded = encoding(data)
@@ -130,11 +129,9 @@ async def consume_message(websocket, consumer, topic, partition):
             except asyncio.TimeoutError:
                 print("d")
             if pause:
-                new_offset = start_offset
+                new_offset = message.offset
                 break
-        # if isSend:
-        #     continue
-        # else:
+
         start_offset = new_offset
 
 ################################################################
