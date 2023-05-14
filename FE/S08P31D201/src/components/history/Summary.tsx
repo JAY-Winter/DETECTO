@@ -18,6 +18,8 @@ function Summary() {
 export default Summary;
 
 const SummaryPaper = styled(Paper)`
+  background-color: ${props => props.theme.palette.neutral.section};
+  border-radius: 10px;
   display: flex;
   justify-content: space-between;
   width: 100%;

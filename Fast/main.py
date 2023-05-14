@@ -7,14 +7,20 @@ from typing import Optional
 
 from fastapi import FastAPI
 from kafka import KafkaConsumer
-from multiprocessing import Process, Manager
+from multiprocessing import Process, Manager, Queue
 from kafka import KafkaConsumer, TopicPartition
 from fastapi.middleware.cors import CORSMiddleware
 from websockets.exceptions import ConnectionClosedError
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from kafka.errors import KafkaError
+import asyncio
+from starlette.websockets import WebSocketState
+import logging
 
 app = FastAPI()
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # CORS 설정
 origins = [
@@ -44,126 +50,81 @@ class NoMessageError(Exception):
 
     def __init__(self, message):
         self.message = message
-        print(message)
+        logger.info(message)
 
 
 ################################################################
-async def consume_message(websocket, consumer, topic, partition, total_offsets):
+async def consume_message(websocket, consumer, topic, partition):
     start_offset = 0
-    try:     
+    while websocket.application_state == WebSocketState.CONNECTED:
         partition_list = [TopicPartition(topic, partition)]
-        total_offsets = total_offsets[partition]
-        print(partition_list)
-    except KafkaError as e:
-        print(e)
-
-    while True: 
-        print('while')
         consumer.assign(partition_list)
+        total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
+        logger.info(f"여기옵니다 start_offset : {start_offset} total_offsets : {total_offsets}")
+        if start_offset == total_offsets:
+            await asyncio.sleep(0.1)
+            start_offset = start_offset - 1
         consumer.seek(partition_list[0], start_offset)
-        message = consumer.poll(timeout_ms=2000)
-        if not message:
-            await websocket.send_text("No message in partition")
-            break
-        try:
-            # message = consumer.poll(timeout_ms=1000) # 이 줄은 제거합니다.
-            for message in consumer:
-                print('cnsume')
-                data = message.value
-                print('1')
-                frame_encoded = encoding(data)
-                print('2')
-                context = {
-                    'frame': frame_encoded,
-                    'total': total_offsets,
-                    'offset': message.offset,
-                    'timestamp': message.timestamp,
-                }
-                print(3)
-                context = json.dumps(context)
-                print(7)
-                await websocket.send_text(context)
-                print(8)
+        logger.info("아직 안멈춤 1")
+        # message = consumer.poll(timeout_ms=2000)
+        logger.info("아직 안멈춤 2")
+        isSend = False
+        # if not message:
+        #     logger.info('not message')
+        #     await websocket.send_text("No message in partition")
+        #     break
+        for message in consumer:
+            if not message:
+                logger.info('not message')
+                start_offset = 0
+                break
+            if message.offset == total_offsets:
+                # start_offset = 0
                 try:
-                    print('r')
-                    received_data = await websocket.receive_text()
-                    print(received_data)
-                    if not received_data:
-                        continue
-                    print('s')  
-                    try:
-                        received_data = json.loads(received_data)
-                    except Exception as e:
-                        print('error', e)
-                    print('e')
-                    new_offset = received_data['offset']
-                    print('a')
-                    if start_offset != new_offset:
+                    message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
+                    if message:
+                        message = json.loads(message)
+                        new_offset = message.get('offset')
+                        new_offset = min(new_offset,total_offsets)
                         start_offset = new_offset
-                        print('v')   
+                        isSend = True
                         break
-                    
-                    elif new_offset == total_offsets - 1:
-                        print('new offset == total offsets')
-                        start_offset = 0
-                        
-                        break
-                    elif message.offset == total_offsets - 1:
-                        print('message offset == total_offsets')
-                        start_offset = 0
-                        break
-                except asyncio.CancelledError:
-                    print("WebSocket connection closed")
+                except asyncio.TimeoutError:
+                    logger.info('7')
+                break
+            data = message.value
+            frame_encoded = encoding(data)
+            context = {
+                'frame': frame_encoded,
+                'total': total_offsets,
+                'offset': message.offset,
+                'timestamp': message.timestamp,
+            }
+            context = json.dumps(context)
+            await websocket.send_text(context)
+
+            try:
+                message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
+                if message:
+                    message = json.loads(message)
+                    new_offset = message.get('offset')
+                    new_offset = min(new_offset,total_offsets)
+                    start_offset = new_offset
+                    isSend = True
                     break
-                
-                print(9)
-        except WebSocketDisconnect:
-            print("WebSocket disconnected.")
-            break
-        except ConnectionClosedError:
-            print('Connection closed')
-            break
-        except json.JSONDecodeError as e:
-            print(f"Invalid JSON string: {e}")
-            break
-        except Exception as e:
-            # 기타 예외 처리 (모든 예외를 포괄하는 경우)
-            # 처리할 작업을 수행합니다.
-            print(e)
-            break
-        print(10)
+            except asyncio.TimeoutError:
+                continue
 
-################################################################
-def get_total_offset(cctvnumber:int, partition: Optional[int] = None, return_dict: dict = None):
-    consumer = KafkaConsumer(
-        bootstrap_servers=['k8d201.p.ssafy.io:9092'],
-        auto_offset_reset='earliest',
-        enable_auto_commit=False,
-        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-        group_id='cctv_consumer'
-    )
+        if isSend:
+            continue
+        else:
+            start_offset = total_offsets
 
-    year = 23
-    topic = f'cctv.{cctvnumber}.{year}'
-    partition_list = [TopicPartition(topic, partition)]
-    
-    end_offsets: dict = consumer.end_offsets([partition_list[0]])
-    for _, val in end_offsets.items():
-        # return_dict[partition] = val
-        return val
-    
 ################################################################
 @app.websocket("/fast")
 async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: int):
     await websocket.accept()
 
-    manager = Manager()
-    total_offsets = manager.dict()
-    total_offsets[partition] = get_total_offset(cctvnumber=cctvnumber ,partition=partition)
-
-    p = Process(target=get_total_offset, args=(cctvnumber ,partition, total_offsets))
-    p.start()
-
     consumer = KafkaConsumer(
         bootstrap_servers=['k8d201.p.ssafy.io:9092'],
         auto_offset_reset='earliest',
@@ -173,11 +134,8 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     )
     year = 23
     topic = f'cctv.{cctvnumber}.{year}'
-    try:
-        await consume_message(websocket, consumer, topic, partition, total_offsets)
-    except Exception as e:
-        print(e)
-    # p.join()
+    logger.info(topic)
+    await consume_message(websocket, consumer, topic, partition)
     await websocket.close()
 
 ################################################################

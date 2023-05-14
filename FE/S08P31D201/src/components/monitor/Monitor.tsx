@@ -58,7 +58,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
 
       timeoutId.current = setTimeout(() => {
         if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-          ws.current.send(JSON.stringify({ offset: currentOffset.current }));
+          // console.log('ws.current')
         }
       }, 100);
     };
@@ -147,7 +147,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
 
   const realTimeHandler = () => {
     if (ws.current) {
-      ws.current.send(JSON.stringify({ offset: maxoffset - 1 }));
+      ws.current.send(JSON.stringify({ offset: maxoffset - 10 }));
     }
   };
 

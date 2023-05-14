@@ -58,6 +58,8 @@ function HistoryEquipmentFilter() {
 export default HistoryEquipmentFilter;
 
 const FilterPaper = styled(Paper)`
+  background-color: ${props => props.theme.palette.neutral.section};
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   width: 40%;

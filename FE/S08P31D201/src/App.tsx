@@ -23,6 +23,7 @@ import WorkerNavigationBarTablet from '@components/navbar/WorkerNavigationBarTab
 import WorkerNavigationBarMobile from '@components/navbar/WorkerNavigationBarMobile';
 import FoulPage from './pages/FoulPage';
 import IssuePage from './pages/IssuePage';
+import NotFound from './pages/NotFound';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -59,6 +60,7 @@ function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/monitor" element={<MonitorPage />} />
                 <Route path="/more" element={<MorePage setMode={setMode} />} />
+                <Route path="/*" element={<NotFound />}/>
               </Routes>
             </RouterContainerDiv>
             <NavigationBarMobile />
@@ -73,6 +75,7 @@ function App() {
                 <Route path="/foul" element={<FoulPage />} />
                 <Route path="/issue" element={<IssuePage />} />
                 <Route path="/more" element={<MorePage setMode={setMode} />} />
+                <Route path="/*" element={<NotFound />}/>
               </Routes>
             </RouterContainerDiv>
             <WorkerNavigationBarMobile />

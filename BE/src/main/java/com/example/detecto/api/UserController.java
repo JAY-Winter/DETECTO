@@ -66,7 +66,7 @@ public class UserController {
 
     @PostMapping("/auth")
     public ResponseEntity<?> auth(HttpServletRequest req) {
-        RespData<Void> response = new RespData<>();
+        RespData<UserResponseDto> response = new RespData<>();
         // 인터셉터에서 처리되므로, 인증에 성공했다고 가정하고 응답을 반환합니다.
         Cookie[] cookies = req.getCookies();
 
@@ -85,8 +85,12 @@ public class UserController {
         HttpSession session = req.getSession(false);
 
         if (session == null || !myCookieValue.equals(session.getId())) {
-            throw new AuthFailException("Authenticated fail");
+            throw new AuthFailException("Authenticated fail!");
         }
+
+        User user = (User)session.getAttribute("user");
+
+        response.setData(new UserResponseDto(user));
 
         return response.builder();
     }
