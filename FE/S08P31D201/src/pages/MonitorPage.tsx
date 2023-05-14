@@ -8,11 +8,13 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import HistoryDatepicker from '@components/history/Date/HistoryDatepicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
+import { set } from 'lodash';
 
 function MonitorPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [cctvList, setCctvList] = useState([0, 1, 2]);
   const [monitorDay, setMonitorDay] = useState(dayjs());
+  const [fullScreenState, setFullScreenState] = useState<boolean>(false);
 
   function enterFullScreen() {
     if (containerRef.current) {
@@ -22,8 +24,30 @@ function MonitorPage() {
     }
   }
 
+  function exitFullScreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+
+  function handleFullScreenChange() {
+    if (document.fullscreenElement) {
+      // 전체화면 진입
+      setFullScreenState(true);
+    } else {
+      // 전체 화면 모드 종료
+      setFullScreenState(false);
+    }
+  }
+  
   useEffect(() => {
+    document.addEventListener('fullscreenchange', handleFullScreenChange);
+
     enterFullScreen();
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullScreenChange);
+    };
   }, []);
 
   const cctvButtonHandler = (list: number[]) => {
@@ -31,7 +55,7 @@ function MonitorPage() {
   };
 
   const DateChangeHandler = (newValue: Dayjs) => {
-    setMonitorDay(newValue)
+    setMonitorDay(newValue);
   };
 
   return (
@@ -42,7 +66,7 @@ function MonitorPage() {
         <Button onClick={enterFullScreen}>풀스크린 버튼</Button>
       </MonitorHeader>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
+        <MonitorDatePicker
           onChange={value => DateChangeHandler(value as Dayjs)}
           value={monitorDay}
           label="날짜 선택"
@@ -67,10 +91,25 @@ function MonitorPage() {
           >
             전체
           </Button>
+          {fullScreenState ? (
+            <Button onClick={exitFullScreen}>
+              <span>전체 화면 나가기</span>
+            </Button>
+          ) : (
+            <Button onClick={enterFullScreen}>
+              <span>전체 화면 모드</span>
+            </Button>
+          )}
         </MonitorNav>
         <MonitorsDiv>
           {cctvList.map(id => {
-            return <Monitor key={'cctvScreen' + id} monitorId={id} date={monitorDay}/>;
+            return (
+              <Monitor
+                key={'cctvScreen' + id}
+                monitorId={id}
+                date={monitorDay}
+              />
+            );
           })}
         </MonitorsDiv>
       </MonitorContentsDiv>
@@ -132,12 +171,15 @@ const MonitorNav = styled.div`
 
   button {
     margin-bottom: 0.5rem;
+    word-break: keep-all;
   }
 
   ${tabletV} {
     width: 100%;
     height: fit-content;
     justify-content: space-around;
+    margin-right: 0;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -172,4 +214,9 @@ const MonitorsDiv = styled.div`
       height: 30vh;
     }
   }
+`;
+
+const MonitorDatePicker = styled(DatePicker)`
+  width: 100%;
+  margin-bottom: 1rem;
 `;
