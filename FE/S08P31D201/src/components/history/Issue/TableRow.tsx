@@ -5,10 +5,19 @@ import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { ReportType } from 'ReportTypes';
 import TableCollapseCard from './TableCollapseCard';
 
-
 function Row(props: { row: ReportType }) {
   const { row } = props;
   const [open, setOpen] = useState(false);
+
+  const timeFormatter = (time: ReportType['time']) => {
+    return new Date(time).toISOString().replace('T', ' ').slice(0, -5);
+  };
+
+  const itemFormatter = (reportItems: ReportType['reportItems']) => {
+    const items = [...reportItems];
+    const sortedItems = items.sort().join(', ');
+    return sortedItems;
+  };
 
   return (
     <>
@@ -17,9 +26,9 @@ function Row(props: { row: ReportType }) {
         onClick={() => setOpen(!open)}
       >
         <TableCell component="th" scope="row">
-          {row.time}
+          {timeFormatter(row.time)}
         </TableCell>
-        <TableCell align="left">{row.reportItems.toString()}</TableCell>
+        <TableCell align="left">{itemFormatter(row.reportItems)}</TableCell>
         <TableCell align="left">{row.team.teamName}팀</TableCell>
         <TableCell align="right" padding="checkbox">
           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -45,14 +54,19 @@ function Row(props: { row: ReportType }) {
 
 export default Row;
 
-const PendingTableCell = styled(TableCell)`
-  width: 1rem;
-`;
-
 const IssueTableRow = styled(TableRow)`
+  th,
+  td {
+    padding: 0.8rem 1rem;
+  }
+
   @media (hover: hover) {
     &:hover {
-      background-color: ${props => props.theme.palette.neutral.card};
+      th,
+      td {
+        background-color: ${props => props.theme.palette.neutral.card};
+      }
+      cursor: pointer;
     }
   }
 `;

@@ -1,13 +1,8 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import { Box, Collapse, TableCell, TableRow } from '@mui/material';
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import MemberCard from './MemberCard';
 import IssueImage from './IssueImage';
-import ScatterChart from '@components/dashboard/Charts/ScatterChart';
-import { ReportType, TeamType, ReportUserType } from 'ReportTypes';
-import IssueMap from './IssueMap';
-import IssueWorkerImage from './IssueWorkerImage';
+import { TeamType, ReportUserType } from 'ReportTypes';
 
 function TableCollapseCard({
   x,
@@ -50,8 +45,12 @@ const TableCollapseDiv = styled.div`
   flex-wrap: wrap;
   position: relative;
   width: 100%;
+  padding: 1rem;
+  background-color: ${props => props.theme.palette.neutral.cardHover};
+  border-radius: 10px;
+  margin-bottom: 1rem;
 
-  >div {
+  > div {
     flex-basis: 50%;
   }
 `;
@@ -59,4 +58,8 @@ const TableCollapseDiv = styled.div`
 // width를 일정 수치 안주면 resize가 정상작동을 하지 않습니다
 const CollapseCardDiv = styled.div`
   width: 100px;
-`
+  padding-right: 1rem;
+  &:nth-last-of-type(1) {
+    padding-right: 0;
+  }
+`;
