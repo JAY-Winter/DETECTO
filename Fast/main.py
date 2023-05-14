@@ -66,12 +66,15 @@ async def consume_message(websocket, consumer, topic, partition):
         if start_offset == total_offsets:
             start_offset = start_offset - 1
         consumer.seek(partition_list[0], start_offset)
-        message = consumer.poll(timeout_ms=2000)
+        logger.info("아직 안멈춤 1")
+        # message = consumer.poll(timeout_ms=2000)
+        logger.info("아직 안멈춤 2")
         isSend = False
-        if not message:
-            logger.info('not message')
-            await websocket.send_text("No message in partition")
-            break
+        logger.info("아직 안멈춤 3")
+        # if not message:
+        #     logger.info('not message')
+        #     await websocket.send_text("No message in partition")
+        #     break
 
         for message in consumer:
             if not message:
