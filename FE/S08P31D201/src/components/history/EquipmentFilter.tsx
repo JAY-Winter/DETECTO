@@ -62,9 +62,14 @@ const FilterPaper = styled(Paper)`
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  padding: 1.5rem;
-  margin: 0.5rem 0rem;
+  width: 40%;
+  padding: 1.3rem 1.5rem;
+  background-color: ${props => props.theme.palette.neutral.section};
+  border-radius: 10px;
+
+  ${mobileV} {
+    width: 100%;
+  }
 `;
 
 const FilterHeaderDiv = styled.div`
@@ -75,10 +80,16 @@ const FilterHeaderDiv = styled.div`
   div {
     display: flex;
     align-items: center;
+    font-weight: 500;
     svg {
       display: none;
     }
   }
+
+  button {
+    padding: 0;
+  }
+
   /* 모바일 한정 svg, 초기화 span */
   ${mobileV} {
     margin-bottom: 0;
@@ -88,6 +99,8 @@ const FilterHeaderDiv = styled.div`
       }
     }
     button {
+      display: flex;
+      justify-content: flex-end;
       span {
         display: none;
       }

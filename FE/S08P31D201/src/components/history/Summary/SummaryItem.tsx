@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { Button, Tabs, Tab, Box, Paper, css } from '@mui/material';
-import { useRecoilState } from 'recoil';
+import { mobileV } from '@/utils/Mixin';
 
 type SummaryItemProps = {
   title: string;
@@ -12,24 +11,19 @@ function SummaryItem({ title, count }: SummaryItemProps) {
   return (
     <SummaryDiv>
       <SummaryTitleDiv>{title}</SummaryTitleDiv>
-      <SummaryNumberDiv>{count}</SummaryNumberDiv>
+      <SummaryNumberDiv>
+        <div>{count}</div>
+      </SummaryNumberDiv>
     </SummaryDiv>
   );
 }
 
 export default SummaryItem;
 
-const SummaryPaper = styled(Paper)`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 1rem;
-  transition: 0.2s all ease;
-`;
-
 const SummaryDiv = styled('div')`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   width: 100%;
   margin-right: 1rem;
@@ -44,7 +38,9 @@ const SummaryDiv = styled('div')`
 
 const SummaryTitleDiv = styled('div')`
   width: 100%;
-  margin: 0.5rem 0rem;
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+  word-break: keep-all;
 `;
 
 const SummaryNumberDiv = styled('div')`
@@ -52,4 +48,9 @@ const SummaryNumberDiv = styled('div')`
   height: 100%;
   font-weight: bold;
   font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  ${mobileV} {
+    font-size: 2rem;
+  }
 `;
