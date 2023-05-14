@@ -56,8 +56,6 @@ class NoMessageError(Exception):
 ################################################################
 async def consume_message(websocket, consumer, topic, partition):
     start_offset = 0
-    logger.info("여기옵니다")
-    logger.info("여기옵니다")
     while websocket.application_state == WebSocketState.CONNECTED:
         partition_list = [TopicPartition(topic, partition)]
         consumer.assign(partition_list)
@@ -67,7 +65,9 @@ async def consume_message(websocket, consumer, topic, partition):
             await asyncio.sleep(0.1)
             start_offset = start_offset - 1
         consumer.seek(partition_list[0], start_offset)
+        logger.info("아직 안멈춤 1")
         # message = consumer.poll(timeout_ms=2000)
+        logger.info("아직 안멈춤 2")
         isSend = False
         # if not message:
         #     logger.info('not message')
@@ -78,8 +78,14 @@ async def consume_message(websocket, consumer, topic, partition):
                 logger.info('not message')
                 start_offset = 0
                 break
+            # if message.offset == total_offsets - 1:
+            #     start_offset = 0
+            #     break
+            logger.info('1')
             data = message.value
+            logger.info('2')
             frame_encoded = encoding(data)
+            logger.info('3')
             context = {
                 'frame': frame_encoded,
                 'total': total_offsets,
@@ -87,9 +93,12 @@ async def consume_message(websocket, consumer, topic, partition):
                 'timestamp': message.timestamp,
             }
             context = json.dumps(context)
+            logger.info('4')
             await websocket.send_text(context)
+            logger.info('5')
 
             try:
+                logger.info('6')
                 message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
                 if message:
                     message = json.loads(message)
@@ -99,12 +108,14 @@ async def consume_message(websocket, consumer, topic, partition):
                     isSend = True
                     break
             except asyncio.TimeoutError:
+                logger.info('7')
                 continue
 
         if isSend:
             continue
         else:
             start_offset = total_offsets
+        logger.info("아직 안멈춤 5")
 
 ################################################################
 @app.websocket("/fast")
