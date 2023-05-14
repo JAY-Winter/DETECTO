@@ -70,7 +70,6 @@ async def consume_message(websocket, consumer, topic, partition):
             await asyncio.sleep(0.1)
             start_offset = start_offset - 1
         consumer.seek(partition_list[0], start_offset)
-        isSend = False
 
         for message in consumer:
             if not message:
@@ -126,10 +125,10 @@ async def consume_message(websocket, consumer, topic, partition):
                         new_offset = msg.get('offset')
                         new_offset = min(new_offset,total_offsets)
                     # isSend = True
-                    break
+                        break
                 
             except asyncio.TimeoutError:
-                continue
+                print("d")
             if pause:
                 new_offset = start_offset
                 break
