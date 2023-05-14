@@ -78,9 +78,6 @@ async def consume_message(websocket, consumer, topic, partition):
                 logger.info('not message')
                 start_offset = 0
                 break
-            if message.offset == total_offsets - 1:
-                start_offset = 0
-                break
             data = message.value
             frame_encoded = encoding(data)
             context = {
@@ -108,7 +105,6 @@ async def consume_message(websocket, consumer, topic, partition):
             continue
         else:
             start_offset = total_offsets
-        logger.info("아직 안멈춤 5")
 
 ################################################################
 @app.websocket("/fast")
