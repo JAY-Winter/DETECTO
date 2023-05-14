@@ -66,11 +66,13 @@ async def consume_message(websocket, consumer, topic, partition):
         consumer.assign(partition_list)
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
         # logger.info(f"여기옵니다 start_offset : {start_offset} total_offsets : {total_offsets}")
+        if total_offsets == 0 :
+            await asyncio.sleep(0.1)
+            continue
         if start_offset == total_offsets:
             await asyncio.sleep(0.1)
             start_offset = start_offset - 1
         consumer.seek(partition_list[0], start_offset)
-
         for message in consumer:
             if not message:
                 logger.info('not message')
