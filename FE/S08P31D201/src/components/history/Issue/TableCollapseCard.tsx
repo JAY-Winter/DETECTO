@@ -2,7 +2,20 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import MemberCard from './MemberCard';
 import IssueImage from './IssueImage';
-import { TeamType, ReportUserType } from 'ReportTypes';
+import { TeamType, ReportUserType, ReportType } from 'ReportTypes';
+import { useRecoilValue } from 'recoil';
+import { UserInfo } from '@/store/userInfoStroe';
+import RaiseIssue from '@components/RaiseIssue/RaiseIssue';
+
+type TableCollapseCardPropsType = {
+  x: number;
+  y: number;
+  reportid: number;
+  area: number;
+  teamList: TeamType;
+  violate_member?: ReportUserType;
+  report: ReportType;
+};
 
 function TableCollapseCard({
   x,
@@ -11,21 +24,21 @@ function TableCollapseCard({
   area,
   teamList,
   violate_member,
-}: {
-  x: number;
-  y: number;
-  reportid: number;
-  area: number;
-  teamList: TeamType;
-  violate_member?: ReportUserType;
-}) {
+  report,
+}: TableCollapseCardPropsType) {
+  const userInfo = useRecoilValue(UserInfo);
+
   return (
     <TableCollapseDiv>
       <CollapseCardDiv>
         <IssueImage reportid={reportid.toString()} />
       </CollapseCardDiv>
       <CollapseCardDiv>
-        <MemberCard teamList={teamList} violate_member={violate_member} />
+        {userInfo.type === 'ADMIN' ? (
+          <MemberCard teamList={teamList} violate_member={violate_member} />
+        ) : (
+          <RaiseIssue report={report} />
+        )}
       </CollapseCardDiv>
       {/* <div
         style={{
