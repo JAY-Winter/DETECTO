@@ -53,11 +53,12 @@ class NoMessageError(Exception):
 ################################################################
 async def consume_message(websocket, consumer, topic, partition):
     start_offset = 0
+    partition_list = [TopicPartition(topic, partition)]
+    consumer.assign(partition_list)
+    print("여기옵니다")
     while websocket.application_state == WebSocketState.CONNECTED:
-        partition_list = [TopicPartition(topic, partition)]
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
-        print(total_offsets)
-        consumer.assign(partition_list)
+        print("여기옵니다",total_offsets)
         consumer.seek(partition_list[0], start_offset)
         message = consumer.poll(timeout_ms=2000)
         isSend = False
