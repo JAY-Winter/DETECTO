@@ -80,15 +80,18 @@ async def consume_message(websocket, consumer, topic, partition):
                 break
             if message.offset == total_offsets - 1:
                 # start_offset = 0
-                message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
-                if message:
-                    message = json.loads(message)
-                    new_offset = message.get('offset')
-                    new_offset = min(new_offset,total_offsets)
-                    start_offset = new_offset
-                    isSend = True
+                try:
+                    message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
+                    if message:
+                        message = json.loads(message)
+                        new_offset = message.get('offset')
+                        new_offset = min(new_offset,total_offsets)
+                        start_offset = new_offset
+                        isSend = True
+                        break
+                except asyncio.TimeoutError:
+                    logger.info('7')
                 break
-            logger.info('1')
             data = message.value
             frame_encoded = encoding(data)
             context = {
@@ -110,14 +113,12 @@ async def consume_message(websocket, consumer, topic, partition):
                     isSend = True
                     break
             except asyncio.TimeoutError:
-                logger.info('7')
                 continue
 
         if isSend:
             continue
         else:
             start_offset = total_offsets
-        logger.info("아직 안멈춤 5")
 
 ################################################################
 @app.websocket("/fast")
