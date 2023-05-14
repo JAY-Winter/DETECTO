@@ -7,7 +7,7 @@ import styled from '@emotion/styled';
 function IssuePage() {
   return (
     <IssueDiv>
-      <h1>이의제기 목록</h1>
+      <IssueTitle>이의제기 목록</IssueTitle>
       <HistoryDatePicker />
       <HistoryEquipmentFilter />
       <HistorySafetyIssue />
@@ -24,6 +24,13 @@ const IssueDiv = styled.div`
   ${mobileV} {
     align-items: normal;
   }
+`;
+
+const IssueTitle = styled.div`
+  width: 100%;
+  font-weight: bold;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
 `;
 
 export default IssuePage;

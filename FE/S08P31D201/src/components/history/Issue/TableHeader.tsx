@@ -14,8 +14,8 @@ function TableHeader() {
   const [sortField, order, changeSortHandler] = useHistorySort();
 
   useEffect(() => {
-    changeSortHandler('Date')
-  }, [])
+    changeSortHandler('Date');
+  }, []);
 
   return (
     <TableHead>
@@ -92,7 +92,7 @@ function TableHeader() {
             </Button>
           )}
         </TableCell>
-        <PendingTableCell align="right" />
+        {/* <PendingTableCell align="right" /> */}
       </TableRow>
     </TableHead>
   );
