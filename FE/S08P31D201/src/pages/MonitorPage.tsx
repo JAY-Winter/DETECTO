@@ -1,14 +1,12 @@
 import { tabletV } from '@/utils/Mixin';
 import styled from '@emotion/styled';
-import { Button, Card } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
+import { Button } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import Monitor from '@components/monitor/Monitor';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import HistoryDatepicker from '@components/history/Date/HistoryDatepicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
-import { set } from 'lodash';
 
 function MonitorPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -39,7 +37,7 @@ function MonitorPage() {
       setFullScreenState(false);
     }
   }
-  
+
   useEffect(() => {
     document.addEventListener('fullscreenchange', handleFullScreenChange);
 
@@ -76,30 +74,34 @@ function MonitorPage() {
       </LocalizationProvider>
       <MonitorContentsDiv ref={containerRef}>
         <MonitorNav>
-          <Button variant="contained" onClick={() => cctvButtonHandler([0])}>
-            1번
-          </Button>
-          <Button variant="contained" onClick={() => cctvButtonHandler([1])}>
-            2번
-          </Button>
-          <Button variant="contained" onClick={() => cctvButtonHandler([2])}>
-            3번
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => cctvButtonHandler([0, 1, 2])}
-          >
-            전체
-          </Button>
-          {fullScreenState ? (
-            <Button onClick={exitFullScreen}>
-              <span>전체 화면 나가기</span>
+          <div>
+            <Button variant="contained" onClick={() => cctvButtonHandler([0])}>
+              1번
             </Button>
-          ) : (
-            <Button onClick={enterFullScreen}>
-              <span>전체 화면 모드</span>
+            <Button variant="contained" onClick={() => cctvButtonHandler([1])}>
+              2번
             </Button>
-          )}
+            <Button variant="contained" onClick={() => cctvButtonHandler([2])}>
+              3번
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => cctvButtonHandler([0, 1, 2])}
+            >
+              전체
+            </Button>
+          </div>
+          <div>
+            {fullScreenState ? (
+              <Button onClick={exitFullScreen} color='error' variant="contained">
+                <span>전체 화면 나가기</span>
+              </Button>
+            ) : (
+              <Button onClick={enterFullScreen} color='success' variant="contained">
+                <span>전체 화면 모드</span>
+              </Button>
+            )}
+          </div>
         </MonitorNav>
         <MonitorsDiv>
           {cctvList.map(id => {
@@ -160,26 +162,65 @@ const MonitorContentsDiv = styled.div`
 const MonitorNav = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
+
+  position: absolute;
+  left: 0;
+  z-index: 10;
+  overflow: hidden;
+
+  width: 10px;
+
   height: calc(100vh);
-  width: 100px;
 
   background-color: ${props => props.theme.palette.neutral.card};
-  border-radius: 1rem;
+  border-radius: 0 1rem 1rem ;
   margin-right: 1rem;
   padding: 1rem;
 
+  transition: 0.3s ease all;
+
   button {
-    margin-bottom: 0.5rem;
+    margin-top: 1rem;
     word-break: keep-all;
+    height: fit-content;
+    transform: translate(-100px, 0);
+    transition: 0.3s ease all;
   }
 
+  :hover {
+    width: 100px;
+    button {
+      transform: translate(0, 0);
+    }
+  }
   ${tabletV} {
     width: 100%;
-    height: fit-content;
+    height: 10px;
     justify-content: space-around;
     margin-right: 0;
     margin-bottom: 1rem;
+
+    top: 0;
+
+    button {
+      margin-top: auto;
+      margin-bottom: auto;
+      word-break: keep-all;
+      height: fit-content;
+      transform: translate(0, -100px);
+      transition: 0.3s ease all;
+    }
+
+    :hover {
+      flex-direction: row;
+      height: 100px;
+      width: 100%;
+      button {
+        transform: translate(0, 0);
+      }
+    }
   }
 `;
 
@@ -189,6 +230,8 @@ const MonitorsDiv = styled.div`
   flex-direction: row;
   position: relative;
   width: 100%;
+
+  padding-left: 40px;
 
   > div {
     flex-basis: 50%;
@@ -204,14 +247,18 @@ const MonitorsDiv = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: center;
+
+    padding-left: 0px;
+    padding-top: 50px;
+
     > div {
       flex-basis: 100%;
-      height: 30vh;
+      height: calc(100vh / 3 - 10px);
     }
 
     > div:only-child {
       flex-basis: 100%;
-      height: 30vh;
+      height: 33vh;
     }
   }
 `;

@@ -1,4 +1,4 @@
-import { css, keyframes, useTheme } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 import { Button, IconButton } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -7,7 +7,6 @@ import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import axios from 'axios';
 import styled from '@emotion/styled';
-import { tabletV } from '@/utils/Mixin';
 import dayjs, { Dayjs } from 'dayjs';
 import MonitorLoading from './MonitorLoading';
 
@@ -52,20 +51,6 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
       var seconds = timestampDate.getSeconds();
       var timestampString = hours + ':' + minutes + ':' + seconds;
       setTime(timestampString);
-
-      // if (timeoutId.current) {
-      //   clearTimeout(timeoutId.current);
-      // }
-
-      // timeoutId.current = setTimeout(() => {
-      //   if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      //     ws.current.send(JSON.stringify({ offset: currentOffset.current }));
-      //   }
-      // }, 100);
-    };
-
-    websocket.onopen = () => {
-      console.log('시작중');
     };
 
     websocket.onclose = () => {
@@ -74,7 +59,6 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
 
     websocket.onopen = () => {
       console.log('WebSocket connection established.');
-      // websocket.send(JSON.stringify({ offset: currentOffset.current }));
     };
 
     websocket.onerror = event => {
