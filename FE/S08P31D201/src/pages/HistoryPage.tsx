@@ -11,8 +11,10 @@ function HistoryPage() {
     <HistoryDiv>
       <HistoryTitle>히스토리</HistoryTitle>
       <HistorySummary />
-      <HistoryDatePicker />
-      <HistoryEquipmentFilter />
+      <HistoryFilterWrapper>
+        <HistoryDatePicker />
+        <HistoryEquipmentFilter />
+      </HistoryFilterWrapper>
       <HistorySafetyIssue />
     </HistoryDiv>
   );
@@ -33,6 +35,16 @@ const HistoryDiv = styled.div`
   padding: 2.5rem 2rem;
   ${mobileV} {
     align-items: normal;
+  }
+`;
+
+const HistoryFilterWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 1rem 0;
+
+  ${mobileV} {
+    flex-direction: column;
   }
 `;
 
