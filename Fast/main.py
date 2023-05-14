@@ -15,9 +15,12 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from kafka.errors import KafkaError
 import asyncio
 from starlette.websockets import WebSocketState
-
+import logging
 
 app = FastAPI()
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # CORS 설정
 origins = [
@@ -47,30 +50,30 @@ class NoMessageError(Exception):
 
     def __init__(self, message):
         self.message = message
-        print(message)
+        logger.info(message)
 
 
 ################################################################
 async def consume_message(websocket, consumer, topic, partition):
     start_offset = 0
-    print("여기옵니다")
+    logger.info("여기옵니다")
     partition_list = [TopicPartition(topic, partition)]
     consumer.assign(partition_list)
-    print("여기옵니다")
+    logger.info("여기옵니다")
     while websocket.application_state == WebSocketState.CONNECTED:
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
-        print("여기옵니다",total_offsets)
+        logger.info("여기옵니다",total_offsets)
         consumer.seek(partition_list[0], start_offset)
         message = consumer.poll(timeout_ms=2000)
         isSend = False
         if not message:
-            print('not message')
+            logger.info('not message')
             await websocket.send_text("No message in partition")
             break
 
         for message in consumer:
             if not message:
-                print('not message')
+                logger.info('not message')
                 start_offset = 0
                 break
             if message.offset == total_offsets - 1:
@@ -118,7 +121,7 @@ async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: i
     )
     year = 23
     topic = f'cctv.{cctvnumber}.{year}'
-    print(topic)
+    logger.info(topic)
     await consume_message(websocket, consumer, topic, partition)
     await websocket.close()
 
