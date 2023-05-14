@@ -25,7 +25,7 @@ function HistoryEquipmentFilter() {
   };
 
   return (
-    <FilterPaper elevation={2}>
+    <FilterPaper elevation={0}>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
       <FilterHeaderDiv
         onClick={() => {
@@ -61,7 +61,9 @@ const FilterPaper = styled(Paper)`
   display: flex;
   flex-direction: column;
   width: 40%;
-  padding: 1rem;
+  padding: 1.3rem 1.5rem;
+  background-color: ${props => props.theme.palette.neutral.section};
+  border-radius: 10px;
 
   ${mobileV} {
     width: 100%;

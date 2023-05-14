@@ -7,7 +7,7 @@ function Summary() {
   // TODO: API요청
 
   return (
-    <SummaryPaper elevation={2}>
+    <SummaryPaper elevation={0}>
       <SummaryItem title="24시간 내 위반사항" count={15} />
       <SummaryItem title="일주일 내 위반사항" count={350} />
       <SummaryItem title="한 달 내 위반사항" count={412} />
@@ -21,6 +21,8 @@ const SummaryPaper = styled(Paper)`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 1rem;
+  padding: 1.5rem;
   transition: 0.2s all ease;
+  background-color: ${props => props.theme.palette.neutral.section};
+  border-radius: 10px;
 `;

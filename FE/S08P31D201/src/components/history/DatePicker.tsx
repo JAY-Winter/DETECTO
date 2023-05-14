@@ -32,7 +32,7 @@ function HistoryDatePicker() {
   };
 
   return (
-    <DatePaper elevation={2}>
+    <DatePaper elevation={0}>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
       <DateHeaderDiv
         onClick={() => {
@@ -66,9 +66,11 @@ export default HistoryDatePicker;
 
 const DatePaper = styled(Paper)`
   width: 60%;
-  padding: 1rem;
-  margin-right: 0.5rem;
+  padding: 1.3rem 1.5rem;
+  margin-right: 1rem;
   transition: 0.2s all ease;
+  background-color: ${props => props.theme.palette.neutral.section};
+  border-radius: 10px;
 
   ${mobileV} {
     width: 100%;

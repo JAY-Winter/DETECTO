@@ -28,23 +28,25 @@ function HistorySafetyIssue() {
   const historyDate = useRecoilValue(HistoryDayAtom);
   const historyEq = useRecoilValue(HistoryEqAtom);
 
-  
   const historyTryhandler = (response: AxiosResponse) => {
-    setReportData(response.data.data)
-  }
-  
-  const [data, isLoading, setRequestObj] = useAxios({tryHandler: historyTryhandler, baseURL: 'https://k8d201.p.ssafy.io/api/'})
-  
+    setReportData(response.data.data);
+  };
+
+  const [data, isLoading, setRequestObj] = useAxios({
+    tryHandler: historyTryhandler,
+    baseURL: 'https://k8d201.p.ssafy.io/api/',
+  });
+
   useEffect(() => {
-    const startDate = historyDate.startDay.toISOString().slice(0, 10)
-    const endDate = historyDate.endDay.toISOString().slice(0, 10)
-    const eq = historyEq.toString()
+    const startDate = historyDate.startDay.toISOString().slice(0, 10);
+    const endDate = historyDate.endDay.toISOString().slice(0, 10);
+    const eq = historyEq.toString();
     setRequestObj({
       method: 'get',
       url: `https://k8d201.p.ssafy.io/api/report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`,
-    })
-    console.log(reportData)
-  }, [historyDate, historyEq])
+    });
+    console.log(reportData);
+  }, [historyDate, historyEq]);
 
   // 페이지네이션 state
   const [page, setPage] = useState(0);
@@ -79,12 +81,15 @@ function HistorySafetyIssue() {
 
   return (
     <>
-      <IssueTableContainer>
+      <IssueTableContainer elevation={0}>
         <Table stickyHeader aria-label="collapsible table">
           <TableHeader />
           <TableBody>
             {(rowsPerPage > 0
-              ? reportData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ? reportData.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
               : reportData
             ).map(row => (
               <Row key={row.id} row={row} />
@@ -140,6 +145,12 @@ const IssueTableContainer = styled(Paper)`
   display: flex;
   width: 100%;
   transition: 0.2s ease all;
+  background-color: ${props => props.theme.palette.neutral.section};
+  thead,
+  tr,
+  th {
+    background-color: ${props => props.theme.palette.neutral.section};
+  }
 
   ${mobileV} {
     display: none;
