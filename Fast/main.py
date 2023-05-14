@@ -32,6 +32,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+consumer = KafkaConsumer(
+        bootstrap_servers=['k8d201.p.ssafy.io:9092'],
+        auto_offset_reset='earliest',
+        enable_auto_commit=False,
+        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+        group_id='cctv_consumer'
+    )
+
 ################################################################
 def encoding(data):
     frame_base64 = data['frame']
@@ -51,14 +59,15 @@ class NoMessageError(Exception):
 
 
 ################################################################
-async def consume_message(websocket, consumer, topic, partition):
+async def consume_message(websocket, topic, partition):
     start_offset = 0
+    print("여기옵니다2")
     partition_list = [TopicPartition(topic, partition)]
     consumer.assign(partition_list)
-    print("여기옵니다")
+    print("여기옵니다3")
     while websocket.application_state == WebSocketState.CONNECTED:
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
-        print("여기옵니다",total_offsets)
+        print("여기옵니다4",total_offsets)
         consumer.seek(partition_list[0], start_offset)
         message = consumer.poll(timeout_ms=2000)
         isSend = False
@@ -107,18 +116,11 @@ async def consume_message(websocket, consumer, topic, partition):
 @app.websocket("/fast")
 async def websocket_endpoint(websocket: WebSocket, cctvnumber: int, partition: int):
     await websocket.accept()
-
-    consumer = KafkaConsumer(
-        bootstrap_servers=['k8d201.p.ssafy.io:9092'],
-        auto_offset_reset='earliest',
-        enable_auto_commit=False,
-        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
-        group_id='cctv_consumer'
-    )
+    
     year = 23
     topic = f'cctv.{cctvnumber}.{year}'
-
-    await consume_message(websocket, consumer, topic, partition)
+    print(topic)
+    await consume_message(websocket, topic, partition)
     await websocket.close()
 
 ################################################################
