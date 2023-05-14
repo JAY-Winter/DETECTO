@@ -1,4 +1,4 @@
-import { keyframes } from '@emotion/react';
+import { css, keyframes, useTheme } from '@emotion/react';
 import { Button, IconButton } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -9,13 +9,17 @@ import axios from 'axios';
 import styled from '@emotion/styled';
 import { tabletV } from '@/utils/Mixin';
 import dayjs, { Dayjs } from 'dayjs';
-import MonitorLoding from './MonitorLoding';
+import MonitorLoading from './MonitorLoading';
 
-function Monitor({ monitorId, date }: { monitorId: number, date: Dayjs }) {
+import SamLogoLight from '@/assets/img/samlogoLight.svg'
+import SamLogoDark from '@/assets/img/samlogoDark.svg'
+
+function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
+  const theme = useTheme();
   const [img, setImg] = useState<string>();
   const currentOffset = useRef<number>(1);
   const ws = useRef<WebSocket>();
-  const timeoutId = useRef<NodeJS.Timeout | null>(null);
+  // const timeoutId = useRef<NodeJS.Timeout | null>(null);
   const [maxoffset, setMaxOffset] = useState<number>(2);
   const [pause, setPause] = useState<boolean>(false);
   const [time, setTime] = useState<string>('');
@@ -23,13 +27,6 @@ function Monitor({ monitorId, date }: { monitorId: number, date: Dayjs }) {
   const [hoverd, setHoverd] = useState<boolean>(false);
 
   async function connectWebSocket(date: number) {
-    if (ws.current) {
-      ws.current.close();
-      await new Promise(resolve => {
-        if (ws.current) ws.current.onclose = resolve;
-      });
-    }
-    console.log(`wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=${date}`)
     const websocket = new WebSocket(
       `wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=${date}`
     );
@@ -67,6 +64,10 @@ function Monitor({ monitorId, date }: { monitorId: number, date: Dayjs }) {
       // }, 100);
     };
 
+    websocket.onopen = () => {
+      console.log('시작중');
+    };
+
     websocket.onclose = () => {
       console.log('close됨');
     };
@@ -83,32 +84,64 @@ function Monitor({ monitorId, date }: { monitorId: number, date: Dayjs }) {
     ws.current = websocket;
   }
 
+  // useEffect(() => {
+  //   if (ws.current) ws.current.close();
+  //   axios({
+  //     method: 'get',
+  //     url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=${date.diff(
+  //       dayjs(date).startOf('year'),
+  //       'day'
+  //     )}`,
+  //   }).then(res => {
+  //     console.log(res.data);
+  //     setMaxOffset(res.data.offsets);
+  //     if (res.data.offsets !== 0) {
+  //       connectWebSocket(date.diff(dayjs(date).startOf('year'), 'day'));
+  //     } else {
+  //       return <div>영상이 존재하지 않습니다</div>
+  //     }
+  //   });
+  //   return () => {
+  //     if (ws.current && ws.current.OPEN) {
+  //       ws.current.close();
+  //     }
+  //   };
+  // }, []);
+
   useEffect(() => {
-    if(ws.current) ws.current.close()
+    if (ws.current) ws.current.close();
     axios({
       method: 'get',
-      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=${date.diff(dayjs(date).startOf('year'), 'day')}`,
+      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=${date.diff(
+        dayjs(date).startOf('year'),
+        'day'
+      )}`,
     }).then(res => {
       console.log(res.data);
       setMaxOffset(res.data.offsets);
       if (res.data.offsets !== 0) {
-        connectWebSocket(date.diff(dayjs(date).startOf('year'), 'day'));
       }
     });
+    connectWebSocket(date.diff(dayjs(date).startOf('year'), 'day'));
     return () => {
       if (ws.current && ws.current.OPEN) {
         ws.current.close();
       }
     };
-  }, []);
+  }, [date]);
 
   const buttonH = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newOffset = Number(e.currentTarget.value);
-
+    console.log(newOffset);
     currentOffset.current = newOffset;
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      setPause(false);
-      ws.current.send(JSON.stringify({ offset: currentOffset.current - 1 }));
+      // if (pause) {
+      //   setPause(false);
+      //   ws.current.send(JSON.stringify({ type: 1 }));
+      // }
+      ws.current.send(
+        JSON.stringify({ offset: currentOffset.current - 1, type: 3 })
+      );
     } else {
       console.error('웹소켓이 열려있지 않습니다.');
     }
@@ -116,7 +149,15 @@ function Monitor({ monitorId, date }: { monitorId: number, date: Dayjs }) {
 
   const pauseHandler = () => {
     setPause(prev => {
-      
+      if (ws.current) {
+        if (!prev) {
+          ws.current.send(JSON.stringify({ type: 1 }));
+        } else {
+          ws.current.send(JSON.stringify({ type: 1 }));
+        }
+      } else {
+        console.log('웹소켓이 열려있지 않습니다.');
+      }
       return !prev;
     });
   };
@@ -131,15 +172,28 @@ function Monitor({ monitorId, date }: { monitorId: number, date: Dayjs }) {
 
   const realTimeHandler = () => {
     if (ws.current) {
-      ws.current.send(JSON.stringify({ offset: maxoffset - 10 }));
+      if (pause) {
+        setPause(false);
+        ws.current.send(JSON.stringify({ type: 1 }));
+      }
+      ws.current.send(JSON.stringify({ type: 2 }));
     }
   };
 
-  if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
+  if (maxoffset === 0) {
     return (
-      <MonitorLoding />
+      <NocontentDiv>
+        <img
+          css={logoContainer}
+          src={theme.palette.mode === 'light' ? SamLogoLight : SamLogoDark}
+        />
+      </NocontentDiv>
     );
   }
+  if (ws.current && ws.current.readyState !== WebSocket.OPEN) {
+    return <MonitorLoading />;
+  }
+
   return (
     <MonitorDiv onMouseEnter={hoverHandler} onMouseLeave={mouseLeaveHandler}>
       <img src={img} alt="" />
@@ -148,7 +202,7 @@ function Monitor({ monitorId, date }: { monitorId: number, date: Dayjs }) {
         <input
           type="range"
           onChange={buttonH}
-          min={0}
+          min={1}
           max={maxoffset - 3}
           step={1}
           value={currentOffset.current - 1}
@@ -176,6 +230,8 @@ const MonitorDiv = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
+
+  width: 100%;
 
   overflow: hidden;
 
@@ -251,3 +307,20 @@ const RealTimeButton = styled(Button)`
     color: ${props => props.theme.palette.error.main};
   }
 `;
+
+const NocontentDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  font-size: 2rem;
+`;
+
+const logoContainer = css`
+  width: 100%;
+  height: 3rem;
+  /* padding: 0px 10px; */
+  /* margin-left: 10px; */
+  margin: 10px 0px 30px 0px;
+`

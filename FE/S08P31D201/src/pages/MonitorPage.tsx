@@ -105,6 +105,8 @@ const MonitorHeader = styled.div`
 const MonitorContentsDiv = styled.div`
   display: flex;
 
+  width: 100%;
+
   flex-direction: row;
   position: relative;
 
@@ -125,7 +127,7 @@ const MonitorNav = styled.div`
 
   background-color: ${props => props.theme.palette.neutral.card};
   border-radius: 1rem;
-  margin: 1rem;
+  margin-right: 1rem;
   padding: 1rem;
 
   button {
@@ -144,7 +146,7 @@ const MonitorsDiv = styled.div`
   flex-wrap: wrap;
   flex-direction: row;
   position: relative;
-  width: calc(100% - 100px);
+  width: 100%;
 
   > div {
     flex-basis: 50%;
@@ -167,7 +169,7 @@ const MonitorsDiv = styled.div`
 
     > div:only-child {
       flex-basis: 100%;
-      height: 33vh;
+      height: 30vh;
     }
   }
 `;

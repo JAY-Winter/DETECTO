@@ -2,7 +2,7 @@ import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
 
-function MonitorLoding() {
+function MonitorLoading() {
   return (
     <LoadingDiv>
       <div className="spinner-square">
@@ -14,7 +14,7 @@ function MonitorLoding() {
   );
 }
 
-export default MonitorLoding;
+export default MonitorLoading;
 
 const loadingSpinner = keyframes`
     0% {
