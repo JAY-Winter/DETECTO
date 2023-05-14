@@ -63,6 +63,8 @@ async def consume_message(websocket, consumer, topic, partition):
     while websocket.application_state == WebSocketState.CONNECTED:
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
         logger.info(f"여기옵니다 start_offset : {start_offset} total_offsets : {total_offsets}")
+        if start_offset == total_offsets:
+            start_offset = start_offset - 1
         consumer.seek(partition_list[0], start_offset)
         message = consumer.poll(timeout_ms=2000)
         isSend = False
