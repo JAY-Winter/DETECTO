@@ -70,8 +70,8 @@ def calculate(kafka_producer,cctv_id,img, model, face_model):
     year = 23
     cctv_number = cctv_id
     today = datetime.now()
-    # partition_key = today.timetuple().tm_yday - 1
-    partition_key = 131
+    partition_key = today.timetuple().tm_yday - 1
+    # partition_key = 133
     kafka_topic = f'cctv.{cctv_number}.{year}'
     yolo_image = results[0].plot()
     _, img_encoded = cv2.imencode('.jpg', yolo_image)

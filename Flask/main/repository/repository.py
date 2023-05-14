@@ -7,6 +7,7 @@ class Report(db.Model):
     cctv_area = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     time = db.Column(db.TIMESTAMP(6))
+    report_status = db.Column(db.String(255), nullable=True)
     x = db.Column(db.Integer, nullable=False)
     y = db.Column(db.Integer, nullable=False)
 
@@ -23,9 +24,13 @@ class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     password = db.Column(db.String(255), nullable=True)
-    user_image = db.Column(db.String(255), nullable=True)
-    user_name = db.Column(db.String(255), nullable=True)
-    user_team = db.Column(db.Integer, nullable=True)
+    image = db.Column(db.String(255), nullable=True)
+    name = db.Column(db.String(255), nullable=True)
+    team = db.Column(db.Integer, nullable=True)
+    fcm_token = db.Column(db.String(255), nullable=True)
+    session_id = db.Column(db.String(255), nullable=True)
+    type = db.Column(db.String(255), nullable=True)
+    theme = db.Column(db.String(255), nullable=True)
 
 
 class Equipment(db.Model):

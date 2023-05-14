@@ -38,7 +38,7 @@ def save_non_wear(cctv_id,human_detect, yolo_image, real_image, face_model):
             
 
             new_report = Report(cctv_area=int(cctv_id),user_id=cls, time=current_time,
-                                x=int(-10), y=int(-10))
+                                x=int(-10), y=int(-10), report_status='NOT_APPLIED')
             db.session.add(new_report)
             db.session.flush()
 
