@@ -64,6 +64,7 @@ async def consume_message(websocket, consumer, topic, partition):
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
         logger.info(f"여기옵니다 start_offset : {start_offset} total_offsets : {total_offsets}")
         if start_offset == total_offsets:
+            await asyncio.sleep(0.1)
             start_offset = start_offset - 1
         consumer.seek(partition_list[0], start_offset)
         logger.info("아직 안멈춤 1")
@@ -75,7 +76,6 @@ async def consume_message(websocket, consumer, topic, partition):
         #     logger.info('not message')
         #     await websocket.send_text("No message in partition")
         #     break
-        logger.info(f"{consumer}")
         for message in consumer:
             if not message:
                 logger.info('not message')
