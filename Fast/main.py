@@ -88,13 +88,13 @@ async def consume_message(websocket, consumer, topic, partition):
                         type = int(msg.get('type'))
                         if type == 1:
                             pause = not pause
-                            start_offset = message.offset
                         elif type == 2:
                             pause = False
+                            new_offset = total_offsets
+                            break
                         elif type == 3:
                             new_offset = msg.get('offset')
                             new_offset = min(new_offset,total_offsets)
-                        start_offset = new_offset
                         # isSend = True
                         break
                 except asyncio.TimeoutError:
@@ -118,7 +118,6 @@ async def consume_message(websocket, consumer, topic, partition):
                     type = int(msg.get('type'))
                     if type == 1:
                         pause = not pause
-                        start_offset = message.offset
                     elif type == 2:
                         pause = False
                         new_offset = total_offsets
@@ -132,7 +131,7 @@ async def consume_message(websocket, consumer, topic, partition):
             except asyncio.TimeoutError:
                 continue
             if pause:
-                new_offset = message.offset
+                new_offset = start_offset
                 break
         # if isSend:
         #     continue
