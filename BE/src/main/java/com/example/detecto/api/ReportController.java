@@ -2,6 +2,7 @@ package com.example.detecto.api;
 
 
 import com.example.detecto.data.RespData;
+import com.example.detecto.dto.ObjectionDto;
 import com.example.detecto.dto.ReportCoordDto;
 import com.example.detecto.dto.ReportSearchDto;
 import com.example.detecto.dto.ReportSearchResponseDto;
@@ -34,6 +35,15 @@ public class ReportController {
         RespData<List> response = new RespData<>();
 
         reportService.coord(reportCoordDto);
+
+        return  response.builder();
+    }
+
+    @PutMapping("/objection")
+    public ResponseEntity<?> objection(@RequestBody ObjectionDto objectionDto){
+        RespData<List> response = new RespData<>();
+
+        reportService.objection(objectionDto);
 
         return  response.builder();
     }

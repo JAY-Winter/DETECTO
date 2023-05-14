@@ -2,8 +2,10 @@ package com.example.detecto.service;
 
 import com.example.detecto.dto.*;
 import com.example.detecto.entity.Report;
+import com.example.detecto.entity.enums.ReportStatus;
 import com.example.detecto.exception.DatabaseFetchException;
 import com.example.detecto.exception.DoesNotExistData;
+import com.example.detecto.exception.ObjectionException;
 import com.example.detecto.repository.ReportRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -57,6 +59,14 @@ public class ReportServiceImpl implements ReportService {
             whereClause.and(equipment.name.in(reportSearchDto.getEquipments()));
         }
 
+        if(reportSearchDto.getStatus() != null){
+            whereClause.and(report.reportStatus.eq(reportSearchDto.getStatus()));
+        }
+
+        if(reportSearchDto.getUserId() != null){
+            whereClause.and(user.id.eq(reportSearchDto.getUserId()));
+        }
+
         List<Report> reports;
         try {
             reports = queryFactory
@@ -91,7 +101,7 @@ public class ReportServiceImpl implements ReportService {
                             .map(item -> item.getEquipment().getName())
                             .collect(Collectors.toList());
 
-                    return new ReportSearchResponseDto(rd.getId(), rd.getTime(), rd.getX(), rd.getY(), rd.getCctvArea(),
+                    return new ReportSearchResponseDto(rd.getId(), rd.getTime(), rd.getX(), rd.getY(), rd.getCctvArea(), rd.getReportStatus(),
                             rs_user, rs_team, equipmentNames);
                 })
                 .collect(Collectors.toList());
@@ -103,5 +113,16 @@ public class ReportServiceImpl implements ReportService {
         r.setCoord(reportCoordDto);
 
         reportRepository.save(r);
+    }
+
+    @Override
+    public void objection(ObjectionDto objectionDto) {
+        Report r = reportRepository.findById(objectionDto.getId()).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+
+        if(r.getReportStatus() == ReportStatus.REJECTED){
+            throw new ObjectionException("이미 거절된 상태입니다.");
+        }
+
+
     }
 }

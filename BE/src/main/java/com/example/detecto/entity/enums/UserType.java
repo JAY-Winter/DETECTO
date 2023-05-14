@@ -1,4 +1,4 @@
-package com.example.detecto.entity;
+package com.example.detecto.entity.enums;
 
 public enum UserType {
     WORKER,

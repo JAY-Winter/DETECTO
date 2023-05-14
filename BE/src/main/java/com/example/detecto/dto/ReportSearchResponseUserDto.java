@@ -8,14 +8,14 @@ import lombok.Data;
 public class ReportSearchResponseUserDto {
     private int id;
 
-    private String userName;
+    private String name;
 
-    private String userImage;
+    private String image;
 
     public ReportSearchResponseUserDto(User user){
         this.id = user.getId();
-        this.userName = user.getUserName();
-        this.userImage = user.getUserImage();
+        this.name = user.getName();
+        this.image = user.getImage();
     }
 
 }

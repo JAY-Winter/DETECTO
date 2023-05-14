@@ -1,6 +1,6 @@
 package com.example.detecto.data;
 
-import com.example.detecto.exception.ErrorEnum;
+import com.example.detecto.entity.enums.ErrorEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
