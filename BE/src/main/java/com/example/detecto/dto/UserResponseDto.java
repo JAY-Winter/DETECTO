@@ -1,8 +1,8 @@
 package com.example.detecto.dto;
 
-import com.example.detecto.entity.ThemeType;
+import com.example.detecto.entity.enums.ThemeType;
 import com.example.detecto.entity.User;
-import com.example.detecto.entity.UserType;
+import com.example.detecto.entity.enums.UserType;
 import lombok.Data;
 
 //id?: number,

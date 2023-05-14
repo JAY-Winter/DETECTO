@@ -1,5 +1,7 @@
 package com.example.detecto.entity;
 
+import com.example.detecto.entity.enums.ThemeType;
+import com.example.detecto.entity.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,6 +47,10 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Report> reports = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<EMessage> EMessages = new ArrayList<>();
 
     @Builder
     public User(int id, String password, String userName, String userImage, String fcmToken, String sessionId, UserType userType, ThemeType themeType){

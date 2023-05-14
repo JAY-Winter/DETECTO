@@ -1,7 +1,7 @@
 package com.example.detecto.service;
 
 import com.example.detecto.dto.UserDto;
-import com.example.detecto.entity.ThemeType;
+import com.example.detecto.entity.enums.ThemeType;
 import com.example.detecto.entity.User;
 import com.example.detecto.exception.DoesNotExistData;
 import com.example.detecto.repository.UserRepository;
