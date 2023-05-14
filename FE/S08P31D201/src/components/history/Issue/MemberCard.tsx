@@ -44,13 +44,13 @@ function MemberCard({
     <div
       style={{
         width: '100%',
-        height: '300px',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
       }}
     >
-      <h2>위반 사원</h2>
+      <h2 style={{ margin: '0.5rem 0 1rem 0' }}>위반 사원</h2>
       <ProfileCard>
         <img
           css={profileImageStyle}
@@ -78,6 +78,7 @@ export default MemberCard;
 const ProfileCard = styled(Card)`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   position: relative;
   width: 100%;
@@ -85,6 +86,8 @@ const ProfileCard = styled(Card)`
   max-width: 350px;
   background-color: ${props => props.theme.palette.neutral.card};
   padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 0.7rem;
   p {
     &:first-of-type {
       font-size: 1.3rem;
@@ -114,6 +117,7 @@ const profileImageStyle = css`
   object-fit: cover;
   border-radius: 50%;
   box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.15);
+  margin-bottom: 1rem;
 `;
 
 const ArrowButton = styled(Button)`
