@@ -2,12 +2,10 @@ package com.example.detecto.api;
 
 
 import com.example.detecto.data.RespData;
-import com.example.detecto.dto.ObjectionDto;
-import com.example.detecto.dto.ReportCoordDto;
-import com.example.detecto.dto.ReportSearchDto;
-import com.example.detecto.dto.ReportSearchResponseDto;
+import com.example.detecto.dto.*;
 import com.example.detecto.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +23,16 @@ public class ReportController {
         RespData<List> response = new RespData<>();
 
         List<ReportSearchResponseDto> data = reportService.search(reportSearchDto);
+        response.setData(data);
+
+        return response.builder();
+    }
+
+    @GetMapping("/count/{id}")
+    public ResponseEntity<?> count(@PathVariable int id){
+        RespData<ReportCountResponseDto> response = new RespData<>();
+
+        ReportCountResponseDto data = reportService.count(id);
         response.setData(data);
 
         return response.builder();
