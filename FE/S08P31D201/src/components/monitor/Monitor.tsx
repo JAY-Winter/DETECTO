@@ -1,4 +1,4 @@
-import { keyframes } from '@emotion/react';
+import { css, keyframes, useTheme } from '@emotion/react';
 import { Button, IconButton } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -8,28 +8,27 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import axios from 'axios';
 import styled from '@emotion/styled';
 import { tabletV } from '@/utils/Mixin';
+import dayjs, { Dayjs } from 'dayjs';
+import MonitorLoading from './MonitorLoading';
 
-function Monitor({ monitorId }: { monitorId: number }) {
+import SamLogoLight from '@/assets/img/samlogoLight.svg'
+import SamLogoDark from '@/assets/img/samlogoDark.svg'
+
+function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
+  const theme = useTheme();
   const [img, setImg] = useState<string>();
-  const currentOffset = useRef<number>(0);
+  const currentOffset = useRef<number>(1);
   const ws = useRef<WebSocket>();
-  const timeoutId = useRef<NodeJS.Timeout | null>(null);
+  // const timeoutId = useRef<NodeJS.Timeout | null>(null);
   const [maxoffset, setMaxOffset] = useState<number>(2);
   const [pause, setPause] = useState<boolean>(false);
   const [time, setTime] = useState<string>('');
 
   const [hoverd, setHoverd] = useState<boolean>(false);
 
-  async function connectWebSocket(offset: number) {
-    if (ws.current) {
-      ws.current.close();
-      await new Promise(resolve => {
-        if (ws.current) ws.current.onclose = resolve;
-      });
-    }
-
+  async function connectWebSocket(date: number) {
     const websocket = new WebSocket(
-      `wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=131`
+      `wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=${date}`
     );
 
     // const websocket = new WebSocket(
@@ -41,8 +40,10 @@ function Monitor({ monitorId }: { monitorId: number }) {
       const data = JSON.parse(frameData);
 
       setImg('data:image/jpeg;base64,' + data['frame']);
-      // setMaxOffset(data.total);
-      currentOffset.current = data.offset;
+      setMaxOffset(data.total - 1);
+      currentOffset.current = data.offset - 1;
+
+      // console.log(data)
 
       const timestamp = data.timestamp;
       var timestampDate = new Date(timestamp);
@@ -52,15 +53,19 @@ function Monitor({ monitorId }: { monitorId: number }) {
       var timestampString = hours + ':' + minutes + ':' + seconds;
       setTime(timestampString);
 
-      if (timeoutId.current) {
-        clearTimeout(timeoutId.current);
-      }
+      // if (timeoutId.current) {
+      //   clearTimeout(timeoutId.current);
+      // }
 
-      timeoutId.current = setTimeout(() => {
-        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-          // console.log('ws.current')
-        }
-      }, 100);
+      // timeoutId.current = setTimeout(() => {
+      //   if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      //     ws.current.send(JSON.stringify({ offset: currentOffset.current }));
+      //   }
+      // }, 100);
+    };
+
+    websocket.onopen = () => {
+      console.log('시작중');
     };
 
     websocket.onclose = () => {
@@ -79,59 +84,79 @@ function Monitor({ monitorId }: { monitorId: number }) {
     ws.current = websocket;
   }
 
+  // useEffect(() => {
+  //   if (ws.current) ws.current.close();
+  //   axios({
+  //     method: 'get',
+  //     url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=${date.diff(
+  //       dayjs(date).startOf('year'),
+  //       'day'
+  //     )}`,
+  //   }).then(res => {
+  //     console.log(res.data);
+  //     setMaxOffset(res.data.offsets);
+  //     if (res.data.offsets !== 0) {
+  //       connectWebSocket(date.diff(dayjs(date).startOf('year'), 'day'));
+  //     } else {
+  //       return <div>영상이 존재하지 않습니다</div>
+  //     }
+  //   });
+  //   return () => {
+  //     if (ws.current && ws.current.OPEN) {
+  //       ws.current.close();
+  //     }
+  //   };
+  // }, []);
+
   useEffect(() => {
+    if (ws.current) ws.current.close();
     axios({
       method: 'get',
-      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=131`,
+      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=${date.diff(
+        dayjs(date).startOf('year'),
+        'day'
+      )}`,
     }).then(res => {
       console.log(res.data);
       setMaxOffset(res.data.offsets);
       if (res.data.offsets !== 0) {
-        connectWebSocket(currentOffset.current);
       }
     });
+    connectWebSocket(date.diff(dayjs(date).startOf('year'), 'day'));
     return () => {
       if (ws.current && ws.current.OPEN) {
         ws.current.close();
       }
     };
-  }, []);
+  }, [date]);
 
   const buttonH = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newOffset = Number(e.currentTarget.value);
-
+    console.log(newOffset);
     currentOffset.current = newOffset;
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      setPause(false);
-      ws.current.send(JSON.stringify({ offset: currentOffset.current - 1 }));
+      // if (pause) {
+      //   setPause(false);
+      //   ws.current.send(JSON.stringify({ type: 1 }));
+      // }
+      ws.current.send(
+        JSON.stringify({ offset: currentOffset.current - 1, type: 3 })
+      );
     } else {
       console.error('웹소켓이 열려있지 않습니다.');
     }
   };
 
-  if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
-    return (
-      <LoadingDiv>
-        <div className="spinner-square">
-          <div className="square-1 square"></div>
-          <div className="square-2 square"></div>
-          <div className="square-3 square"></div>
-        </div>
-      </LoadingDiv>
-    );
-  }
-
   const pauseHandler = () => {
     setPause(prev => {
-      if (prev) {
-        if (ws.current)
-          ws.current.send(
-            JSON.stringify({ offset: currentOffset.current - 1 })
-          );
-      } else {
-        if (timeoutId.current) {
-          clearTimeout(timeoutId.current);
+      if (ws.current) {
+        if (!prev) {
+          ws.current.send(JSON.stringify({ type: 1 }));
+        } else {
+          ws.current.send(JSON.stringify({ type: 1 }));
         }
+      } else {
+        console.log('웹소켓이 열려있지 않습니다.');
       }
       return !prev;
     });
@@ -147,9 +172,27 @@ function Monitor({ monitorId }: { monitorId: number }) {
 
   const realTimeHandler = () => {
     if (ws.current) {
-      ws.current.send(JSON.stringify({ offset: maxoffset - 10 }));
+      if (pause) {
+        setPause(false);
+        ws.current.send(JSON.stringify({ type: 1 }));
+      }
+      ws.current.send(JSON.stringify({ type: 2 }));
     }
   };
+
+  if (maxoffset === 0) {
+    return (
+      <NocontentDiv>
+        <img
+          css={logoContainer}
+          src={theme.palette.mode === 'light' ? SamLogoLight : SamLogoDark}
+        />
+      </NocontentDiv>
+    );
+  }
+  if (ws.current && ws.current.readyState !== WebSocket.OPEN) {
+    return <MonitorLoading />;
+  }
 
   return (
     <MonitorDiv onMouseEnter={hoverHandler} onMouseLeave={mouseLeaveHandler}>
@@ -159,8 +202,8 @@ function Monitor({ monitorId }: { monitorId: number }) {
         <input
           type="range"
           onChange={buttonH}
-          min={0}
-          max={maxoffset}
+          min={1}
+          max={maxoffset - 3}
           step={1}
           value={currentOffset.current - 1}
         />
@@ -187,6 +230,8 @@ const MonitorDiv = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
+
+  width: 100%;
 
   overflow: hidden;
 
@@ -263,59 +308,19 @@ const RealTimeButton = styled(Button)`
   }
 `;
 
-const loadingSpinner = keyframes`
-    0% {
-        height: 5rem;
-        background-color: rgb(111, 200, 240);
-    }
-    20% {
-        height: 5rem;
-    }
-    40% {
-        height: 7rem;
-        background-color: rgb(111, 200, 240);
-    }
-    80% {
-        height: 5rem;
-    }
-    100% {
-        height: 5rem;
-        background-color: rgb(111, 163, 240);
-    }
-`;
-const LoadingDiv = styled.div`
+const NocontentDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 600px;
-  height: 480px;
 
-  .spinner-square {
-    display: flex;
-    flex-direction: row;
-    width: 90px;
-    height: 120px;
-  }
-
-  .spinner-square > .square {
-    width: 17px;
-    height: 80px;
-    margin: auto auto;
-    border-radius: 4px;
-  }
-
-  .square-1 {
-    animation: ${loadingSpinner} 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) 0s
-      infinite;
-  }
-
-  .square-2 {
-    animation: ${loadingSpinner} 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95)
-      200ms infinite;
-  }
-
-  .square-3 {
-    animation: ${loadingSpinner} 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95)
-      400ms infinite;
-  }
+  width: 100%;
+  font-size: 2rem;
 `;
+
+const logoContainer = css`
+  width: 100%;
+  height: 3rem;
+  /* padding: 0px 10px; */
+  /* margin-left: 10px; */
+  margin: 10px 0px 30px 0px;
+`
