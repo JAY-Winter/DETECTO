@@ -110,6 +110,11 @@ const FilterHeaderDiv = styled.div`
 
 const FilterContentDiv = styled.div<{ mobileopen: boolean }>`
   display: flex;
+  width: 100%;
+  height: 4.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  overflow: auto;
 
   /* 모바일 한정 컨텐츠 표시 */
   ${mobileV} {
