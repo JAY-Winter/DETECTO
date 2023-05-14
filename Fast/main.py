@@ -93,7 +93,7 @@ async def consume_message(websocket, consumer, topic, partition):
                             pause = False
                         elif type == 3:
                             new_offset = msg.get('offset')
-                        new_offset = min(new_offset,total_offsets)
+                            new_offset = min(new_offset,total_offsets)
                         start_offset = new_offset
                         # isSend = True
                         break
@@ -110,8 +110,7 @@ async def consume_message(websocket, consumer, topic, partition):
             }
             context = json.dumps(context)
             await websocket.send_text(context)
-            if pause:
-                break
+            
             try:
                 recv_data = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
                 if recv_data:
@@ -126,13 +125,15 @@ async def consume_message(websocket, consumer, topic, partition):
                         break
                     elif type == 3:
                         new_offset = msg.get('offset')
-                    new_offset = min(new_offset,total_offsets)
-                    start_offset = new_offset
+                        new_offset = min(new_offset,total_offsets)
                     # isSend = True
                     break
+                
             except asyncio.TimeoutError:
                 continue
-        
+            if pause:
+                new_offset = message.offset
+                break
         # if isSend:
         #     continue
         # else:
