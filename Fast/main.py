@@ -75,6 +75,7 @@ async def consume_message(websocket, consumer, topic, partition):
             start_offset = max(start_offset - 1, 0)
         consumer.seek(partition_list[0], start_offset)
         for message in consumer:
+            await asyncio.sleep(0.5)
             if not message:
                 logger.info('not message')
                 start_offset = 0
