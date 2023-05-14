@@ -8,10 +8,12 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import axios from 'axios';
 import styled from '@emotion/styled';
 import { tabletV } from '@/utils/Mixin';
+import dayjs, { Dayjs } from 'dayjs';
+import MonitorLoding from './MonitorLoding';
 
-function Monitor({ monitorId }: { monitorId: number }) {
+function Monitor({ monitorId, date }: { monitorId: number, date: Dayjs }) {
   const [img, setImg] = useState<string>();
-  const currentOffset = useRef<number>(0);
+  const currentOffset = useRef<number>(1);
   const ws = useRef<WebSocket>();
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
   const [maxoffset, setMaxOffset] = useState<number>(2);
@@ -20,16 +22,16 @@ function Monitor({ monitorId }: { monitorId: number }) {
 
   const [hoverd, setHoverd] = useState<boolean>(false);
 
-  async function connectWebSocket(offset: number) {
+  async function connectWebSocket(date: number) {
     if (ws.current) {
       ws.current.close();
       await new Promise(resolve => {
         if (ws.current) ws.current.onclose = resolve;
       });
     }
-
+    console.log(`wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=${date}`)
     const websocket = new WebSocket(
-      `wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=131`
+      `wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=${date}`
     );
 
     // const websocket = new WebSocket(
@@ -41,8 +43,10 @@ function Monitor({ monitorId }: { monitorId: number }) {
       const data = JSON.parse(frameData);
 
       setImg('data:image/jpeg;base64,' + data['frame']);
-      // setMaxOffset(data.total);
-      currentOffset.current = data.offset;
+      setMaxOffset(data.total - 1);
+      currentOffset.current = data.offset - 1;
+
+      // console.log(data)
 
       const timestamp = data.timestamp;
       var timestampDate = new Date(timestamp);
@@ -52,15 +56,15 @@ function Monitor({ monitorId }: { monitorId: number }) {
       var timestampString = hours + ':' + minutes + ':' + seconds;
       setTime(timestampString);
 
-      if (timeoutId.current) {
-        clearTimeout(timeoutId.current);
-      }
+      // if (timeoutId.current) {
+      //   clearTimeout(timeoutId.current);
+      // }
 
-      timeoutId.current = setTimeout(() => {
-        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-          ws.current.send(JSON.stringify({ offset: currentOffset.current }));
-        }
-      }, 100);
+      // timeoutId.current = setTimeout(() => {
+      //   if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      //     ws.current.send(JSON.stringify({ offset: currentOffset.current }));
+      //   }
+      // }, 100);
     };
 
     websocket.onclose = () => {
@@ -80,14 +84,15 @@ function Monitor({ monitorId }: { monitorId: number }) {
   }
 
   useEffect(() => {
+    if(ws.current) ws.current.close()
     axios({
       method: 'get',
-      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=131`,
+      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=${date.diff(dayjs(date).startOf('year'), 'day')}`,
     }).then(res => {
       console.log(res.data);
       setMaxOffset(res.data.offsets);
       if (res.data.offsets !== 0) {
-        connectWebSocket(currentOffset.current);
+        connectWebSocket(date.diff(dayjs(date).startOf('year'), 'day'));
       }
     });
     return () => {
@@ -109,30 +114,9 @@ function Monitor({ monitorId }: { monitorId: number }) {
     }
   };
 
-  if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
-    return (
-      <LoadingDiv>
-        <div className="spinner-square">
-          <div className="square-1 square"></div>
-          <div className="square-2 square"></div>
-          <div className="square-3 square"></div>
-        </div>
-      </LoadingDiv>
-    );
-  }
-
   const pauseHandler = () => {
     setPause(prev => {
-      if (prev) {
-        if (ws.current)
-          ws.current.send(
-            JSON.stringify({ offset: currentOffset.current - 1 })
-          );
-      } else {
-        if (timeoutId.current) {
-          clearTimeout(timeoutId.current);
-        }
-      }
+      
       return !prev;
     });
   };
@@ -151,6 +135,11 @@ function Monitor({ monitorId }: { monitorId: number }) {
     }
   };
 
+  if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
+    return (
+      <MonitorLoding />
+    );
+  }
   return (
     <MonitorDiv onMouseEnter={hoverHandler} onMouseLeave={mouseLeaveHandler}>
       <img src={img} alt="" />
@@ -160,7 +149,7 @@ function Monitor({ monitorId }: { monitorId: number }) {
           type="range"
           onChange={buttonH}
           min={0}
-          max={maxoffset}
+          max={maxoffset - 3}
           step={1}
           value={currentOffset.current - 1}
         />
@@ -260,62 +249,5 @@ const RealTimeButton = styled(Button)`
     font-size: 0.4rem;
     margin-right: 0.5rem;
     color: ${props => props.theme.palette.error.main};
-  }
-`;
-
-const loadingSpinner = keyframes`
-    0% {
-        height: 5rem;
-        background-color: rgb(111, 200, 240);
-    }
-    20% {
-        height: 5rem;
-    }
-    40% {
-        height: 7rem;
-        background-color: rgb(111, 200, 240);
-    }
-    80% {
-        height: 5rem;
-    }
-    100% {
-        height: 5rem;
-        background-color: rgb(111, 163, 240);
-    }
-`;
-const LoadingDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 600px;
-  height: 480px;
-
-  .spinner-square {
-    display: flex;
-    flex-direction: row;
-    width: 90px;
-    height: 120px;
-  }
-
-  .spinner-square > .square {
-    width: 17px;
-    height: 80px;
-    margin: auto auto;
-    border-radius: 4px;
-  }
-
-  .square-1 {
-    animation: ${loadingSpinner} 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) 0s
-      infinite;
-  }
-
-  .square-2 {
-    animation: ${loadingSpinner} 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95)
-      200ms infinite;
-  }
-
-  .square-3 {
-    animation: ${loadingSpinner} 1200ms cubic-bezier(0.445, 0.05, 0.55, 0.95)
-      400ms infinite;
   }
 `;

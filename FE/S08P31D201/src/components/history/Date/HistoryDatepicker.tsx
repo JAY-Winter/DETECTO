@@ -37,7 +37,7 @@ function HistoryDatepicker({datetypes}: {datetypes: TdatepickerType[]}) {
     onChange={(newValue: Dayjs | null) => DateChangeHandler(newValue, type)}
     css={DatePickerCSS}
     key={labeltext}
-  />
+    />
   })
 
   return (

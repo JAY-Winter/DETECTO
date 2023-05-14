@@ -4,10 +4,15 @@ import { Button, Card } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import Monitor from '@components/monitor/Monitor';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import HistoryDatepicker from '@components/history/Date/HistoryDatepicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 function MonitorPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [cctvList, setCctvList] = useState([0, 1, 2]);
+  const [monitorDay, setMonitorDay] = useState(dayjs());
 
   function enterFullScreen() {
     if (containerRef.current) {
@@ -25,6 +30,10 @@ function MonitorPage() {
     setCctvList(list);
   };
 
+  const DateChangeHandler = (newValue: Dayjs) => {
+    setMonitorDay(newValue)
+  };
+
   return (
     <MonitorContainer>
       <MonitorHeader>
@@ -32,6 +41,15 @@ function MonitorPage() {
         <h1>모니터링</h1>
         <Button onClick={enterFullScreen}>풀스크린 버튼</Button>
       </MonitorHeader>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker
+          onChange={value => DateChangeHandler(value as Dayjs)}
+          value={monitorDay}
+          label="날짜 선택"
+          format="YYYY.MM.DD"
+          maxDate={dayjs()}
+        />
+      </LocalizationProvider>
       <MonitorContentsDiv ref={containerRef}>
         <MonitorNav>
           <Button variant="contained" onClick={() => cctvButtonHandler([0])}>
@@ -52,7 +70,7 @@ function MonitorPage() {
         </MonitorNav>
         <MonitorsDiv>
           {cctvList.map(id => {
-            return <Monitor key={'cctvScreen' + id} monitorId={id} />;
+            return <Monitor key={'cctvScreen' + id} monitorId={id} date={monitorDay}/>;
           })}
         </MonitorsDiv>
       </MonitorContentsDiv>
@@ -102,13 +120,17 @@ const MonitorNav = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  height: calc(100% - 2rem);
+  height: calc(100vh);
   width: 100px;
 
   background-color: ${props => props.theme.palette.neutral.card};
   border-radius: 1rem;
   margin: 1rem;
   padding: 1rem;
+
+  button {
+    margin-bottom: 0.5rem;
+  }
 
   ${tabletV} {
     width: 100%;
@@ -140,7 +162,12 @@ const MonitorsDiv = styled.div`
     justify-content: center;
     > div {
       flex-basis: 100%;
-      height: 100%;
+      height: 30vh;
+    }
+
+    > div:only-child {
+      flex-basis: 100%;
+      height: 33vh;
     }
   }
 `;
