@@ -48,7 +48,7 @@ const TableCollapseDiv = styled.div`
   padding: 1rem;
   background-color: ${props => props.theme.palette.neutral.cardHover};
   border-radius: 10px;
-  margin-bottom: 1rem;
+  margin: 0.4rem 0 1rem 0;
 
   > div {
     flex-basis: 50%;

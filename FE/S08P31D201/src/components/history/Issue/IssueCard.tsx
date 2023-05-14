@@ -11,7 +11,6 @@ import MemberCard from './MemberCard';
 import IssueImage from './IssueImage';
 import styled from '@emotion/styled';
 import { ReportType } from 'ReportTypes';
-import IssueMap from './IssueMap';
 
 function IssueCard(issue: ReportType) {
   const { bottomSheetHandler, isOpen, open } = useBottomSheet();
@@ -26,7 +25,6 @@ function IssueCard(issue: ReportType) {
     return sortedItems;
   };
 
-  console.log(issue);
   return (
     <>
       <Card sx={{ width: '100%', marginBottom: '1rem' }} onClick={open}>

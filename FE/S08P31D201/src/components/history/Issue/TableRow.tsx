@@ -60,6 +60,10 @@ const IssueTableRow = styled(TableRow)`
     padding: 0.8rem 1rem;
   }
 
+  tr {
+    border: none;
+  }
+
   @media (hover: hover) {
     &:hover {
       th,
