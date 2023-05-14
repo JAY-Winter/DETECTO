@@ -75,7 +75,7 @@ async def consume_message(websocket, consumer, topic, partition):
         #     logger.info('not message')
         #     await websocket.send_text("No message in partition")
         #     break
-
+        logger.info(f"{consumer}")
         for message in consumer:
             if not message:
                 logger.info('not message')
@@ -111,6 +111,7 @@ async def consume_message(websocket, consumer, topic, partition):
             continue
         else:
             start_offset = total_offsets
+        logger.info("아직 안멈춤 5")
 
 ################################################################
 @app.websocket("/fast")
