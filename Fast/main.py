@@ -71,7 +71,8 @@ async def consume_message(websocket, consumer, topic, partition):
             continue
         if start_offset == total_offsets:
             await asyncio.sleep(0.1)
-        start_offset = max(start_offset - 1, 0)
+        if not pause:
+            start_offset = max(start_offset - 1, 0)
         consumer.seek(partition_list[0], start_offset)
         for message in consumer:
             if not message:
