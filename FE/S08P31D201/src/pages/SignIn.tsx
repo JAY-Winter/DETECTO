@@ -27,7 +27,6 @@ function SignIn() {
   const tryHandler = (response: AxiosResponse) => {
     if (response.status === 200) {
       if (response.data && 'data' in response.data) {
-        console.log("newUserInfo:", userInfo);
         const responseUserInfo = response.data.data as UserType;
         const newUserInfo: UserType = {
           id: responseUserInfo.id,
@@ -36,9 +35,10 @@ function SignIn() {
           img: responseUserInfo.img,
           type: responseUserInfo.type,
           theme: responseUserInfo.theme,
-          fcmToken: userInfo.fcmToken
+          fcmToken: userInfo.fcmToken,
         };
-        
+
+        console.log('[DEBUG] newUserInfo:', newUserInfo);
         setUserInfo(newUserInfo);
       }
 

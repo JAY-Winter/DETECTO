@@ -31,6 +31,7 @@ function AuthProvider({ children }: AuthProviderProps) {
           type: responseUserInfo.type,
           theme: responseUserInfo.theme,
         };
+        console.log(`[DEBUG] ${newUser}`);
         setUserInfo(newUser);
         setIsAuthenticated(true);
       } else {
