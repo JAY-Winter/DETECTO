@@ -11,8 +11,8 @@ import { tabletV } from '@/utils/Mixin';
 import dayjs, { Dayjs } from 'dayjs';
 import MonitorLoading from './MonitorLoading';
 
-import SamLogoLight from '@/assets/img/samlogoLight.svg'
-import SamLogoDark from '@/assets/img/samlogoDark.svg'
+import SamLogoLight from '@/assets/img/samlogoLight.svg';
+import SamLogoDark from '@/assets/img/samlogoDark.svg';
 
 function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
   const theme = useTheme();
@@ -25,6 +25,8 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
   const [time, setTime] = useState<string>('');
 
   const [hoverd, setHoverd] = useState<boolean>(false);
+
+  const [movingOffset, setMovingOffset] = useState<number | null>(null);
 
   async function connectWebSocket(date: number) {
     const websocket = new WebSocket(
@@ -42,8 +44,6 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
       setImg('data:image/jpeg;base64,' + data['frame']);
       setMaxOffset(data.total - 1);
       currentOffset.current = data.offset - 1;
-
-      // console.log(data)
 
       const timestamp = data.timestamp;
       var timestampDate = new Date(timestamp);
@@ -84,30 +84,6 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
     ws.current = websocket;
   }
 
-  // useEffect(() => {
-  //   if (ws.current) ws.current.close();
-  //   axios({
-  //     method: 'get',
-  //     url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=${date.diff(
-  //       dayjs(date).startOf('year'),
-  //       'day'
-  //     )}`,
-  //   }).then(res => {
-  //     console.log(res.data);
-  //     setMaxOffset(res.data.offsets);
-  //     if (res.data.offsets !== 0) {
-  //       connectWebSocket(date.diff(dayjs(date).startOf('year'), 'day'));
-  //     } else {
-  //       return <div>영상이 존재하지 않습니다</div>
-  //     }
-  //   });
-  //   return () => {
-  //     if (ws.current && ws.current.OPEN) {
-  //       ws.current.close();
-  //     }
-  //   };
-  // }, []);
-
   useEffect(() => {
     if (ws.current) ws.current.close();
     axios({
@@ -117,10 +93,7 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
         'day'
       )}`,
     }).then(res => {
-      console.log(res.data);
       setMaxOffset(res.data.offsets);
-      if (res.data.offsets !== 0) {
-      }
     });
     connectWebSocket(date.diff(dayjs(date).startOf('year'), 'day'));
     return () => {
@@ -130,18 +103,17 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
     };
   }, [date]);
 
-  const buttonH = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const inputChangeHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newOffset = Number(e.currentTarget.value);
-    console.log(newOffset);
-    currentOffset.current = newOffset;
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      // if (pause) {
-      //   setPause(false);
-      //   ws.current.send(JSON.stringify({ type: 1 }));
-      // }
-      ws.current.send(
-        JSON.stringify({ offset: currentOffset.current - 1, type: 3 })
-      );
+    setMovingOffset(newOffset);
+  };
+
+  const inputMouseUpHandler = async () => {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN && movingOffset) {
+      ws.current.send(JSON.stringify({ offset: 2 + movingOffset, type: 3 }));
+      setTimeout(() => {
+        setMovingOffset(null);
+      }, 200);
     } else {
       console.error('웹소켓이 열려있지 않습니다.');
     }
@@ -197,21 +169,22 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
   return (
     <MonitorDiv onMouseEnter={hoverHandler} onMouseLeave={mouseLeaveHandler}>
       <img src={img} alt="" />
-      <MonitorTitle hoverd={hoverd}>{monitorId}번 카메라</MonitorTitle>
+      <MonitorTitle hoverd={hoverd}>{monitorId+1}번 카메라</MonitorTitle>
       <MonitorBottom hoverd={hoverd}>
         <input
           type="range"
-          onChange={buttonH}
+          onChange={inputChangeHandler}
+          onMouseUp={inputMouseUpHandler}
           min={1}
           max={maxoffset - 3}
           step={1}
-          value={currentOffset.current - 1}
+          value={movingOffset ? movingOffset : currentOffset.current}
         />
         <div>
           <PauseButton color="primary" onClick={pauseHandler}>
             {pause ? <PlayArrowIcon /> : <PauseIcon />}
           </PauseButton>
-          <RealTimeButton variant="contained" onClick={realTimeHandler}>
+          <RealTimeButton variant="contained" onClick={realTimeHandler} realtime={currentOffset.current >= maxoffset - 2}>
             <CircleIcon />
             실시간
           </RealTimeButton>
@@ -298,13 +271,14 @@ const PauseButton = styled(IconButton)`
   width: fit-content;
 `;
 
-const RealTimeButton = styled(Button)`
+const RealTimeButton = styled(Button)<{realtime: boolean}>`
   font-size: 0.7rem;
+  margin-right: 0.5rem;
 
   svg {
     font-size: 0.4rem;
     margin-right: 0.5rem;
-    color: ${props => props.theme.palette.error.main};
+    color: ${props => props.realtime ? props.theme.palette.error.main : props.theme.palette.neutral.main};
   }
 `;
 
@@ -323,4 +297,4 @@ const logoContainer = css`
   /* padding: 0px 10px; */
   /* margin-left: 10px; */
   margin: 10px 0px 30px 0px;
-`
+`;
