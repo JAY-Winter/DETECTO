@@ -25,7 +25,7 @@ function HistoryEquipmentFilter() {
   };
 
   return (
-    <FilterPaper>
+    <FilterPaper elevation={2}>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
       <FilterHeaderDiv
         onClick={() => {
@@ -60,9 +60,12 @@ export default HistoryEquipmentFilter;
 const FilterPaper = styled(Paper)`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 40%;
   padding: 1rem;
-  margin: 0.5rem 0rem;
+
+  ${mobileV} {
+    width: 100%;
+  }
 `;
 
 const FilterHeaderDiv = styled.div`
@@ -73,10 +76,16 @@ const FilterHeaderDiv = styled.div`
   div {
     display: flex;
     align-items: center;
+    font-weight: 500;
     svg {
       display: none;
     }
   }
+
+  button {
+    padding: 0;
+  }
+
   /* 모바일 한정 svg, 초기화 span */
   ${mobileV} {
     margin-bottom: 0;
@@ -86,6 +95,8 @@ const FilterHeaderDiv = styled.div`
       }
     }
     button {
+      display: flex;
+      justify-content: flex-end;
       span {
         display: none;
       }
