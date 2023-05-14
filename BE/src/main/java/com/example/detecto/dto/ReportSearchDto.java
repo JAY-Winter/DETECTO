@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class ReportSearchDto {
-    private Integer userId;
+    private Integer id;
     private LocalDate startDate;
     private LocalDate endDate;
     private List<String> equipments;

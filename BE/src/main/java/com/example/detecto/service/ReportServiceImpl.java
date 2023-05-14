@@ -63,8 +63,8 @@ public class ReportServiceImpl implements ReportService {
             whereClause.and(report.reportStatus.eq(reportSearchDto.getStatus()));
         }
 
-        if(reportSearchDto.getUserId() != null){
-            whereClause.and(user.id.eq(reportSearchDto.getUserId()));
+        if(reportSearchDto.getId() != null){
+            whereClause.and(user.id.eq(reportSearchDto.getId()));
         }
 
         List<Report> reports;
