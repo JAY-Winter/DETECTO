@@ -131,7 +131,7 @@ function Monitor({ monitorId, date }: { monitorId: number, date: Dayjs }) {
 
   const realTimeHandler = () => {
     if (ws.current) {
-      ws.current.send(JSON.stringify({ offset: maxoffset - 1 }));
+      ws.current.send(JSON.stringify({ offset: maxoffset - 10 }));
     }
   };
 
