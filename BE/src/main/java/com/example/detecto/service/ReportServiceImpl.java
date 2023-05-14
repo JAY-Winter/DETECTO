@@ -2,11 +2,14 @@ package com.example.detecto.service;
 
 import com.example.detecto.dto.*;
 import com.example.detecto.entity.Report;
+import com.example.detecto.entity.User;
 import com.example.detecto.entity.enums.ReportStatus;
+import com.example.detecto.entity.enums.UserType;
 import com.example.detecto.exception.DatabaseFetchException;
 import com.example.detecto.exception.DoesNotExistData;
 import com.example.detecto.exception.ObjectionException;
 import com.example.detecto.repository.ReportRepository;
+import com.example.detecto.repository.UserRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.PersistenceException;
@@ -33,6 +36,7 @@ public class ReportServiceImpl implements ReportService {
 
     private final JPAQueryFactory queryFactory;
     private final ReportRepository reportRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<ReportSearchResponseDto> search(ReportSearchDto reportSearchDto) {
@@ -124,5 +128,30 @@ public class ReportServiceImpl implements ReportService {
         }
 
 
+    }
+
+    @Override
+    public ReportCountResponseDto count(int id) {
+        User userinfo = userRepository.findById(id).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+
+        ReportCountResponseDto responseDto = new ReportCountResponseDto();
+        LocalDateTime now = LocalDateTime.now();
+
+        int day, week, month;
+        if(userinfo.getType() == UserType.ADMIN){
+            day = reportRepository.countTimeInRange(now.minusDays(1), now);
+            week = reportRepository.countTimeInRange(now.minusWeeks(1), now);
+            month = reportRepository.countTimeInRange(now.minusMonths(1),now);
+        }else{
+            day = reportRepository.countTimeInRangeId(id, now.minusDays(1), now);
+            week = reportRepository.countTimeInRangeId(id, now.minusWeeks(1), now);
+            month = reportRepository.countTimeInRangeId(id, now.minusMonths(1),now);
+        }
+
+        responseDto.setDay(day);
+        responseDto.setWeek(week);
+        responseDto.setMonth(month);
+
+        return responseDto;
     }
 }
