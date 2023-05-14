@@ -78,7 +78,7 @@ async def consume_message(websocket, consumer, topic, partition):
                 logger.info('not message')
                 start_offset = 0
                 break
-            if message.offset == total_offsets - 1:
+            if message.offset == total_offsets:
                 # start_offset = 0
                 try:
                     message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
