@@ -78,14 +78,19 @@ async def consume_message(websocket, consumer, topic, partition):
                 logger.info('not message')
                 start_offset = 0
                 break
-            # if message.offset == total_offsets - 1:
-            #     start_offset = 0
-            #     break
+            if message.offset == total_offsets - 1:
+                # start_offset = 0
+                message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
+                if message:
+                    message = json.loads(message)
+                    new_offset = message.get('offset')
+                    new_offset = min(new_offset,total_offsets)
+                    start_offset = new_offset
+                    isSend = True
+                break
             logger.info('1')
             data = message.value
-            logger.info('2')
             frame_encoded = encoding(data)
-            logger.info('3')
             context = {
                 'frame': frame_encoded,
                 'total': total_offsets,
@@ -93,12 +98,9 @@ async def consume_message(websocket, consumer, topic, partition):
                 'timestamp': message.timestamp,
             }
             context = json.dumps(context)
-            logger.info('4')
             await websocket.send_text(context)
-            logger.info('5')
 
             try:
-                logger.info('6')
                 message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
                 if message:
                     message = json.loads(message)
