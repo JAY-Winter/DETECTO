@@ -123,6 +123,10 @@ const ButtonWrapper = styled.div`
   justify-content: space-between;
   align-items: flex-end;
   width: 100%;
+
+  ${mobileV} {
+    flex-direction: column;
+  }
 `;
 
 const TextFieldStyle = styled(TextField)`
@@ -136,6 +140,10 @@ const TextFieldStyle = styled(TextField)`
   input::placeholder {
     font-size: 1rem;
   }
+
+  ${mobileV} {
+    margin-right: 0;
+  }
 `;
 
 const ButtonStyle = styled(Button)`
@@ -144,8 +152,7 @@ const ButtonStyle = styled(Button)`
   white-space: nowrap;
 
   ${mobileV} {
-    width: fit-content;
-    margin: 1rem;
+    margin-top: 1rem;
     float: right;
   }
 `;
