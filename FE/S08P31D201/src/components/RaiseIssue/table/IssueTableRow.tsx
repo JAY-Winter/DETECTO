@@ -3,20 +3,16 @@ import styled from '@emotion/styled';
 import { Collapse, TableCell, TableRow } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { ReportType } from 'ReportTypes';
-import TableCollapseCard from './TableCollapseCard';
+import TableCollapseCard from '@components/history/Issue/TableCollapseCard';
 import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
-import { useRecoilValue } from 'recoil';
-import { UserInfo } from '@/store/userInfoStroe';
-import WorkerTableCollapseCard from '@components/foul/WorkerTableCollapseCard';
 
-function Row(props: { row: ReportType }) {
+function IssueTableRow(props: { row: ReportType }) {
   const { row } = props;
   const [open, setOpen] = useState(false);
-  const userInfo = useRecoilValue(UserInfo);
-
+  console.log(row);
   return (
     <>
-      <IssueTableRow
+      <IssueTableRowWrapper
         sx={{ '& > *': { borderBottom: 'unset' } }}
         onClick={() => setOpen(!open)}
       >
@@ -30,28 +26,19 @@ function Row(props: { row: ReportType }) {
         <TableCell align="right" padding="checkbox">
           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
         </TableCell>
-      </IssueTableRow>
+      </IssueTableRowWrapper>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            {userInfo.type === 'ADMIN' ? (
-              <TableCollapseCard
-                x={row.x}
-                y={row.y}
-                reportid={row.id}
-                area={row.cctvArea}
-                violate_member={row.user}
-                teamList={row.team}
-                report={row}
-              />
-            ) : (
-              <WorkerTableCollapseCard
-                reportid={row.id}
-                violate_member={row.user}
-                teamList={row.team}
-                report={row}
-              />
-            )}
+            <TableCollapseCard
+              x={row.x}
+              y={row.y}
+              reportid={row.id}
+              area={row.cctvArea}
+              violate_member={row.user}
+              teamList={row.team}
+              report={row}
+            />
           </Collapse>
         </TableCell>
       </TableRow>
@@ -59,9 +46,9 @@ function Row(props: { row: ReportType }) {
   );
 }
 
-export default Row;
+export default IssueTableRow;
 
-const IssueTableRow = styled(TableRow)`
+const IssueTableRowWrapper = styled(TableRow)`
   th,
   td {
     padding: 0.8rem 1rem;

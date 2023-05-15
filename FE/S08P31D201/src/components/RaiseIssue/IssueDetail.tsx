@@ -3,20 +3,10 @@ import styled from '@emotion/styled';
 import { Button, Card, Input } from '@mui/material';
 import { ReportType } from 'ReportTypes';
 import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
-import RaiseIssueButton from './RaiseIssueButton';
 
-function RaiseIssue({ report }: { report: ReportType }) {
+function IssueDetail({ report }: { report: ReportType }) {
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      <h2 style={{ margin: '0.5rem 0 1rem 0' }}>위반 내역</h2>
+    <Wrapper>
       <DetailInfoDiv>
         <div>
           <h4>위반 일시</h4>
@@ -28,13 +18,20 @@ function RaiseIssue({ report }: { report: ReportType }) {
           <h4>위반 지역</h4>
           <p>{report.cctvArea}번 구역</p>
         </div>
-        <RaiseIssueButton report={report} />
       </DetailInfoDiv>
-    </div>
+    </Wrapper>
   );
 }
 
-export default RaiseIssue;
+export default IssueDetail;
+
+const Wrapper = styled.div`
+  width: 100%;
+  height: 20rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const DetailInfoDiv = styled(Card)`
   width: 100%;
