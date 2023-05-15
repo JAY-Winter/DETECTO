@@ -1,15 +1,28 @@
-import useEquipments from '@/hooks/useEquipments';
 import { mobileV } from '@/utils/Mixin';
 import HistoryDatePicker from '@components/history/DatePicker';
 import HistoryEquipmentFilter from '@components/history/EquipmentFilter';
 import HistorySafetyIssue from '@components/history/SafetyIssue';
 import HistorySummary from '@components/history/Summary';
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
 function HistoryPage() {
+  const tablist = ['전체 목록', '인원 미지정', '이의 제기']
+
+  const [tabState, setTabState] = useState<number>(0)
+
+  const listChangeHandler = (idx: number) => {
+    setTabState(idx)
+  }
+
   return (
     <HistoryDiv>
       <HistoryTitle>히스토리</HistoryTitle>
+      <HistoryTabDiv>
+        <HistoryTabul>
+          {tablist.map((tab, idx) => <HistoryTabli key={tab + idx} istab={tabState === idx} onClick={() => listChangeHandler(idx)}>{tab}</HistoryTabli>)}
+        </HistoryTabul>
+      </HistoryTabDiv>
       <HistorySummary />
       <HistoryFilterWrapper>
         <HistoryDatePicker />
@@ -19,6 +32,39 @@ function HistoryPage() {
     </HistoryDiv>
   );
 }
+
+export default HistoryPage;
+
+const HistoryTabDiv = styled.div`
+  width: 100%;
+`;
+
+const HistoryTabul = styled.ul`
+  display: flex;
+  flex-direction: row;
+`;
+
+const HistoryTabli = styled.li<{istab: boolean}>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-basis: calc(100% / 3);
+
+  height: 3rem;
+  width: 100%;
+
+  border-top: ${props => `1px solid ${props.theme.palette.primary.main}`};
+  border-left: ${props => `1px solid ${props.theme.palette.primary.main}`};
+  border-right: ${props => `1px solid ${props.theme.palette.primary.main}`};
+  border-radius: 1rem 1rem 0 0;
+
+  background-color: ${props => props.istab ? props.theme.palette.neutral.main : props.theme.palette.primary.main};
+  color: ${props => props.istab ? props.theme.palette.neutral.opposite : props.theme.palette.primary.contrastText};
+
+  transition: 0.3s ease all;
+
+  list-style: none;
+`;
 
 const HistoryTitle = styled.div`
   width: 100%;
@@ -47,5 +93,3 @@ const HistoryFilterWrapper = styled.div`
     flex-direction: column;
   }
 `;
-
-export default HistoryPage;

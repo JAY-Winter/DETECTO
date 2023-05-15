@@ -18,7 +18,6 @@ function IssueImage({ reportid }: { reportid: string }) {
       const boundingRect = event.currentTarget.getBoundingClientRect();
       const offsetX = clientX - boundingRect.left
       const offsetY = clientY - boundingRect.top - (workerImage.current.clientHeight / 3);
-      console.log(offsetY)
       setIoffset({ x: offsetX, y: offsetY });
     }
   };

@@ -1,3 +1,4 @@
+import { mobileV, tabletV } from '@/utils/Mixin';
 import styled from '@emotion/styled';
 import { Card } from '@mui/material';
 import { CountItemData, CountTimeTeamData } from 'ChartTypes';
@@ -31,6 +32,8 @@ function HistoryCards({
       ).reportItem;
 
       setTopEq(highestValueKey);
+    } else {
+      setTopEq(undefined);
     }
   }, [eqData]);
 
@@ -47,11 +50,15 @@ function HistoryCards({
             value: any;
           }
         ) => {
-          return currentItem.value.length > maxItem.value.length ? currentItem : maxItem;
+          return currentItem.value.length > maxItem.value.length
+            ? currentItem
+            : maxItem;
         }
       ).teamName;
 
       setTopTeam(highestValueKey);
+    } else {
+      setTopTeam(undefined);
     }
   }, [teamData]);
 
@@ -75,22 +82,6 @@ function HistoryCards({
           <h4>위반 팀 1위</h4>
         </div>
       </HistoryCard>
-      {/* <HistoryCard linearcolor="secondary">
-        <div className="content-main">
-          <div>+20%</div>
-        </div>
-        <div className="content-sub">
-          <h1>이전달 대비 증가폭</h1>
-        </div>
-      </HistoryCard>
-      <HistoryCard linearcolor="success">
-        <div className="content-main">
-          <div>통계치</div>
-        </div>
-        <div className="content-sub">
-          <h1>통계수치</h1>
-        </div>
-      </HistoryCard> */}
     </HistoryCardDiv>
   );
 }
@@ -98,13 +89,9 @@ function HistoryCards({
 export default HistoryCards;
 
 const HistoryCardDiv = styled.div`
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
-  place-items: center;
-  grid-template-rows: repeat(1, calc(20vh + 1rem));
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
-  column-gap: 1rem;
-  row-gap: 1rem;
 `;
 
 const HistoryCard = styled(Card)<{
@@ -120,6 +107,13 @@ const HistoryCard = styled(Card)<{
   width: 100%;
 
   padding: 1rem;
+  margin: 1rem;
+
+  flex-basis: calc(50% - 2rem);
+
+  ${tabletV} {
+    flex-basis: 100%;
+  }
 
   color: ${props => props.theme.palette.primary.contrastText};
 
@@ -141,8 +135,8 @@ const HistoryCard = styled(Card)<{
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 150px;
-      width: 150px;
+      height: 10rem;
+      width: 10rem;
       border-radius: 100%;
       background: ${props =>
         `linear-gradient(to bottom right, ${
@@ -150,6 +144,11 @@ const HistoryCard = styled(Card)<{
         }, ${props.theme.palette[props.linearcolor].main})`};
 
       font-size: 1.5rem;
+
+      ${mobileV} {
+        height: 7rem;
+      width: 7rem;
+      }
     }
   }
 

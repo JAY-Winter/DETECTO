@@ -18,14 +18,16 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
   const [img, setImg] = useState<string>();
   const currentOffset = useRef<number>(1);
   const ws = useRef<WebSocket>();
-  // const timeoutId = useRef<NodeJS.Timeout | null>(null);
   const [maxoffset, setMaxOffset] = useState<number>(2);
   const [pause, setPause] = useState<boolean>(false);
   const [time, setTime] = useState<string>('');
 
   const [hoverd, setHoverd] = useState<boolean>(false);
+  const videoSetTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const [movingOffset, setMovingOffset] = useState<number | null>(null);
+
+  const [middleShow, setMiddleShow] = useState<boolean>(false);
 
   async function connectWebSocket(date: number) {
     const websocket = new WebSocket(
@@ -93,7 +95,11 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
   };
 
   const inputMouseUpHandler = async () => {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN && movingOffset) {
+    if (
+      ws.current &&
+      ws.current.readyState === WebSocket.OPEN &&
+      movingOffset
+    ) {
       ws.current.send(JSON.stringify({ offset: 2 + movingOffset, type: 3 }));
       setTimeout(() => {
         setMovingOffset(null);
@@ -104,7 +110,12 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
   };
 
   const pauseHandler = () => {
+    if (!hoverd) {
+      return;
+    }
+    setMiddleShow(true);
     setPause(prev => {
+      console.log(prev)
       if (ws.current) {
         if (!prev) {
           ws.current.send(JSON.stringify({ type: 1 }));
@@ -116,14 +127,22 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
       }
       return !prev;
     });
+    setTimeout(() => {
+      setMiddleShow(false);
+    }, 1000);
   };
 
   const hoverHandler = () => {
-    setHoverd(true);
-  };
+    setTimeout(() => setHoverd(true), 100);
 
-  const mouseLeaveHandler = () => {
-    setHoverd(false);
+    if (videoSetTimeout.current) {
+      clearTimeout(videoSetTimeout.current);
+    }
+
+    videoSetTimeout.current = setTimeout(() => {
+      setHoverd(false);
+      if (videoSetTimeout.current) videoSetTimeout.current = null; // 타이머 종료 후 null로 초기화
+    }, 3000);
   };
 
   const realTimeHandler = () => {
@@ -151,9 +170,13 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
   }
 
   return (
-    <MonitorDiv onMouseEnter={hoverHandler} onMouseLeave={mouseLeaveHandler}>
+    <MonitorDiv onMouseMove={hoverHandler} onTouchEnd={hoverHandler}>
       <img src={img} alt="" />
-      <MonitorTitle hoverd={hoverd}>{monitorId+1}번 카메라</MonitorTitle>
+      <MonitorMiddle show={middleShow}>
+        {pause ? <PauseIcon /> : <PlayArrowIcon />}
+      </MonitorMiddle>
+      <MonitorBackdrop hoverd={hoverd} onClick={hoverd ? pauseHandler : undefined} />
+      <MonitorTitle hoverd={hoverd}>{monitorId + 1}번 카메라</MonitorTitle>
       <MonitorBottom hoverd={hoverd}>
         <input
           type="range"
@@ -169,7 +192,11 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
           <PauseButton color="primary" onClick={pauseHandler}>
             {pause ? <PlayArrowIcon /> : <PauseIcon />}
           </PauseButton>
-          <RealTimeButton variant="contained" onClick={realTimeHandler} realtime={currentOffset.current >= maxoffset - 2}>
+          <RealTimeButton
+            variant="contained"
+            onClick={realTimeHandler}
+            realtime={currentOffset.current >= maxoffset - 2}
+          >
             <CircleIcon />
             실시간
           </RealTimeButton>
@@ -211,6 +238,8 @@ const MonitorTitle = styled.div<{ hoverd: boolean }>`
   margin: 1rem;
   padding: 0.2rem;
 
+  z-index: 2;
+
   transition: 1s ease all;
 
   transform: ${props => {
@@ -237,6 +266,8 @@ const MonitorBottom = styled.div<{ hoverd: boolean }>`
   bottom: 0;
   left: 0;
 
+  z-index: 2;
+
   background-color: #00000098;
 
   transition: 1s ease all;
@@ -256,14 +287,17 @@ const PauseButton = styled(IconButton)`
   width: fit-content;
 `;
 
-const RealTimeButton = styled(Button)<{realtime: boolean}>`
+const RealTimeButton = styled(Button)<{ realtime: boolean }>`
   font-size: 0.7rem;
   margin-right: 0.5rem;
 
   svg {
     font-size: 0.4rem;
     margin-right: 0.5rem;
-    color: ${props => props.realtime ? props.theme.palette.error.main : props.theme.palette.neutral.main};
+    color: ${props =>
+      props.realtime
+        ? props.theme.palette.error.main
+        : props.theme.palette.neutral.main};
   }
 `;
 
@@ -282,4 +316,44 @@ const logoContainer = css`
   /* padding: 0px 10px; */
   /* margin-left: 10px; */
   margin: 10px 0px 30px 0px;
+`;
+
+const MonitorMiddle = styled.div<{ show: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: ${props => (props.show ? 1 : 0)};
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+  transition: all 1s ease;
+
+  width: 4rem;
+  height: 4rem;
+
+  border-radius: 100%;
+
+  background-color: #000000a6;
+
+  color: white;
+  font-size: 1.5rem;
+
+  pointer-events: none;
+`;
+
+const MonitorBackdrop = styled.div<{ hoverd: boolean }>`
+  display: ${props => (props.hoverd ? 'block' : 'none')};
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+
+  background-color: rgba(0, 0, 0, 0.3);
 `;

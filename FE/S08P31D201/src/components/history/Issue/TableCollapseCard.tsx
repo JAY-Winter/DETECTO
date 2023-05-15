@@ -27,7 +27,6 @@ function TableCollapseCard({
   report,
 }: TableCollapseCardPropsType) {
   const userInfo = useRecoilValue(UserInfo);
-  console.log(reportid)
 
   return (
     <TableCollapseDiv>

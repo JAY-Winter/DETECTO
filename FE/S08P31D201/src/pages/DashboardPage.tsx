@@ -29,6 +29,7 @@ const DashboardContainer = styled.div`
   flex-direction: column;
 
   height: 100%;
+  width: 100%;
   align-items: center;
   padding: 2.5rem 2rem;
   ${tabletV} {
@@ -55,35 +56,5 @@ const DashboardContentPaper = styled.div`
   ${tabletV} {
     margin-left: 0;
     margin-right: 0;
-  }
-`;
-
-// const DashboardContent = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   /* width: calc(100% - 4rem);
-//   margin: 2rem; */
-
-//   width: 100%;
-// `;
-
-const ChartCardDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  box-shadow: 5px 5px 10px 5px ${props => props.theme.palette.neutral.cardHover};
-`;
-
-const DateButtonDiv = styled.div`
-  margin: 1rem 1rem 0 1rem;
-`;
-
-const DateButton = styled(Button)`
-  border-bottom: none;
-  border-radius: 0.5rem 0.5rem 0 0;
-  box-shadow: none;
-
-  :hover {
-    border-bottom: none;
   }
 `;

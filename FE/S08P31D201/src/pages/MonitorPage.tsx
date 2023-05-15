@@ -1,4 +1,5 @@
 import { tabletV } from '@/utils/Mixin';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
@@ -13,9 +14,11 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 
 function MonitorPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [cctvList, setCctvList] = useState([0, 1, 2]);
+  const [cctvList, setCctvList] = useState([0, 1, 2, 3]);
   const [monitorDay, setMonitorDay] = useState(dayjs());
   const [fullScreenState, setFullScreenState] = useState<boolean>(false);
+  const [navOpen, setNavOpen] = useState<boolean>(false);
+  const navSetTimeout = useRef<NodeJS.Timeout | null>(null);
 
   function enterFullScreen() {
     if (containerRef.current) {
@@ -59,6 +62,23 @@ function MonitorPage() {
     setMonitorDay(newValue);
   };
 
+  const TouchNavOpenHandler = () => {
+    setNavOpen(true);
+
+
+    if (navSetTimeout.current) {
+      clearTimeout(navSetTimeout.current);
+    }
+
+    navSetTimeout.current = setTimeout(() => {
+      setNavOpen(false);
+      if (navSetTimeout.current)
+      navSetTimeout.current = null; // 타이머 종료 후 null로 초기화
+    }, 2000);
+  };
+
+  console.log(navOpen);
+
   return (
     <MonitorContainer>
       <MonitorHeader>
@@ -75,43 +95,40 @@ function MonitorPage() {
         />
       </LocalizationProvider>
       <MonitorContentsDiv ref={containerRef}>
-        <MonitorNav>
-          <div>
-            <Button variant="contained" onClick={() => cctvButtonHandler([0])}>
-              1번
+        <MonitorNav
+          open={navOpen}
+          onTouchEnd={TouchNavOpenHandler}
+          onMouseMove={() => setNavOpen(true)}
+          onMouseLeave={() => setNavOpen(false)}
+        >
+          <Button variant="contained" onClick={() => cctvButtonHandler([0])}>
+            1번
+          </Button>
+          <Button variant="contained" onClick={() => cctvButtonHandler([1])}>
+            2번
+          </Button>
+          <Button variant="contained" onClick={() => cctvButtonHandler([2])}>
+            3번
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => cctvButtonHandler([0, 1, 2, 3])}
+          >
+            전체
+          </Button>
+          {fullScreenState ? (
+            <Button onClick={exitFullScreen} color="error" variant="contained">
+              <FullscreenExitIcon />
             </Button>
-            <Button variant="contained" onClick={() => cctvButtonHandler([1])}>
-              2번
-            </Button>
-            <Button variant="contained" onClick={() => cctvButtonHandler([2])}>
-              3번
-            </Button>
+          ) : (
             <Button
+              onClick={enterFullScreen}
+              color="success"
               variant="contained"
-              onClick={() => cctvButtonHandler([0, 1, 2])}
             >
-              전체
+              <FullscreenIcon />
             </Button>
-          </div>
-          <div>
-            {fullScreenState ? (
-              <Button
-                onClick={exitFullScreen}
-                color="error"
-                variant="contained"
-              >
-                <FullscreenExitIcon />
-              </Button>
-            ) : (
-              <Button
-                onClick={enterFullScreen}
-                color="success"
-                variant="contained"
-              >
-                <FullscreenIcon />
-              </Button>
-            )}
-          </div>
+          )}
         </MonitorNav>
         <MonitorsDiv>
           {cctvList.map(id => {
@@ -135,7 +152,9 @@ const MonitorContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2.5rem 2rem;
+
+  width: 100%;
+
   ${tabletV} {
     align-items: normal;
   }
@@ -144,8 +163,7 @@ const MonitorContainer = styled.div`
 const MonitorHeader = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
-  margin: 0rem 0rem 2rem;
+  margin: 2rem;
 
   svg {
     font-size: 2.5rem;
@@ -164,83 +182,84 @@ const MonitorContentsDiv = styled.div`
   justify-content: center;
   align-items: center;
 
+  overflow: hidden;
+
   ${tabletV} {
     flex-direction: column;
   }
 `;
 
-const MonitorNav = styled.div`
+const MonitorNav = styled.div<{ open: boolean }>`
   display: flex;
   flex-wrap: wrap;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: space-around;
 
   position: absolute;
-  left: 0;
+  bottom: 0;
+  left: 50%;
   z-index: 10;
-  overflow: hidden;
 
-  width: 10px;
+  width: 50%;
+  min-width: 360px;
 
-  height: calc(100vh);
+  ${({ open }) =>
+      open
+        ? css`
+            transform: translate(-50%, -0.5rem);
+            button {
+              transform: translate(0, 0);
+            }
+          `
+        : css`
+            transform: translate(-50%, 3.5rem);
+            button {
+              transform: translate(0, 2rem);
+            }
+          `};
 
-  background-color: ${props => props.theme.palette.neutral.card};
-  border-radius: 0 1rem 1rem 0;
+  
+
+  height: fit-content;
+
+  background-color: ${props => props.theme.palette.neutral.cardHover};
+  border-radius: 2rem;
   margin-right: 1rem;
   padding: 1rem;
 
-  transition: 0.3s ease all;
+  transition: 0.4s ease all;
 
   button {
-    margin-top: 1rem;
     word-break: keep-all;
     height: fit-content;
-    transform: translate(-100px, 0);
-    transition: 0.3s ease all;
-    padding-top: 25%;
-    padding-bottom: 25%;
+    transition: 0.5s ease all;
 
     font-size: 1rem;
+
+    flex-basis: calc(100% / 5 - 1rem);
   }
 
-  :hover {
-    width: 100px;
-    button {
-      transform: translate(0, 0);
-    }
-  }
   ${tabletV} {
-    flex-direction: row;
-    width: 100%;
-    height: fit-content;
-    max-height: 10px;
-    justify-content: space-around;
-    margin-right: 0;
-    margin-bottom: 1rem;
-
-    border-radius: 0 0 1rem 1rem;
-
     top: 0;
 
+    ${({ open }) =>
+      open
+        ? css`
+            transform: translate(-50%, 0.5rem);
+          `
+        : css`
+            transform: translate(-50%, -3.5rem);
+          `};
+
     button {
-      margin-top: auto;
-      margin-bottom: 0.5rem;
-      margin-right: 0.5rem;
-      word-break: keep-all;
-      height: fit-content;
-      transform: translate(0, -200px);
-      transition: 0.3s ease all;
-
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem;
-    }
-
-    :hover {
-      max-height: 100vh;
-      width: 100%;
-      button {
-        transform: translate(0, 0);
-      }
+      ${({ open }) =>
+        open
+          ? css`
+              transform: translate(0, 0);
+            `
+          : css`
+              transform: translate(0, -3.5rem);
+            `};
     }
   }
 `;
@@ -252,7 +271,7 @@ const MonitorsDiv = styled.div`
   position: relative;
   width: 100%;
 
-  padding-left: 40px;
+  padding-bottom: 40px;
 
   > div {
     flex-basis: 50%;
@@ -269,22 +288,22 @@ const MonitorsDiv = styled.div`
     align-items: center;
     justify-content: center;
 
-    padding-left: 0px;
-    padding-top: 50px;
+    padding-bottom: 0px;
+    padding-top: 40px;
 
     > div {
       flex-basis: 100%;
-      height: calc(100vh / 3 - 15px);
+      height: calc(100vh / 4 - 5px);
     }
 
     > div:only-child {
       flex-basis: 100%;
-      height: 33vh;
+      height: 25vh;
     }
   }
 `;
 
 const MonitorDatePicker = styled(DatePicker)`
-  width: 100%;
-  margin-bottom: 1rem;
+  width: calc(100% - 4rem);
+  margin: 2rem;
 `;

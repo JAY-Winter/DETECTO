@@ -28,16 +28,16 @@ function IssueCard(issue: ReportType) {
             <Avatar
               sx={{ bgcolor: 'primary.main' }}
               aria-label="recipe"
-              src={issue.user?.userImage}
+              src={issue.user?.image}
             >
               {issue.user.id !== -1 ? issue.user.name[0] : 'X'}
             </Avatar>
           }
           title={'위반날짜 : ' + timeFormatter(issue.time)}
           subheader={
-            issue.user?.userName === undefined
+            issue.user?.name === undefined
               ? '위반자 : 미지정'
-              : '위반자 : ' + issue.user?.userName
+              : '위반자 : ' + issue.user?.name
           }
         />
         <CardMedia
@@ -70,6 +70,7 @@ function IssueCard(issue: ReportType) {
               <IssueImage reportid={issue.id.toString()} />
             </MobileCard>
             {userInfo.type === 'WORKER' && <RaiseIssueButton report={issue} />}
+            <MemberCard reportId={issue.id} teamList={issue.team} violate_member={issue.user} />
           </IssueBottomSheet>
         )}
       </ModalPortal>

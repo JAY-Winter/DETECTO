@@ -9,13 +9,14 @@ import {
 import { Button, Card } from '@mui/material';
 import { TeamType, ReportUserType } from 'ReportTypes';
 import axios from 'axios';
+import { mobileV } from '@/utils/Mixin';
 
 function MemberCard({
   reportId,
   teamList,
   violate_member,
 }: {
-  reportId: number,
+  reportId: number;
   teamList: TeamType;
   violate_member: ReportUserType | undefined;
 }) {
@@ -35,14 +36,15 @@ function MemberCard({
   };
 
   const submitHandler = () => {
-    console.log(reportId)
+    console.log(reportId);
     axios({
       method: 'put',
-      url: "https://k8d201.p.ssafy.io/api/report",
-      data: {reportId: reportId,
-        userId: cardList[memberNum].id}
-    }).then(res => console.log(res)).catch(err => console.log(err))
-  }
+      url: 'https://k8d201.p.ssafy.io/api/report',
+      data: { reportId: reportId, userId: cardList[memberNum].id },
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
 
   return (
     <MemberCardDiv>
@@ -53,6 +55,9 @@ function MemberCard({
         }}
         onMouseLeave={() => {
           setOpenArcodian(false);
+        }}
+        onTouchEnd={() => {
+          setOpenArcodian(true);
         }}
       >
         <img css={profileImageStyle} src={cardList[memberNum].image} alt="" />
@@ -66,7 +71,7 @@ function MemberCard({
         <SelectWorker open={openArcodian}>
           {cardList.map((member, index) => {
             if (member.id === -1) {
-              return null
+              return null;
             }
             return (
               <ProfileCard onClick={() => chooseMemberHandler(index)}>
@@ -82,7 +87,11 @@ function MemberCard({
         </SelectWorker>
       </ProfileCard>
 
-      <Button variant="contained" sx={{ width: '100%', maxWidth: '350px' }} onClick={submitHandler}>
+      <Button
+        variant="contained"
+        sx={{ width: '100%', maxWidth: '350px' }}
+        onClick={submitHandler}
+      >
         위반사원 수정
       </Button>
     </MemberCardDiv>
@@ -97,6 +106,10 @@ const MemberCardDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  ${mobileV} {
+    height: fit-content;
+  }
 `;
 
 const ProfileCard = styled(Card)`
@@ -117,6 +130,10 @@ const ProfileCard = styled(Card)`
   border-radius: 12px;
   margin-top: auto;
   margin-bottom: auto;
+
+  ${mobileV} {
+    margin-bottom: 1rem;
+  }
 
   cursor: pointer;
 
@@ -154,7 +171,8 @@ const SelectWorker = styled.div<{ open: boolean }>`
   > div {
     margin-top: 1rem;
     :hover {
-      background-color: red;
+      background-color: ${props => props.theme.palette.primary.main};
+      color: ${props => props.theme.palette.primary.contrastText}
     }
   }
 `;
