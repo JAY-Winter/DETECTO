@@ -12,8 +12,7 @@ function useGetFCMToken() {
     if (permission === "granted") {
       // 토큰 생성
       const token = await getToken(messaging, {
-        // vapidKey: "BFEKRPEfJPrVn5FhghLH_hxRKx5iJ9dF6060Upus8816Cinohcl6yFGwRy6ZBDneW9xYdRh1NcM_bH-5DJL2z7s",
-        vapidKey: "BKszBO0YDR9Cs_PKDtwskomTr9mkcamydkhz_UWUCZrJQJBcQ3BUaRvcxboXhjw10rVUknAu23jMBT5iLdFNj8o"
+        vapidKey: "BFEKRPEfJPrVn5FhghLH_hxRKx5iJ9dF6060Upus8816Cinohcl6yFGwRy6ZBDneW9xYdRh1NcM_bH-5DJL2z7s",
       });
 
       // 생성한 토큰 userInfo에 저장
