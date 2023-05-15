@@ -22,7 +22,7 @@ public class ObjectionResponseDto {
 
     private String adminComment;
 
-    private ObjectionStatus type;
+    private ObjectionStatus status;
 
     private String name;
 
@@ -35,7 +35,7 @@ public class ObjectionResponseDto {
         this.id = objection.getId();
         this.comment = objection.getComment();
         this.adminComment = objection.getAdminComment();
-        this.type = objection.getType();
+        this.status = objection.getStatus();
         this.name = objection.getUser().getName();
         this.img = objection.getUser().getImage();
         this.createdAt = objection.getCreatedAt();

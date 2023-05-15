@@ -32,7 +32,7 @@ public class QObjection extends EntityPathBase<Objection> {
 
     public final QReport report;
 
-    public final EnumPath<com.example.detecto.entity.enums.ObjectionStatus> type = createEnum("type", com.example.detecto.entity.enums.ObjectionStatus.class);
+    public final EnumPath<com.example.detecto.entity.enums.ObjectionStatus> status = createEnum("status", com.example.detecto.entity.enums.ObjectionStatus.class);
 
     public final QUser user;
 
