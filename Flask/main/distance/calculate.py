@@ -73,7 +73,7 @@ def calculate(kafka_producer,cctv_id,img, model, face_model):
     # 사진마다 YOLO 적용
     # for i in imglist:
     img = cv2.resize(img, (640, 640))
-    results = model(img, conf=0.5)
+    results = model(img, conf=0.5,divice="0")
     year = 23
     cctv_number = cctv_id
     today = datetime.now()

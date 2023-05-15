@@ -37,7 +37,7 @@ def save_non_wear(cctv_id,human_detect, yolo_image, real_image, face_model):
             if len(results[0].boxes) > 0 :
                 cls = human_cls[int(results[0].boxes[0].cls.item())]
             
-            base_url = 'http://k8d201.p.ssafy.io:7000/api/fcm/send'
+            base_url = 'http://k8d201.p.ssafy.io:8000/api/fcm/send'
             path = str(cls)
 
             url = f'{base_url}/{path}'
