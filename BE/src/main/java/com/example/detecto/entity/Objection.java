@@ -24,7 +24,8 @@ public class Objection {
     @Column(name = "admin_comment")
     private String adminComment;
 
-    private ObjectionStatus type;
+    @Enumerated(EnumType.STRING)
+    private ObjectionStatus status;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,7 +44,7 @@ public class Objection {
     public Objection(String comment, String adminComment, User user, Report report){
         this.comment = comment;
         this.adminComment = adminComment;
-        this.type = ObjectionStatus.PENDING;
+        this.status = ObjectionStatus.PENDING;
         this.user = user;
         this.report = report;
         this.createdAt = LocalDateTime.now();
@@ -53,7 +54,7 @@ public class Objection {
         this.adminComment = adminComment;
     }
 
-    public void setType(ObjectionStatus type) {
-        this.type = type;
+    public void setType(ObjectionStatus status) {
+        this.status = status;
     }
 }

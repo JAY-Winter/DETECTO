@@ -40,8 +40,6 @@ public class Report {
 
     private LocalDateTime time;
 
-//    @Column(name="objection_time")
-//    private LocalDateTime objectionTime;
 
     @JsonIgnore
     @OneToMany(mappedBy = "report", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
