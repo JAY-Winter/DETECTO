@@ -12,7 +12,7 @@ function IssueImage({ reportid }: { reportid: string }) {
         alignItems: 'center',
       }}
     >
-      <h2>위반 사진</h2>
+      <h2 style={{ margin: '0.5rem 0 1rem 0' }}>위반 사진</h2>
       <img
         css={IssueImageStyle}
         src={`https://kr.object.ncloudstorage.com/detec/report/${reportid}.jpg`}

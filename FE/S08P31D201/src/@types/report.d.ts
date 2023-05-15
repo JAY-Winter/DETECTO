@@ -9,6 +9,7 @@ declare module 'ReportTypes' {
     user: UserType;
     x: number;
     y: number;
+    status: 'REJECTED' | 'NOT_APPLIED' | 'PENDING' | 'APPLIED';
   };
   export type NewReportType = {
     id: number;

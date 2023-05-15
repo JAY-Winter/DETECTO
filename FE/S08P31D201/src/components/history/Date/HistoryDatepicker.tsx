@@ -68,7 +68,7 @@ export default HistoryDatepicker;
 
 const DatePickerCSS = css`
   margin-top: 1.5rem;
-  &:first-child {
+  &:first-of-type {
     margin-right: 0.5rem;
   }
 

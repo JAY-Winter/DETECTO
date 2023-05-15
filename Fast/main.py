@@ -55,42 +55,52 @@ class NoMessageError(Exception):
 
 ################################################################
 async def consume_message(websocket, consumer, topic, partition):
-    start_offset = 0
+    partition_list = [TopicPartition(topic, partition)]
+    consumer.assign(partition_list)
+    total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
+    start_offset = total_offsets
+    pause = False
     while websocket.application_state == WebSocketState.CONNECTED:
+        new_offset = 0
         partition_list = [TopicPartition(topic, partition)]
         consumer.assign(partition_list)
         total_offsets = consumer.end_offsets(partition_list)[partition_list[0]] - 1
-        logger.info(f"여기옵니다 start_offset : {start_offset} total_offsets : {total_offsets}")
+        # logger.info(f"여기옵니다 start_offset : {start_offset} total_offsets : {total_offsets}")
+        if total_offsets <= 0 :
+            await asyncio.sleep(0.1)
+            continue
         if start_offset == total_offsets:
             await asyncio.sleep(0.1)
-            start_offset = start_offset - 1
+        if not pause:
+            start_offset = max(start_offset - 1, 0)
         consumer.seek(partition_list[0], start_offset)
-        logger.info("아직 안멈춤 1")
-        # message = consumer.poll(timeout_ms=2000)
-        logger.info("아직 안멈춤 2")
-        isSend = False
-        # if not message:
-        #     logger.info('not message')
-        #     await websocket.send_text("No message in partition")
-        #     break
         for message in consumer:
+            # await asyncio.sleep(0.5)
             if not message:
                 logger.info('not message')
                 start_offset = 0
                 break
             if message.offset == total_offsets:
                 # start_offset = 0
+                new_offset = total_offsets
                 try:
-                    message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
-                    if message:
-                        message = json.loads(message)
-                        new_offset = message.get('offset')
-                        new_offset = min(new_offset,total_offsets)
-                        start_offset = new_offset
-                        isSend = True
+                    recv_data = await asyncio.wait_for(websocket.receive_text(), timeout=1)
+                    
+                    if recv_data:
+                        msg = json.loads(recv_data)
+                        type = int(msg.get('type'))
+                        if type == 1:
+                            pause = not pause
+                        elif type == 2:
+                            pause = False
+                            new_offset = total_offsets
+                            break
+                        elif type == 3:
+                            new_offset = msg.get('offset')
+                            new_offset = min(new_offset,total_offsets)
                         break
                 except asyncio.TimeoutError:
-                    logger.info('7')
+                    print('7')
                 break
             data = message.value
             frame_encoded = encoding(data)
@@ -102,23 +112,31 @@ async def consume_message(websocket, consumer, topic, partition):
             }
             context = json.dumps(context)
             await websocket.send_text(context)
-
+            
             try:
-                message = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
-                if message:
-                    message = json.loads(message)
-                    new_offset = message.get('offset')
-                    new_offset = min(new_offset,total_offsets)
-                    start_offset = new_offset
-                    isSend = True
-                    break
+                recv_data = await asyncio.wait_for(websocket.receive_text(), timeout=0.5)
+                if recv_data:
+                    msg = json.loads(recv_data)
+                    type = int(msg.get('type'))
+                    if type == 1:
+                        pause = not pause
+                    elif type == 2:
+                        pause = False
+                        new_offset = total_offsets
+                        break
+                    elif type == 3:
+                        new_offset = msg.get('offset')
+                        new_offset = min(new_offset,total_offsets)
+                    # isSend = True
+                        break
+                
             except asyncio.TimeoutError:
-                continue
+                print("d")
+            if pause:
+                new_offset = message.offset
+                break
 
-        if isSend:
-            continue
-        else:
-            start_offset = total_offsets
+        start_offset = new_offset
 
 ################################################################
 @app.websocket("/fast")

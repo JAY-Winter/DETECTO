@@ -1,6 +1,6 @@
 package com.example.detecto.config;
 
-import com.example.detecto.interceptor.SessionInterceptor;
+//import com.example.detecto.interceptor.SessionInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private final SessionInterceptor sessionInterceptor;
+//    private final SessionInterceptor sessionInterceptor;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -22,10 +22,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .maxAge(3600);
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(sessionInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/api/user/**", "/user/**");
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(sessionInterceptor)
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/api/user/**", "/user/**");
+//    }
 }

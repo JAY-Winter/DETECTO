@@ -1,6 +1,7 @@
 package com.example.detecto.entity;
 
 import com.example.detecto.dto.ReportCoordDto;
+import com.example.detecto.entity.enums.ReportStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(of ={"id", "time", "x", "y"})
+@ToString(of ={"id", "c", "x", "y", "cctvArea", "time"})
 public class Report {
 
     @Id
@@ -25,8 +26,6 @@ public class Report {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDateTime time;
-
     private int x;
 
     private int y;
@@ -34,6 +33,15 @@ public class Report {
     // cctv 구역 int로
     @Column(name = "cctv_area")
     private int cctvArea;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="report_status")
+    private ReportStatus reportStatus;
+
+    private LocalDateTime time;
+
+//    @Column(name="objection_time")
+//    private LocalDateTime objectionTime;
 
     @JsonIgnore
     @OneToMany(mappedBy = "report", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -44,6 +52,7 @@ public class Report {
         this.x = x;
         this.y = y;
         this.time = LocalDateTime.now();
+        this.reportStatus = ReportStatus.NOT_APPLIED;
         this.cctvArea = cctvArea;
     }
 
@@ -59,6 +68,10 @@ public class Report {
     public void setCoord(ReportCoordDto reportCoordDto){
         this.x = reportCoordDto.getX();
         this.y = reportCoordDto.getY();
+    }
+
+    public void setReportStatus(ReportStatus reportStatus){
+        this.reportStatus = reportStatus;
     }
 
 }

@@ -4,7 +4,7 @@ import { Collapse, TableCell, TableRow } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { ReportType } from 'ReportTypes';
 import TableCollapseCard from './TableCollapseCard';
-
+import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
 
 function Row(props: { row: ReportType }) {
   const { row } = props;
@@ -17,9 +17,11 @@ function Row(props: { row: ReportType }) {
         onClick={() => setOpen(!open)}
       >
         <TableCell component="th" scope="row">
-          {row.time}
+          {timeFormatter(row.time)}
         </TableCell>
-        <TableCell align="left">{row.reportItems.toString()}</TableCell>
+        <TableCell align="left">
+          {stringListFormatter(row.reportItems)}
+        </TableCell>
         <TableCell align="left">{row.team.teamName}팀</TableCell>
         <TableCell align="right" padding="checkbox">
           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -35,6 +37,7 @@ function Row(props: { row: ReportType }) {
               area={row.cctvArea}
               violate_member={row.user}
               teamList={row.team}
+              report={row}
             />
           </Collapse>
         </TableCell>
@@ -45,14 +48,20 @@ function Row(props: { row: ReportType }) {
 
 export default Row;
 
-const PendingTableCell = styled(TableCell)`
-  width: 1rem;
-`;
-
 const IssueTableRow = styled(TableRow)`
+  th,
+  td {
+    padding: 0.8rem 1rem;
+    border: none;
+  }
+
   @media (hover: hover) {
     &:hover {
-      background-color: ${props => props.theme.palette.neutral.card};
+      th,
+      td {
+        background-color: ${props => props.theme.palette.neutral.card};
+      }
+      cursor: pointer;
     }
   }
 `;

@@ -1,18 +1,12 @@
 package com.example.detecto.exception.handler;
 
 import com.example.detecto.data.RespData;
+import com.example.detecto.entity.enums.ErrorEnum;
 import com.example.detecto.exception.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.rmi.AlreadyBoundException;
-import java.sql.SQLException;
-import java.sql.SQLSyntaxErrorException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
@@ -46,6 +40,16 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(AuthFailException.class)
     public ResponseEntity<?> authFailException(Exception e){
         return createErrorResponse(ErrorEnum.AUTH_FAIL_ERROR, e);
+    }
+
+    @ExceptionHandler(ObjectionException.class)
+    public ResponseEntity<?> objectionException(Exception e){
+        return createErrorResponse(ErrorEnum.OBJECTION_ERROR, e);
+    }
+
+    @ExceptionHandler(MessageException.class)
+    public ResponseEntity<?> messageException(Exception e){
+        return createErrorResponse(ErrorEnum.MESSAGE_ERROR, e);
     }
 
 

@@ -1,8 +1,8 @@
 package com.example.detecto.dto;
 
-import com.example.detecto.entity.ThemeType;
+import com.example.detecto.entity.enums.ThemeType;
 import com.example.detecto.entity.User;
-import com.example.detecto.entity.UserType;
+import com.example.detecto.entity.enums.UserType;
 import lombok.Data;
 
 //id?: number,
@@ -23,10 +23,10 @@ public class UserResponseDto {
 
     public UserResponseDto(User user){
         this.id = user.getId();
-        this.name = user.getUserName();
+        this.name = user.getName();
         this.division = user.getTeam().getTeamName();
-        this.img = user.getUserImage();
-        this.type = user.getUserType();
+        this.img = user.getImage();
+        this.type = user.getType();
         this.theme = user.getThemeType();
     }
 }
