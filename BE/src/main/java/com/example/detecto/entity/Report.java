@@ -47,6 +47,10 @@ public class Report {
     @OneToMany(mappedBy = "report", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ReportItem> reportItems = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "report", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Objection> objections = new ArrayList<>();
+
     @Builder
     public Report(int x, int y, int cctvArea){
         this.x = x;
