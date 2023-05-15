@@ -1,23 +1,19 @@
 import React from 'react'
-import { useRecoilState } from 'recoil';
-import { UserInfo } from '@/store/userInfoStroe';
 
-function useToken() {
-  const [userInfo, setUserInfo] = useRecoilState(UserInfo);
-
-  const getSubscribe = async () => {
+function usePush() {
+  const getSubscription = async () => {
     if ('serviceWorker' in navigator) {
       await navigator.serviceWorker.register("yh-service-worker.js");
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
       if (subscription) {
-        // 서버로 subscription객체 전송
         const keys = subscription.toJSON().keys;
         if (keys && 'p256dh' in keys && 'auth' in keys) {
           console.log("endpoint:", subscription.endpoint);
           console.log("p256dh:", keys.p256dh);
           console.log("auth:", keys.auth);
         }
+        // 기존 subscription 객체 반환
       } else {
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,  // 이거 뭐지??
@@ -33,7 +29,7 @@ function useToken() {
     }
   }
 
-  return getSubscribe;
+  return getSubscription;
 }
 
-export default useToken
+export default usePush

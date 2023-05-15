@@ -16,7 +16,7 @@ import wavedarkSVG from '@/assets/img/wavedark.svg';
 import wavelightSVG from '@/assets/img/wavelight.svg';
 import { UserType } from 'UserTypes';
 import { RequestObj } from 'AxiosRequest';
-import useToken from '@/hooks/useToken';
+import usePush from '@/hooks/usePush';
 
 function SignIn() {
   const theme = useTheme();
@@ -24,7 +24,7 @@ function SignIn() {
   const [inputPW, setInputPW] = useState('');
   const setIsAuthenticated = useSetRecoilState(authState);
   const [userInfo, setUserInfo] = useRecoilState(UserInfo);
-  const requestPermission = useToken();
+  const getSubscription = usePush();
 
   const tryHandler = (response: AxiosResponse) => {
     if (response.status === 200) {
@@ -167,7 +167,7 @@ function SignIn() {
           {isLoading ? <CircularProgress size="1.7rem" /> : '로그인'}
         </Button>
         <ButtonContainerDiv>
-          <button onClick={() => requestPermission()}>관리자에게 문의하기</button>
+          <button onClick={() => getSubscription()}>관리자에게 문의하기</button>
         </ButtonContainerDiv>
       </RightContainerDiv>
     </div>
