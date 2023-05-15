@@ -33,8 +33,11 @@
 //   self.registration.showNotification(notificationTitle, notificationOptions);
 // });
 
-const pushHandler = async e => {
-  console.log("push 알림이 오긴 온다");
+const pushHandler = async (e) => {
+  console.log("push 알림이 오긴 온다:", e);
+  const data = e.data.json();
+  const {title, body} = data.notification;
+  console.log(title, body);
 };
 
 self.addEventListener('push', pushHandler);
