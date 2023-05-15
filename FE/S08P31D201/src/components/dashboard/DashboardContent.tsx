@@ -37,7 +37,7 @@ function DashboardContent() {
         id: d.id,
         reportItems: d.reportItems,
         team: d.team,
-        time: d3.timeParse('%Y-%m-%d')(d.time.slice(0, 9)) as Date,
+        time: d3.timeParse('%Y-%m-%d')(d.time.slice(0, 10)) as Date,
         cctvArea: d.cctvArea,
         user: d.user,
         x: d.x,
@@ -118,16 +118,17 @@ function DashboardContent() {
   useEffect(() => {
     const startDate = dashDate.startDay.toISOString().slice(0, 10)
     const endDate = dashDate.endDay.toISOString().slice(0, 10)
+    console.log(startDate, endDate)
     axios({
       method: 'GET',
       url: `https://k8d201.p.ssafy.io/api/report?startDate=${startDate}&endDate=${endDate}&equipments=`,
     }).then(res => {
+      console.log(res.data.data)
       if (res.data.data.length !== 0) {
-        console.log(res.data.data);
         const transformedData = processData(res.data.data);
-        console.log(transformedData);
         // 시간대별로 데이터 그룹화
         const dayData = countByTime(transformedData);
+        console.log(dayData)
         setData(dayData);
 
         // 장구별로 횟수 그룹화
@@ -140,6 +141,11 @@ function DashboardContent() {
 
         const teamData = countByTimeByTeams(transformedData);
         setTeamData(teamData);
+      } else {
+        setData(undefined)
+        seteqData(undefined);
+        setCtiData(undefined);
+        setTeamData(undefined);
       }
     });
   }, [dashDate]);

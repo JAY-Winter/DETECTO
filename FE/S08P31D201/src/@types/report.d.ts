@@ -6,7 +6,7 @@ declare module 'ReportTypes' {
     team: TeamType;
     time: string;
     cctvArea: number;
-    user: UserType;
+    user: ReportUserType;
     x: number;
     y: number;
     status: 'REJECTED' | 'NOT_APPLIED' | 'PENDING' | 'APPLIED';
@@ -17,19 +17,19 @@ declare module 'ReportTypes' {
     team: TeamType;
     time: Date;
     cctvArea: number;
-    user: UserType;
+    user: ReportUserType;
     x: number;
     y: number;
   };
   export type TeamType = {
     id: number;
     teamName: string;
-    users: UserType[];
+    users: ReportUserType[];
   };
   export type ReportUserType = {
     id: number;
-    userImage: string;
-    userName: string;
+    image: string;
+    name: string;
   };
   export type DateFilterType = {
     [key: string]: Dayjs;

@@ -75,7 +75,7 @@ function HistoryCards({
           <h4>위반 팀 1위</h4>
         </div>
       </HistoryCard>
-      <HistoryCard linearcolor="secondary">
+      {/* <HistoryCard linearcolor="secondary">
         <div className="content-main">
           <div>+20%</div>
         </div>
@@ -90,7 +90,7 @@ function HistoryCards({
         <div className="content-sub">
           <h1>통계수치</h1>
         </div>
-      </HistoryCard>
+      </HistoryCard> */}
     </HistoryCardDiv>
   );
 }

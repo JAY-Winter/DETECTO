@@ -159,6 +159,7 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
           type="range"
           onChange={inputChangeHandler}
           onMouseUp={inputMouseUpHandler}
+          onTouchEnd={inputMouseUpHandler}
           min={1}
           max={maxoffset - 3}
           step={1}

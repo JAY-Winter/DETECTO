@@ -27,6 +27,7 @@ function TableCollapseCard({
   report,
 }: TableCollapseCardPropsType) {
   const userInfo = useRecoilValue(UserInfo);
+  console.log(reportid)
 
   return (
     <TableCollapseDiv>
@@ -35,7 +36,7 @@ function TableCollapseCard({
       </CollapseCardDiv>
       <CollapseCardDiv>
         {userInfo.type === 'ADMIN' ? (
-          <MemberCard teamList={teamList} violate_member={violate_member} />
+          <MemberCard teamList={teamList} violate_member={violate_member} reportId={reportid} />
         ) : (
           <RaiseIssue report={report} />
         )}

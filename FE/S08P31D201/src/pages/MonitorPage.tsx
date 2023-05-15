@@ -2,11 +2,14 @@ import { tabletV } from '@/utils/Mixin';
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import Monitor from '@components/monitor/Monitor';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
+
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 
 function MonitorPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -61,7 +64,6 @@ function MonitorPage() {
       <MonitorHeader>
         <VideocamOutlinedIcon />
         <h1>모니터링</h1>
-        <Button onClick={enterFullScreen}>풀스크린 버튼</Button>
       </MonitorHeader>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <MonitorDatePicker
@@ -93,12 +95,20 @@ function MonitorPage() {
           </div>
           <div>
             {fullScreenState ? (
-              <Button onClick={exitFullScreen} color='error' variant="contained">
-                <span>전체 화면 나가기</span>
+              <Button
+                onClick={exitFullScreen}
+                color="error"
+                variant="contained"
+              >
+                <FullscreenExitIcon />
               </Button>
             ) : (
-              <Button onClick={enterFullScreen} color='success' variant="contained">
-                <span>전체 화면 모드</span>
+              <Button
+                onClick={enterFullScreen}
+                color="success"
+                variant="contained"
+              >
+                <FullscreenIcon />
               </Button>
             )}
           </div>
@@ -175,7 +185,7 @@ const MonitorNav = styled.div`
   height: calc(100vh);
 
   background-color: ${props => props.theme.palette.neutral.card};
-  border-radius: 0 1rem 1rem ;
+  border-radius: 0 1rem 1rem 0;
   margin-right: 1rem;
   padding: 1rem;
 
@@ -187,6 +197,10 @@ const MonitorNav = styled.div`
     height: fit-content;
     transform: translate(-100px, 0);
     transition: 0.3s ease all;
+    padding-top: 25%;
+    padding-bottom: 25%;
+
+    font-size: 1rem;
   }
 
   :hover {
@@ -196,26 +210,33 @@ const MonitorNav = styled.div`
     }
   }
   ${tabletV} {
+    flex-direction: row;
     width: 100%;
-    height: 10px;
+    height: fit-content;
+    max-height: 10px;
     justify-content: space-around;
     margin-right: 0;
     margin-bottom: 1rem;
+
+    border-radius: 0 0 1rem 1rem;
 
     top: 0;
 
     button {
       margin-top: auto;
-      margin-bottom: auto;
+      margin-bottom: 0.5rem;
+      margin-right: 0.5rem;
       word-break: keep-all;
       height: fit-content;
-      transform: translate(0, -100px);
+      transform: translate(0, -200px);
       transition: 0.3s ease all;
+
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
     }
 
     :hover {
-      flex-direction: row;
-      height: 100px;
+      max-height: 100vh;
       width: 100%;
       button {
         transform: translate(0, 0);
@@ -253,7 +274,7 @@ const MonitorsDiv = styled.div`
 
     > div {
       flex-basis: 100%;
-      height: calc(100vh / 3 - 10px);
+      height: calc(100vh / 3 - 15px);
     }
 
     > div:only-child {
