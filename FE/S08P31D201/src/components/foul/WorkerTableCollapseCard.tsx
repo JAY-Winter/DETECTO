@@ -1,21 +1,17 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import { TeamType, ReportUserType, ReportType } from 'ReportTypes';
+import { ReportType } from 'ReportTypes';
 import RaiseIssueButton from '@components/RaiseIssue/RaiseIssueButton';
 import WorkerIssueDetail from '@components/foul/WorkerIssueDetail';
 import WorkerIssueImage from './WorkerIssueImage';
 
 type TableCollapseCardPropsType = {
   reportid: number;
-  teamList: TeamType;
-  violate_member?: ReportUserType;
   report: ReportType;
 };
 
 function WorkerTableCollapseCard({
   reportid,
-  teamList,
-  violate_member,
   report,
 }: TableCollapseCardPropsType) {
   return (

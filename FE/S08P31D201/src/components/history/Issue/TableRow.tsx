@@ -45,12 +45,7 @@ function Row(props: { row: ReportType }) {
                 report={row}
               />
             ) : (
-              <WorkerTableCollapseCard
-                reportid={row.id}
-                violate_member={row.user}
-                teamList={row.team}
-                report={row}
-              />
+              <WorkerTableCollapseCard reportid={row.id} report={row} />
             )}
           </Collapse>
         </TableCell>

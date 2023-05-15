@@ -4,6 +4,7 @@ import { IssueType } from 'IssueTypes';
 import styled from '@emotion/styled';
 import { Button, Chip, Paper } from '@mui/material';
 import IssueInfo from './IssueInfo';
+import WorkerTableCollapseCard from '@components/foul/WorkerTableCollapseCard';
 
 function IssueItem({ issue }: { issue: IssueType }) {
   const [data, isLoading, setRequestObj] = useAxios({

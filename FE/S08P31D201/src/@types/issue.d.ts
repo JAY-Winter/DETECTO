@@ -10,6 +10,6 @@ declare module 'IssueTypes' {
     user: UserType;
     status: 'REJECTED' | 'NOT_APPLIED' | 'PENDING' | 'APPLIED';
     adminComment?: string;
-    workerComment?: string;
+    workerComment: string;
   };
 }
