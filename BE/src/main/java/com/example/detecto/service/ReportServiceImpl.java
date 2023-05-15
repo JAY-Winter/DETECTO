@@ -92,9 +92,6 @@ public class ReportServiceImpl implements ReportService {
             throw new DatabaseFetchException("reports fetch 중 예기치 못한 에러가 발생하였습니다.");
         }
 
-        for (Report report1 : reports) {
-            System.out.println(report1);
-        }
 
         return reports.stream()
                 .map(rd -> {
@@ -120,14 +117,16 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void objection(ObjectionDto objectionDto) {
-        Report r = reportRepository.findById(objectionDto.getId()).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+    public void objection(ReportObjectionDto reportObjectionDto) {
+        Report r = reportRepository.findById(reportObjectionDto.getId()).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
 
         if(r.getReportStatus() == ReportStatus.REJECTED){
             throw new ObjectionException("이미 거절된 상태입니다.");
         }
 
+        r.setReportStatus(reportObjectionDto.getStatus());
 
+        reportRepository.save(r);
     }
 
     @Override
@@ -153,5 +152,15 @@ public class ReportServiceImpl implements ReportService {
         responseDto.setMonth(month);
 
         return responseDto;
+    }
+
+    @Override
+    public void edit(ReportEditDto reportEditDto) {
+        Report r = reportRepository.findById(reportEditDto.getReportId()).orElseThrow(() -> new DoesNotExistData("Report : 아이디가 존재하지 않습니다."));
+        User userinfo = userRepository.findById(reportEditDto.getUserId()).orElseThrow(() -> new DoesNotExistData("User : 아이디가 존재하지 않습니다."));
+
+        r.setReportStatus(ReportStatus.NOT_APPLIED);
+        r.setUser(userinfo);
+        reportRepository.save(r);
     }
 }

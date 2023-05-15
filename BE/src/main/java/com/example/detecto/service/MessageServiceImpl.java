@@ -72,7 +72,7 @@ public class MessageServiceImpl implements MessageService {
 
         // fcmToken이 있다면 알림 보내기
         if(user.getFcmToken() != null){
-            Notification notification = new Notification("위반사항 안내", user.getName()+"님께서는 보호구 착용을 위반하였습니다.");
+            Notification notification = new Notification("위반사항 안내", user.getName()+"님께서는 보호구 착용을 위반하였습니다. \n 이의제기를 원하시면 홈페이지를 방문해주세요.");
 
             Message message = Message.builder()
                     .setNotification(notification)

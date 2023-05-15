@@ -4,8 +4,8 @@ package com.example.detecto.api;
 import com.example.detecto.data.RespData;
 import com.example.detecto.dto.*;
 import com.example.detecto.service.ReportService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,11 +48,20 @@ public class ReportController {
     }
 
     @PutMapping("/objection")
-    public ResponseEntity<?> objection(@RequestBody ObjectionDto objectionDto){
+    public ResponseEntity<?> objection(@RequestBody ReportObjectionDto reportObjectionDto){
         RespData<List> response = new RespData<>();
 
-        reportService.objection(objectionDto);
+        reportService.objection(reportObjectionDto);
 
         return  response.builder();
+    }
+
+    @PutMapping
+    public ResponseEntity<?> editReport(@RequestBody @Valid ReportEditDto reportEditDto){
+        RespData<Void> response = new RespData<>();
+
+        reportService.edit(reportEditDto);
+
+        return response.builder();
     }
 }
