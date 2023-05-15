@@ -38,7 +38,7 @@ const DetailInfoDiv = styled(Card)`
   height: 100%;
   max-width: 350px;
   padding: 2rem 1.5rem;
-  background-color: ${props => props.theme.palette.neutral.card};
+  background-color: ${props => props.theme.palette.neutral.section};
   border-radius: 12px;
 
   p {

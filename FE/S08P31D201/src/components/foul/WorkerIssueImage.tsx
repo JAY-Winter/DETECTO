@@ -23,7 +23,7 @@ const ImageWrapper = styled(Card)`
   display: flex;
   justify-content: center;
   border-radius: 10px;
-  background-color: ${props => props.theme.palette.neutral.card};
+  background-color: ${props => props.theme.palette.neutral.section};
 `;
 
 const IssueImageStyle = css`
