@@ -15,7 +15,7 @@ import DashboardPage from './pages/DashboardPage';
 import MorePage from './pages/MorePage';
 import AuthProvider from '@components/common/AuthProvider';
 import MonitorPage from './pages/MonitorPage';
-import useGetFCMToken from './hooks/useGetFCMToken';
+import useToken from './hooks/useToken';
 import { useRecoilValue } from 'recoil';
 import { UserInfo } from './store/userInfoStroe';
 import WorkerNavigationBar from '@components/navbar/WorkerNavigationBar';
@@ -28,7 +28,7 @@ import NotFound from './pages/NotFound';
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
-  const [requestPermission] = useGetFCMToken();
+  const getSubscribe = useToken();
   const userInfo = useRecoilValue(UserInfo);
 
   // 테마 따라 body 태그의 백그라운드 색상 결정
@@ -41,8 +41,7 @@ function App() {
   }, [mode]);
 
   useEffect(() => {
-    // 알림 허용 권한 요청하고, 유저가 허용하면 FCM으로 부터 토큰값 받아온다
-    requestPermission();
+    // getSubscribe();
   }, []);
 
   return (
