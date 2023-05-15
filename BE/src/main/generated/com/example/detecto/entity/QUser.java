@@ -22,15 +22,17 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
-    public final ListPath<EMessage, QEMessage> EMessages = this.<EMessage, QEMessage>createList("EMessages", EMessage.class, QEMessage.class, PathInits.DIRECT2);
-
     public final StringPath fcmToken = createString("fcmToken");
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
     public final StringPath image = createString("image");
 
+    public final ListPath<EMessage, QEMessage> messages = this.<EMessage, QEMessage>createList("messages", EMessage.class, QEMessage.class, PathInits.DIRECT2);
+
     public final StringPath name = createString("name");
+
+    public final ListPath<Objection, QObjection> objections = this.<Objection, QObjection>createList("objections", Objection.class, QObjection.class, PathInits.DIRECT2);
 
     public final StringPath password = createString("password");
 

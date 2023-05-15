@@ -26,7 +26,7 @@ public class QReport extends EntityPathBase<Report> {
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
-    public final DateTimePath<java.time.LocalDateTime> objectionTime = createDateTime("objectionTime", java.time.LocalDateTime.class);
+    public final ListPath<Objection, QObjection> objections = this.<Objection, QObjection>createList("objections", Objection.class, QObjection.class, PathInits.DIRECT2);
 
     public final ListPath<ReportItem, QReportItem> reportItems = this.<ReportItem, QReportItem>createList("reportItems", ReportItem.class, QReportItem.class, PathInits.DIRECT2);
 
