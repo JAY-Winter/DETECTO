@@ -5,15 +5,22 @@ from main.distance.is_detect import detect_non_wearing
 from main.distance.draw_map import draw_map
 from main.distance.cal_from_cctv_to_head import cal_from_cctv_to_head, get_mean_coord
 from main.distance.save_non_wear import save_non_wear
-
+from main.repository.repository import Equipment
 # 미착용 클래스 번호
-pro = set({1, 2, 3, 6, 7})
+
 
 def findHuman(boxes):
     center_box = []
     human_box = []
     human_detect = {}
-
+    equipments = Equipment.query.all()
+    pro = set({})
+    i= 0
+    for equip in equipments :
+        if equip.type == 0 and equip.able == 1 and equip.name != 'human' and equip.name != 'person':
+            pro.add(i)
+        i=i+1
+        
     for box in boxes:
         xyxy = box.xyxy[0]
         x1, y1, x2, y2 = xyxy.cpu().numpy()
