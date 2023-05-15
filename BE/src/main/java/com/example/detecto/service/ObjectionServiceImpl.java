@@ -7,6 +7,7 @@ import com.example.detecto.entity.Objection;
 import com.example.detecto.entity.Report;
 import com.example.detecto.entity.User;
 import com.example.detecto.entity.enums.ObjectionStatus;
+import com.example.detecto.entity.enums.ReportStatus;
 import com.example.detecto.exception.DatabaseFetchException;
 import com.example.detecto.exception.DoesNotExistData;
 import com.example.detecto.repository.ObjectionRepository;
@@ -77,6 +78,8 @@ public class ObjectionServiceImpl implements ObjectionService{
                 .user(u)
                 .build();
 
+        r.setReportStatus(ReportStatus.PENDING);
+        reportRepository.save(r);
         objectionRepository.save(obj);
     }
 
