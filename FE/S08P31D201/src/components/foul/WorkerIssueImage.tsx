@@ -19,6 +19,7 @@ export default WorkerIssueImage;
 
 const ImageWrapper = styled(Card)`
   width: 100%;
+  min-height: 20rem;
   max-height: 20rem;
   display: flex;
   justify-content: center;
@@ -27,7 +28,7 @@ const ImageWrapper = styled(Card)`
 `;
 
 const IssueImageStyle = css`
-  max-width: 100%;
+  width: 100%;
   height: auto;
   object-fit: contain;
 `;

@@ -4,7 +4,7 @@ import { Button, Card, Input } from '@mui/material';
 import { ReportType } from 'ReportTypes';
 import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
 
-function IssueDetail({ report }: { report: ReportType }) {
+function WorkerIssueDetail({ report }: { report: ReportType }) {
   return (
     <Wrapper>
       <DetailInfoDiv>
@@ -23,7 +23,7 @@ function IssueDetail({ report }: { report: ReportType }) {
   );
 }
 
-export default IssueDetail;
+export default WorkerIssueDetail;
 
 const Wrapper = styled.div`
   width: 100%;
@@ -36,7 +36,6 @@ const Wrapper = styled.div`
 const DetailInfoDiv = styled(Card)`
   width: 100%;
   height: 100%;
-  max-width: 350px;
   padding: 2rem 1.5rem;
   background-color: ${props => props.theme.palette.neutral.section};
   border-radius: 12px;

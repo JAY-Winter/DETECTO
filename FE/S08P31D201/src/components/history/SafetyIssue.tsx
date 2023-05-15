@@ -45,7 +45,7 @@ function HistorySafetyIssue() {
       method: 'get',
       url: `https://k8d201.p.ssafy.io/api/report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`,
     });
-    console.log(reportData);
+    // console.log(reportData);
   }, [historyDate, historyEq]);
 
   // 페이지네이션 state
