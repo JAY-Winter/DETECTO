@@ -1,6 +1,5 @@
-const pushHandler = async (e) => {
-  const data = e.data.json();
-  const { title, body } = data.notification;
+const pushHandler = (event) => {
+  const { title, body } = event.data.json();
   const options = {
     body: body,
     icon: '/icons/icon-512x512.png',
@@ -19,7 +18,7 @@ const pushHandler = async (e) => {
       },
     ],
   };
-  self.registration.showNotification(title, options);
+  event.watiUntil(self.registration.showNotification(title, options));
 };
 
 self.addEventListener('push', pushHandler);
