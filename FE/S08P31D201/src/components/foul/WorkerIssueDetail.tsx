@@ -4,7 +4,7 @@ import { Button, Card, Input } from '@mui/material';
 import { ReportType } from 'ReportTypes';
 import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
 
-function IssueDetail({ report }: { report: ReportType }) {
+function WorkerIssueDetail({ report }: { report: ReportType }) {
   return (
     <Wrapper>
       <DetailInfoDiv>
@@ -23,7 +23,7 @@ function IssueDetail({ report }: { report: ReportType }) {
   );
 }
 
-export default IssueDetail;
+export default WorkerIssueDetail;
 
 const Wrapper = styled.div`
   width: 100%;

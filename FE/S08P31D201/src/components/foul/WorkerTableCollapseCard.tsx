@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { TeamType, ReportUserType, ReportType } from 'ReportTypes';
 import RaiseIssueButton from '@components/RaiseIssue/RaiseIssueButton';
-import IssueDetail from '@components/RaiseIssue/IssueDetail';
+import WorkerIssueDetail from '@components/foul/WorkerIssueDetail';
 import WorkerIssueImage from './WorkerIssueImage';
 
 type TableCollapseCardPropsType = {
@@ -26,7 +26,7 @@ function WorkerTableCollapseCard({
             <WorkerIssueImage reportid={reportid.toString()} />
           </CollapseCardDiv>
           <CollapseCardDiv>
-            <IssueDetail report={report} />
+            <WorkerIssueDetail report={report} />
           </CollapseCardDiv>
         </TableLineWrapper>
         <TableLineWrapper>
