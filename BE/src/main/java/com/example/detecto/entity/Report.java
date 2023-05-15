@@ -40,8 +40,8 @@ public class Report {
 
     private LocalDateTime time;
 
-    @Column(name="objection_time")
-    private LocalDateTime objectionTime;
+//    @Column(name="objection_time")
+//    private LocalDateTime objectionTime;
 
     @JsonIgnore
     @OneToMany(mappedBy = "report", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -52,7 +52,6 @@ public class Report {
         this.x = x;
         this.y = y;
         this.time = LocalDateTime.now();
-        this.objectionTime = null;
         this.reportStatus = ReportStatus.NOT_APPLIED;
         this.cctvArea = cctvArea;
     }
@@ -73,10 +72,6 @@ public class Report {
 
     public void setReportStatus(ReportStatus reportStatus){
         this.reportStatus = reportStatus;
-    }
-
-    public void setObjectionTime(){
-        this.objectionTime = LocalDateTime.now();
     }
 
 }
