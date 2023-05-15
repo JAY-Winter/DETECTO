@@ -36,7 +36,6 @@ const Wrapper = styled.div`
 const DetailInfoDiv = styled(Card)`
   width: 100%;
   height: 100%;
-  max-width: 350px;
   padding: 2rem 1.5rem;
   background-color: ${props => props.theme.palette.neutral.section};
   border-radius: 12px;
