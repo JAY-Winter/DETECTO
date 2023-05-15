@@ -1,5 +1,7 @@
 import React from 'react';
 import { css } from '@emotion/react';
+import { mobileV } from '@/utils/Mixin';
+import { styled } from '@mui/material';
 
 function IssueImage({ reportid }: { reportid: string }) {
   return (
@@ -12,7 +14,7 @@ function IssueImage({ reportid }: { reportid: string }) {
         alignItems: 'center',
       }}
     >
-      <h2 style={{ margin: '0.5rem 0 1rem 0' }}>위반 사진</h2>
+      <IssueImageTitle>위반 사진</IssueImageTitle>
       <img
         css={IssueImageStyle}
         src={`https://kr.object.ncloudstorage.com/detec/report/${reportid}.jpg`}
@@ -30,4 +32,13 @@ const IssueImageStyle = css`
   height: 100%;
   object-fit: cover;
   border-radius: 10px;
+`;
+
+const IssueImageTitle = styled('h2')`
+  margin: 0.5rem 0 1rem 0;
+
+  ${mobileV} {
+    width: 100%;
+    font-size: 2rem;
+  }
 `;

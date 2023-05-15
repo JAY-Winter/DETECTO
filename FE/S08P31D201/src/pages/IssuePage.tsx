@@ -1,16 +1,18 @@
 import { mobileV } from '@/utils/Mixin';
 import HistoryDatePicker from '@components/history/DatePicker';
 import HistoryEquipmentFilter from '@components/history/EquipmentFilter';
-import HistorySafetyIssue from '@components/history/SafetyIssue';
+import IssueTable from '@components/RaiseIssue/IssueTable';
 import styled from '@emotion/styled';
 
 function IssuePage() {
   return (
     <IssueDiv>
       <IssueTitle>이의제기 목록</IssueTitle>
-      <HistoryDatePicker />
-      <HistoryEquipmentFilter />
-      <HistorySafetyIssue />
+      <HistoryFilterWrapper>
+        <HistoryDatePicker />
+        <HistoryEquipmentFilter />
+      </HistoryFilterWrapper>
+      <IssueTable />
     </IssueDiv>
   );
 }
@@ -31,6 +33,16 @@ const IssueTitle = styled.div`
   font-weight: bold;
   font-size: 2rem;
   margin-bottom: 1.5rem;
+`;
+
+const HistoryFilterWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 1rem 0;
+
+  ${mobileV} {
+    flex-direction: column;
+  }
 `;
 
 export default IssuePage;

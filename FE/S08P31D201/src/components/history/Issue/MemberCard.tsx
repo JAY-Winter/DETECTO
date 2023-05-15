@@ -84,7 +84,7 @@ const ProfileCard = styled(Card)`
   width: 100%;
   height: 100%;
   max-width: 350px;
-  background-color: ${props => props.theme.palette.neutral.card};
+  background-color: ${props => props.theme.palette.neutral.section};
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 0.7rem;
