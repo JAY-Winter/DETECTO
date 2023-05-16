@@ -51,7 +51,11 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
       var hours = timestampDate.getHours();
       var minutes = timestampDate.getMinutes();
       var seconds = timestampDate.getSeconds();
-      var timestampString = hours + ':' + minutes + ':' + seconds;
+
+      var minutesString = (minutes < 10 ? '0' : '') + minutes;
+      var secondsString = (seconds < 10 ? '0' : '') + seconds;
+
+      var timestampString = hours + ':' + minutesString + ':' + secondsString;
       setTime(timestampString);
     };
 
@@ -103,7 +107,7 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
       ws.current.send(JSON.stringify({ offset: 2 + movingOffset, type: 3 }));
       setTimeout(() => {
         setMovingOffset(null);
-      }, 200);
+      }, 1000);
     } else {
       console.error('웹소켓이 열려있지 않습니다.');
     }
@@ -115,7 +119,7 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
     }
     setMiddleShow(true);
     setPause(prev => {
-      console.log(prev)
+      console.log(prev);
       if (ws.current) {
         if (!prev) {
           ws.current.send(JSON.stringify({ type: 1 }));
@@ -175,7 +179,10 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
       <MonitorMiddle show={middleShow}>
         {pause ? <PauseIcon /> : <PlayArrowIcon />}
       </MonitorMiddle>
-      <MonitorBackdrop hoverd={hoverd} onClick={hoverd ? pauseHandler : undefined} />
+      <MonitorBackdrop
+        hoverd={hoverd}
+        onClick={hoverd ? pauseHandler : undefined}
+      />
       <MonitorTitle hoverd={hoverd}>{monitorId + 1}번 카메라</MonitorTitle>
       <MonitorBottom hoverd={hoverd}>
         <input
