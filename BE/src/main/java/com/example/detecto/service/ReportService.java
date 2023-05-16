@@ -12,4 +12,6 @@ public interface ReportService {
     ReportCountResponseDto count(int id);
 
     void edit(ReportEditDto reportEditDto);
+
+    void deleteReport(int id);
 }

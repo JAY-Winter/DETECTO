@@ -5,11 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class ObjectionAdminCommentDto {
+public class AdminObjectionDto {
     @NotNull
     private int id;
     @NotNull
     private String comment;
 
     private ObjectionStatus status;
+
+    private Integer changeId;
 }
