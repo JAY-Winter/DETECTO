@@ -47,7 +47,7 @@ function HistorySafetyIssue({
 
   const [data, isLoading, setRequestObj] = useAxios({
     tryHandler: historyTryhandler,
-    baseURL: 'https://k8d201.p.ssafy.io/api/',
+    baseURL: 'https://detecto.kr/api/',
   });
 
 
@@ -59,12 +59,12 @@ function HistorySafetyIssue({
     if (tabState === 0) {
       setRequestObj({
         method: 'get',
-        url: `https://k8d201.p.ssafy.io/api/report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`,
+        url: `report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`,
       });
     } else if (tabState === 1) {
       setRequestObj({
         method: 'get',
-        url: `https://k8d201.p.ssafy.io/api/report?id=-1&equipments=`,
+        url: `report?id=-1&equipments=`,
       });
     }
     // console.log(reportData);

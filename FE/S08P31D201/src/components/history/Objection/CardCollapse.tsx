@@ -6,56 +6,88 @@ import IssueImage from '../Issue/IssueImage';
 import { mobileV, tabletV } from '@/utils/Mixin';
 import ObjectMember from './ObjectionMemeber';
 import axios from 'axios';
+import { useSetRecoilState } from 'recoil';
+import { ObjectionQuery } from '@/store/ObjectionQuery';
 
 function CardCollapse({ objectionIssue }: { objectionIssue: IssueType }) {
-  const [currentUser, setCurrentUser] = useState<number>()
-  const [message, setMessage] = useState<string>("")
+  const [currentUser, setCurrentUser] = useState<number>();
+  const [message, setMessage] = useState<string>('');
+  const setObjectionQ = useSetRecoilState(ObjectionQuery);
   const violateUser = objectionIssue.team.users.filter(
     user => user.name === objectionIssue.name
   );
 
   useEffect(() => {
-    setCurrentUser(violateUser[0].id)
-  }, [])
+    setCurrentUser(violateUser[0].id);
+  }, []);
 
   const rejectHandler = () => {
-    const reject = window.confirm("정말 이의를 거절 하시겠습니까?")
+    const reject = window.confirm('정말 이의를 거절 하시겠습니까?');
     if (reject) {
       console.log('거절 눌렸습니다!');
       axios({
         method: 'post',
-        url: "https://k8d201.p.ssafy.io/api/objection",
-        data: {id: objectionIssue.id, status: "REJECTED"}
-      }).then(res => console.log(res)).catch(err => console.log(err))
+        url: 'https://detecto.kr/api/objection/admin',
+        data: { id: objectionIssue.id, status: 'REJECTED', comment: '' },
+      })
+        .then(res =>
+          setObjectionQ(prev => {
+            return { valid: true, data: [...prev.data] };
+          })
+        )
+        .catch(err => console.log(err));
     }
-  }
+  };
 
   const removeHandler = () => {
-    const remove = window.confirm("정말 리포트를 삭제 하시겠습니까?")
+    const remove = window.confirm('정말 리포트를 삭제 하시겠습니까?');
     if (remove) {
       console.log('삭제 눌렸습니다!');
+      axios({
+        method: 'delete',
+        url: `https://detecto.kr/api/report/${objectionIssue.reportId}`,
+      })
+        .then(res =>
+          setObjectionQ(prev => {
+            return { valid: true, data: [...prev.data] };
+          })
+        )
+        .catch(err => console.log(err));
     }
-  }
+  };
 
   const applyHandler = () => {
-    const apply = window.confirm("정말 이의를 수정 하시겠습니까?")
+    const apply = window.confirm('정말 이의를 수정 하시겠습니까?');
     if (apply) {
       console.log('수정 눌렸습니다!');
       axios({
         method: 'post',
-        url: "https://k8d201.p.ssafy.io/api/objection",
-        data: {id: objectionIssue.id, status: "APPLIED", comment: message, changeId: currentUser}
-      }).then(res => console.log(res)).catch(err => console.log(err))
+        url: 'https://detecto.kr/api/objection/admin',
+        data: {
+          id: objectionIssue.id,
+          status: 'APPLIED',
+          comment: message,
+          changeId: currentUser,
+        },
+      })
+        .then(res =>
+          setObjectionQ(prev => {
+            return { valid: true, data: [...prev.data] };
+          })
+        )
+        .catch(err => console.log(err));
     }
-  }
+  };
 
-  const inputHandler = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setMessage(event.currentTarget.value)
-  }
+  const inputHandler = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setMessage(event.currentTarget.value);
+  };
 
   const setUserIdHandler = (id: number) => {
-    setCurrentUser(id)
-  }
+    setCurrentUser(id);
+  };
 
   return (
     <CardCollapseDiv>
@@ -75,13 +107,31 @@ function CardCollapse({ objectionIssue }: { objectionIssue: IssueType }) {
         // onKeyDown={keyDownHandler}
       />
       <ButtonDiv>
-        <Button color="error" variant="contained" onClick={rejectHandler}>
+        <Button
+          color="error"
+          variant="contained"
+          onClick={rejectHandler}
+          disabled={objectionIssue.status !== 'PENDING'}
+        >
           이의 거절
         </Button>
-        <Button color="secondary" variant="contained" onClick={removeHandler}>
+        <Button
+          color="secondary"
+          variant="contained"
+          onClick={removeHandler}
+          disabled={objectionIssue.status !== 'PENDING'}
+        >
           리포트 삭제
         </Button>
-        <Button color="success" variant="contained" onClick={applyHandler} disabled={violateUser[0].id === currentUser}>
+        <Button
+          color="success"
+          variant="contained"
+          onClick={applyHandler}
+          disabled={
+            violateUser[0].id === currentUser ||
+            objectionIssue.status !== 'PENDING'
+          }
+        >
           이의 승낙 및 근로자 재할당
         </Button>
       </ButtonDiv>
@@ -126,7 +176,7 @@ const ObjectImgMemberDiv = styled.div`
 const ButtonDiv = styled.div`
   display: flex;
   flex-direction: row;
-  
+
   button {
     flex-basis: 33%;
 
@@ -140,4 +190,4 @@ const ButtonDiv = styled.div`
       flex-direction: 100%;
     }
   }
-`
+`;

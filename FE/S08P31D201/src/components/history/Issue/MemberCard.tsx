@@ -39,7 +39,7 @@ function MemberCard({
     console.log(reportId);
     axios({
       method: 'put',
-      url: 'https://k8d201.p.ssafy.io/api/report',
+      url: 'https://detecto.kr/api/report',
       data: { reportId: reportId, userId: cardList[memberNum].id },
     })
       .then(res => console.log(res))
