@@ -10,6 +10,7 @@ import com.example.detecto.entity.enums.ObjectionStatus;
 import com.example.detecto.exception.AlreadyExistData;
 import com.example.detecto.exception.DatabaseFetchException;
 import com.example.detecto.exception.DoesNotExistData;
+import com.example.detecto.exception.ObjectionException;
 import com.example.detecto.repository.ObjectionRepository;
 import com.example.detecto.repository.ReportRepository;
 import com.example.detecto.repository.UserRepository;
@@ -92,6 +93,11 @@ public class ObjectionServiceImpl implements ObjectionService{
     @Override
     public void postAdminObjection(AdminObjectionDto adminObjectionDto) {
         Objection obj = objectionRepository.findById(adminObjectionDto.getId()).orElseThrow(() -> new DoesNotExistData("Report : 아이디가 존재하지 않습니다."));
+
+        if(obj.getStatus() == ObjectionStatus.REJECTED){
+            throw new ObjectionException("이미 REJECTED 되었습니다.");
+        }
+
 
         obj.setAdminComment(adminObjectionDto.getComment());
 
