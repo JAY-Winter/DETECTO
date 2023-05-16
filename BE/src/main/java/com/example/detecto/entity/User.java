@@ -25,8 +25,8 @@ public class User {
     @Column(name = "image")
     private String image;
 
-    @Column(name = "fcm_token")
-    private String fcmToken;
+    @Column(name = "token", length = 500)
+    private String token;
 
     @Column(name = "session_id")
     private String sessionId;
@@ -57,12 +57,12 @@ public class User {
     private List<Objection> objections = new ArrayList<>();
 
     @Builder
-    public User(int id, String password, String name, String image, String fcmToken, String sessionId, UserType type, ThemeType themeType){
+    public User(int id, String password, String name, String image, String token, String sessionId, UserType type, ThemeType themeType){
         this.id = id;
         this.password = password;
         this.name = name;
         this.image = image;
-        this.fcmToken = fcmToken;
+        this.token = token;
         this.type = type;
         this.themeType = themeType;
         this.sessionId = sessionId;
@@ -77,8 +77,8 @@ public class User {
         team.getUsers().add(this);
     }
 
-    public void setFcmToken(String fcmToken){
-        this.fcmToken = fcmToken;
+    public void setToken(String token){
+        this.token = token;
     }
 
     public void setSessionId(String sessionId){

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/fcm")
+@RequestMapping("/subscribe")
 public class MessageController {
 
     private final MessageService messageService;

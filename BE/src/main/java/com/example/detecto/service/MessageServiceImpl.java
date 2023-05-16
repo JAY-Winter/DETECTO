@@ -1,6 +1,5 @@
 package com.example.detecto.service;
 
-import com.example.detecto.dto.MessageDto;
 import com.example.detecto.entity.EMessage;
 import com.example.detecto.entity.User;
 import com.example.detecto.exception.DoesNotExistData;
@@ -71,12 +70,12 @@ public class MessageServiceImpl implements MessageService {
         User user = userRepository.findById(id).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
         log.info("Sent message: " + user);
         // fcmToken이 있다면 알림 보내기
-        if(user.getFcmToken() != null){
+        if(user.getToken() != null){
             Notification notification = new Notification("위반사항 안내", user.getName()+"님께서는 보호구 착용을 위반하였습니다. \n 이의제기를 원하시면 홈페이지를 방문해주세요.");
 
             Message message = Message.builder()
                     .setNotification(notification)
-                    .setToken(user.getFcmToken())
+                    .setToken(user.getToken())
                     .build();
             try {
                 String response = FirebaseMessaging.getInstance().send(message);
