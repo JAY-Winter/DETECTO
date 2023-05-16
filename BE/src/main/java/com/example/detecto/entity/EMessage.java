@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import static java.time.LocalDateTime.now;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,11 +32,12 @@ public class EMessage {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+
     @Builder
     public EMessage(String title, String message, User user){
         this.title = title;
         this.message = message;
         this.user = user;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = now().plusHours(9);
     }
 }

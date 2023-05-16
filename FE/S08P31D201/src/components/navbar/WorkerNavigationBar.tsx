@@ -136,6 +136,7 @@ function WorkerNavigationBar({ setMode, isModal = false }: NavigationBarProps) {
 }
 
 const StyledNav = styled.nav<{ isModal: boolean }>`
+  z-index: 999;
   display: flex;
   position: fixed;
   top: 0px;

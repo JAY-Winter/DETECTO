@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,9 +35,6 @@ public class Report {
     @Column(name = "cctv_area")
     private int cctvArea;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name="report_status")
-//    private ReportStatus reportStatus;
 
     private LocalDateTime time;
 
@@ -52,7 +51,7 @@ public class Report {
     public Report(int x, int y, int cctvArea){
         this.x = x;
         this.y = y;
-        this.time = LocalDateTime.now();
+        this.time = now().plusHours(9);
         this.cctvArea = cctvArea;
     }
 

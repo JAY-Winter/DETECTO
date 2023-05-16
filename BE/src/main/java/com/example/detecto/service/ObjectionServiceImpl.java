@@ -52,6 +52,7 @@ public class ObjectionServiceImpl implements ObjectionService{
                     .leftJoin(user.team, team).fetchJoin()
                     .leftJoin(objection.report, report).fetchJoin()
                     .where(user.id.eq(id))
+                    .orderBy(objection.id.desc())
                     .distinct()
                     .fetch();
         } catch (PersistenceException e) {

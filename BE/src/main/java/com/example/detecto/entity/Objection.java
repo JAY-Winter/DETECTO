@@ -7,6 +7,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import static java.time.LocalDateTime.now;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -46,7 +48,7 @@ public class Objection {
         this.status = ObjectionStatus.PENDING;
         this.user = user;
         this.report = report;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = now().plusHours(9);
     }
 
     public void setAdminComment(String adminComment) {

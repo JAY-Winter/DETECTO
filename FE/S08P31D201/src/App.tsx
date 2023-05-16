@@ -17,14 +17,12 @@ import AuthProvider from '@components/common/AuthProvider';
 import MonitorPage from './pages/MonitorPage';
 import { useRecoilValue } from 'recoil';
 import { UserInfo } from './store/userInfoStroe';
-import WorkerNavigationBar from '@components/navbar/WorkerNavigationBar';
-import WorkerNavigationBarTablet from '@components/navbar/WorkerNavigationBarTablet';
-import WorkerNavigationBarMobile from '@components/navbar/WorkerNavigationBarMobile';
 import FoulPage from './pages/FoulPage';
 import IssuePage from './pages/IssuePage';
 import NotFound from './pages/NotFound';
 import usePush from './hooks/usePush';
-import NavProvider from '@components/common/NavProvider';
+import NavProvider from '@components/navbar/NavProvider';
+import WorkerNavProvider from '@components/navbar/WorkerNavProvider';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -88,19 +86,19 @@ function App() {
               <Routes>
                 <Route path="/" element={<Navigate replace to="/foul" />} />
                 <Route path="/foul" element={
-                  <NavProvider setMode={setMode}>
+                  <WorkerNavProvider setMode={setMode}>
                     <FoulPage />
-                  </NavProvider>
+                  </WorkerNavProvider>
                 } />
                 <Route path="/issue" element={
-                  <NavProvider setMode={setMode}>
+                  <WorkerNavProvider setMode={setMode}>
                     <IssuePage />
-                  </NavProvider>
+                  </WorkerNavProvider>
                 } />
                 <Route path="/more" element={
-                  <NavProvider setMode={setMode}>
+                  <WorkerNavProvider setMode={setMode}>
                     <MorePage setMode={setMode} />
-                  </NavProvider>
+                  </WorkerNavProvider>
                 } />
                 <Route path="/*" element={<NotFound />}/>
               </Routes>
