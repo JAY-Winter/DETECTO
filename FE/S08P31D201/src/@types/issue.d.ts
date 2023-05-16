@@ -2,14 +2,12 @@
 declare module 'IssueTypes' {
   export type IssueType = {
     id: number;
-    createdDate: string;
-    reportItems: string[];
-    team: TeamType;
+    createdAt: string;
     time: string;
-    cctvArea: number;
-    user: UserType;
+    name: string;
     status: 'REJECTED' | 'NOT_APPLIED' | 'PENDING' | 'APPLIED';
+    img: undefined;
     adminComment?: string;
-    workerComment: string;
+    comment: string;
   };
 }

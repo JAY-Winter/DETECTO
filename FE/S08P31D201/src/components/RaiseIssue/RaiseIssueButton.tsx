@@ -26,6 +26,12 @@ function RaiseIssueButton({ report }: { report: ReportType }) {
     setComment(event.target.value);
   };
 
+  const keyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      submitHandler();
+    }
+  };
+
   const [data, isLoading, setRequestObj] = useAxios({
     baseURL: 'https://k8d201.p.ssafy.io/api/',
   });
@@ -68,6 +74,7 @@ function RaiseIssueButton({ report }: { report: ReportType }) {
               placeholder="관리자에게 전송할 메시지를 입력해주세요."
               variant="filled"
               onChange={inputHandler}
+              onKeyDown={keyDownHandler}
             />
             <ButtonStyle variant="contained" onClick={submitHandler}>
               제출하기

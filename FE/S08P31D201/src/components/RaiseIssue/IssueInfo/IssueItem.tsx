@@ -4,37 +4,51 @@ import { IssueType } from 'IssueTypes';
 import styled from '@emotion/styled';
 import { Button, Chip, Paper } from '@mui/material';
 import IssueInfo from './IssueInfo';
-import WorkerTableCollapseCard from '@components/foul/WorkerTableCollapseCard';
+import { timeFormatter } from '@/utils/Formatter';
+import RowText from './RowText';
+import { mobileV } from '@/utils/Mixin';
 
-function IssueItem({ issue }: { issue: IssueType }) {
+function IssueItem({
+  issue,
+  removeItem,
+}: {
+  issue: IssueType;
+  removeItem: (id: number) => void;
+}) {
   const [data, isLoading, setRequestObj] = useAxios({
     baseURL: 'https://k8d201.p.ssafy.io/api/',
   });
 
-  // TODO: delete API
   const cancelHandler = () => {
     setRequestObj({
       method: 'delete',
-      url: `??`,
+      url: `objection/${issue.id}`,
     });
-    console.log(`[DEBUG] IssueItem - 이의제기 취소 ${issue.id}`);
-    alert('취소되었습니다.');
+    alert('이의 제기가 취소되었습니다.');
+    removeItem(issue.id);
   };
 
   const statusFormatter = (status: IssueType['status']) => {
-    if (status === 'APPLIED') return '처리 완료';
-    if (status === 'PENDING') return '처리 중';
-    if (status === 'REJECTED') return '거절됨';
+    if (status === 'APPLIED') return '승인';
+    if (status === 'PENDING') return '대기';
+    if (status === 'REJECTED') return '거절';
   };
 
   return (
     <IssueWrapper>
-      <PaperStyle state={issue.status}>
-        <TopRow>
-          <ChipStyle
-            label={statusFormatter(issue.status)}
-            state={issue.status}
-          />
+      <PaperStyle state={issue.status} elevation={3}>
+        <CellStyle>
+          <ChipStyle state={issue.status}>
+            {statusFormatter(issue.status)}
+          </ChipStyle>
+        </CellStyle>
+        <CellStyle style={{ minWidth: '14rem' }}>
+          <RowText title="신청 일자" content={timeFormatter(issue.createdAt)} />
+        </CellStyle>
+        <CellStyle style={{ width: '100%' }}>
+          <IssueInfo issue={issue} />
+        </CellStyle>
+        <CellStyle>
           <Button
             onClick={cancelHandler}
             disabled={
@@ -44,8 +58,7 @@ function IssueItem({ issue }: { issue: IssueType }) {
           >
             취소하기
           </Button>
-        </TopRow>
-        <IssueInfo issue={issue} />
+        </CellStyle>
       </PaperStyle>
     </IssueWrapper>
   );
@@ -59,32 +72,71 @@ const IssueWrapper = styled.div`
 `;
 
 const PaperStyle = styled(Paper)<{ state: IssueType['status'] }>`
-  padding: 1.3rem;
-  border: 3px solid
-    ${props =>
-      props.state === 'REJECTED'
-        ? props.theme.palette.error.main
-        : props.state === 'APPLIED'
-        ? props.theme.palette.success.main
-        : props.theme.palette.secondary.main};
-`;
-
-const TopRow = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 1rem 0.8rem;
+  border-radius: 10px;
 
-  button {
-    font-weight: bold;
+  ${mobileV} {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem 1rem 1rem 2rem;
   }
 `;
 
-const ChipStyle = styled(Chip)<{ state: IssueType['status'] }>`
-  background-color: ${props =>
+const CellStyle = styled.div`
+  display: flex;
+  align-items: flex-start;
+  height: 100%;
+  border-right: 2px solid ${props => props.theme.palette.neutral.card};
+  padding: 0.5rem;
+
+  :nth-of-type(1) {
+    padding-right: 0.9rem;
+  }
+
+  :nth-last-of-type(1) {
+    border-right: none;
+  }
+
+  button {
+    width: 5rem;
+    font-weight: bold;
+    padding: 0;
+    :hover {
+      background-color: ${props => props.theme.palette.neutral.card};
+    }
+  }
+
+  ${mobileV} {
+    width: 100%;
+    border-right: none;
+    padding: 0.5rem 0;
+    :nth-last-of-type(1) {
+      display: flex;
+      margin-top: 1rem;
+      justify-content: flex-end;
+    }
+  }
+`;
+
+const ChipStyle = styled.div<{ state: IssueType['status'] }>`
+  width: 4rem;
+  text-align: center;
+  border-radius: 10px;
+  color: ${props =>
     props.state === 'REJECTED'
       ? props.theme.palette.error.main
       : props.state === 'APPLIED'
       ? props.theme.palette.success.main
       : props.theme.palette.secondary.main};
-  color: ${props => props.theme.palette.primary.contrastText};
+  font-weight: bold;
+  font-size: 1.3rem;
+
+  ${mobileV} {
+    text-align: start;
+    margin-bottom: 0.3rem;
+  }
 `;
