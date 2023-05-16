@@ -1,6 +1,7 @@
 import os
 import cv2
-from datetime import datetime
+import requests
+import datetime
 from main.tools.cloud import cloud
 from main.tools.database import db
 from main.repository.repository import Report, ReportItem, Equipment
@@ -18,7 +19,7 @@ category = {
 human_cls = [1001,1002,1003]
 def save_non_wear(cctv_id,human_detect, yolo_image, real_image, face_model):
     equip = Equipment.query.all()
-    current_time = datetime.utcnow()
+    current_time = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
     for human in human_detect:
         x1, y1, x2, y2 = tuple(map(int, human_detect[human][0][1:5]))
         # print(human_detect[human])
@@ -36,6 +37,11 @@ def save_non_wear(cctv_id,human_detect, yolo_image, real_image, face_model):
             if len(results[0].boxes) > 0 :
                 cls = human_cls[int(results[0].boxes[0].cls.item())]
             
+            base_url = 'http://k8d201.p.ssafy.io:8000/api/fcm/send'
+            path = str(cls)
+
+            url = f'{base_url}/{path}'
+            response = requests.get(url)
 
             new_report = Report(cctv_area=int(cctv_id),user_id=cls, time=current_time,
                                 x=int(-10), y=int(-10), report_status='NOT_APPLIED')
@@ -49,6 +55,7 @@ def save_non_wear(cctv_id,human_detect, yolo_image, real_image, face_model):
             if cls == -1:
                 filename = f"rh{id}.jpg"
                 cv2.imwrite(filename, cropped_image)
+
             filename = f"{id}.jpg"
             cv2.imwrite(filename, yolo_image)
             local_file_path = os.path.abspath(filename)
@@ -56,6 +63,9 @@ def save_non_wear(cctv_id,human_detect, yolo_image, real_image, face_model):
             object_storage.upload_file(local_file_path, "detec", path, ExtraArgs={
                                         'ACL': 'public-read'})
             os.remove(local_file_path)
+            # filename = f"{id}.jpg"
+            cv2.imwrite(filename, real_image)
+
             # print(human_detect[human])
             filename = f"h{id}.jpg"
             
@@ -66,8 +76,6 @@ def save_non_wear(cctv_id,human_detect, yolo_image, real_image, face_model):
             object_storage.upload_file(local_file_path, "detec", path, ExtraArgs={
                                         'ACL': 'public-read'})
             os.remove(local_file_path)
-            
-            
             # os.remove(local_file_path)
             # 미착용 클래스 저장
             for i in range(len(non_wearing_class)):
