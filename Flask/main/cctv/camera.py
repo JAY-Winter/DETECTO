@@ -52,7 +52,7 @@ class Camera():
             current_time = time.perf_counter()
             if current_time >= next_capture_time:
                 self.capture(frame=frame)
-                next_capture_time = current_time + 1.0
+                next_capture_time = current_time + 2.0
             
             # with self.__signal.get_lock():  # Acquire the lock before accessing the value
             #     if self.__signal.value:
