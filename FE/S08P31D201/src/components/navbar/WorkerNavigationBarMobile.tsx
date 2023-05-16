@@ -54,6 +54,7 @@ function WorkerNavigationBarMobile() {
 }
 
 const MobileNav = styled.nav`
+  z-index: 999;
   display: none;
   position: fixed;
   bottom: 0;
