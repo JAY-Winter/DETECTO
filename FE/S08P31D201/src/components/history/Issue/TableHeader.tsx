@@ -11,10 +11,6 @@ import useHistorySort from '@/hooks/useHistorySort';
 function TableHeader() {
   const [sortField, order, changeSortHandler] = useHistorySort();
 
-  useEffect(() => {
-    changeSortHandler('Date');
-  }, []);
-
   return (
     <TableHead>
       <TableRow>

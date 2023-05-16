@@ -14,7 +14,7 @@ function FoulPage() {
         <HistoryDatePicker />
         <HistoryEquipmentFilter />
       </HistoryFilterWrapper>
-      <HistorySafetyIssue />
+      <HistorySafetyIssue pageElNum={5} tabState={0}/>
     </HistoryDiv>
   );
 }

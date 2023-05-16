@@ -223,7 +223,7 @@ const MonitorNav = styled.div<{ open: boolean }>`
   height: fit-content;
 
   background-color: ${props => props.theme.palette.neutral.cardHover};
-  border-radius: 2rem;
+  border-radius: 1rem;
   margin-right: 1rem;
   padding: 1rem;
 

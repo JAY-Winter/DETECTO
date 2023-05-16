@@ -119,6 +119,7 @@ const RouterContainerDiv = styled.div`
     margin-left: 70px;
   }
   ${mobileV} {
+    height: fit-content;
     margin-left: 0px;
     padding-bottom: 70px;
   }

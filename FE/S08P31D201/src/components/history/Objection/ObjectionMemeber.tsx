@@ -11,14 +11,14 @@ import { TeamType, ReportUserType } from 'ReportTypes';
 import axios from 'axios';
 import { mobileV } from '@/utils/Mixin';
 
-function MemberCard({
-  reportId,
+function ObjectMember({
   teamList,
   violate_member,
+  setUserId
 }: {
-  reportId: number;
   teamList: TeamType;
   violate_member: ReportUserType | undefined;
+  setUserId: (id: number) => void;
 }) {
   const [cardList, setCardList] = useState<ReportUserType[]>([
     ...teamList.users,
@@ -32,18 +32,8 @@ function MemberCard({
 
   const chooseMemberHandler = (idx: number) => {
     setMemberNum(idx);
+    setUserId(cardList[idx].id)
     setOpenArcodian(false);
-  };
-
-  const submitHandler = () => {
-    console.log(reportId);
-    axios({
-      method: 'put',
-      url: 'https://k8d201.p.ssafy.io/api/report',
-      data: { reportId: reportId, userId: cardList[memberNum].id },
-    })
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
   };
 
   return (
@@ -86,19 +76,11 @@ function MemberCard({
           })}
         </SelectWorker>
       </ProfileCard>
-
-      <Button
-        variant="contained"
-        sx={{ width: '100%', maxWidth: '350px' }}
-        onClick={submitHandler}
-      >
-        위반사원 수정
-      </Button>
     </MemberCardDiv>
   );
 }
 
-export default MemberCard;
+export default ObjectMember;
 
 const MemberCardDiv = styled.div`
   width: 100%;

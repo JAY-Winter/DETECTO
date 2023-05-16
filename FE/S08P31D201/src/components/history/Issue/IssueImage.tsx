@@ -14,7 +14,6 @@ function IssueImage({ reportid }: { reportid: string }) {
 
   const mouseMoveHandler = (event: React.MouseEvent<HTMLImageElement>) => {
     if (workerImage.current) {
-      console.log(workerImage.current.clientWidth)
       const { clientX, clientY } = event;
       const boundingRect = event.currentTarget.getBoundingClientRect();
       const offsetX = clientX - boundingRect.left + (workerImage.current.clientWidth / 4)

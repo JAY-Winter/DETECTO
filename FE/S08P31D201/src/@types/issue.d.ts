@@ -9,5 +9,12 @@ declare module 'IssueTypes' {
     status: 'REJECTED' | 'NOT_APPLIED' | 'PENDING' | 'APPLIED';
     adminComment?: string;
     comment: string;
+    team: TeamType;
+  };
+
+  type TeamType = {
+    id: number;
+    teamName: string;
+    users: ReportUserType[];
   };
 }
