@@ -1,29 +1,23 @@
-import { useEffect, useState } from 'react';
-import styled from '@emotion/styled';
-import { Button, Paper } from '@mui/material';
-import { RestartAlt } from '@mui/icons-material';
-import EquipmentChips from './Equipment/SafetyEquipmentChip';
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-
 import { mobileV } from '@/utils/Mixin';
+import styled from '@emotion/styled';
+import {
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  RestartAlt,
+} from '@mui/icons-material';
+import { Button, Chip, Paper } from '@mui/material';
+import React, { useState } from 'react';
 
-import { HistoryEqAtom } from '@/store/HistoryFilter';
-import { useSetRecoilState } from 'recoil';
-import useEquipments from '@/hooks/useEquipments';
-
-function HistoryEquipmentFilter() {
-  const [equipments, setEquipments, fetchEquipments] = useEquipments();
-  const setFilterEq = useSetRecoilState(HistoryEqAtom);
-
+function ObjectionFilter({obFilter, setFilterOb}: {obFilter: string[], setFilterOb: (obState: string[]) => void}) {
   // 모바일 드롭다운 State
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const resetFilterEq = () => {
-    setFilterEq([]);
+    setFilterOb(['REJECTED', 'PENDING', 'APPLIED'])
   };
 
   return (
-    <FilterPaper elevation={0}>
+    <ObjectionPaper>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
       <FilterHeaderDiv
         onClick={() => {
@@ -32,7 +26,7 @@ function HistoryEquipmentFilter() {
       >
         <div>
           {mobileOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
-          보호구 선택
+          이의 상태 선택
         </div>
         <Button
           onClick={e => {
@@ -47,27 +41,46 @@ function HistoryEquipmentFilter() {
       {/* mobileopen props를 통해 모바일에서 드롭다운 표시 */}
       {/* 모바일이 아닐 경우 항상 표시 됨 */}
       <FilterContentDiv mobileopen={mobileOpen}>
-        {<EquipmentChips equipments={equipments} />}
+        <ObjectionChip
+          label={"이의 거절"}
+          color="primary"
+          variant={obFilter.includes("REJECTED") ? 'filled' : 'outlined'}
+          onClick={() => {
+            setFilterOb(["REJECTED"])}}
+          clickable
+        />
+        <ObjectionChip
+          label={"이의 처리 중"}
+          color="primary"
+          variant={obFilter.includes("PENDING") ? 'filled' : 'outlined'}
+          onClick={() => {
+            setFilterOb(["PENDING"])}}
+          clickable
+        />
+        <ObjectionChip
+          label={"이의 승낙"}
+          color="primary"
+          variant={obFilter.includes("APPLIED") ? 'filled' : 'outlined'}
+          onClick={() => {
+            setFilterOb(["APPLIED"])}}
+          clickable
+        />
       </FilterContentDiv>
-    </FilterPaper>
+    </ObjectionPaper>
   );
 }
 
-export default HistoryEquipmentFilter;
+export default ObjectionFilter;
 
-const FilterPaper = styled(Paper)`
-  background-color: ${props => props.theme.palette.neutral.section};
-  border-radius: 10px;
+const ObjectionPaper = styled(Paper)`
   display: flex;
   flex-direction: column;
-  width: 40%;
+  width: 100%;
   padding: 1.3rem 1.5rem;
+  margin-right: 1rem;
+  transition: 0.2s all ease;
   background-color: ${props => props.theme.palette.neutral.section};
   border-radius: 10px;
-
-  ${mobileV} {
-    width: 100%;
-  }
 `;
 
 const FilterHeaderDiv = styled.div`
@@ -109,7 +122,6 @@ const FilterHeaderDiv = styled.div`
 const FilterContentDiv = styled.div<{ mobileopen: boolean }>`
   display: flex;
   width: 100%;
-  height: 4.5rem;
   flex-wrap: wrap;
   margin-top: 1rem;
   overflow: auto;
@@ -118,4 +130,9 @@ const FilterContentDiv = styled.div<{ mobileopen: boolean }>`
   ${mobileV} {
     display: ${props => (props.mobileopen ? 'block' : 'none')};
   }
+`;
+
+const ObjectionChip = styled(Chip)`
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0.5rem;
 `;

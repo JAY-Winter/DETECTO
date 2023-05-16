@@ -22,35 +22,57 @@ import TableHeader from './Issue/TableHeader';
 import { HistoryDayAtom, HistoryEqAtom } from '@/store/HistoryFilter';
 import useAxios from '@/hooks/useAxios';
 import axios, { AxiosResponse } from 'axios';
+import useHistorySort from '@/hooks/useHistorySort';
+import { ReportType } from 'ReportTypes';
 
-function HistorySafetyIssue() {
+function HistorySafetyIssue({
+  pageElNum,
+  tabState,
+}: {
+  pageElNum: number;
+  tabState: number;
+}) {
   const [reportData, setReportData] = useRecoilState(HistoryIssue);
   const historyDate = useRecoilValue(HistoryDayAtom);
   const historyEq = useRecoilValue(HistoryEqAtom);
 
   const historyTryhandler = (response: AxiosResponse) => {
-    setReportData(response.data.data);
+    const sortData = response.data.data.sort((a: ReportType, b: ReportType) => {
+      return new Date(b.time).getTime() - new Date(a.time).getTime();
+    });
+    setReportData(sortData);
   };
+
+  const [sortField, order, changeSortHandler] = useHistorySort();
 
   const [data, isLoading, setRequestObj] = useAxios({
     tryHandler: historyTryhandler,
     baseURL: 'https://k8d201.p.ssafy.io/api/',
   });
 
+
+
   useEffect(() => {
     const startDate = historyDate.startDay.toISOString().slice(0, 10);
     const endDate = historyDate.endDay.toISOString().slice(0, 10);
     const eq = historyEq.toString();
-    setRequestObj({
-      method: 'get',
-      url: `https://k8d201.p.ssafy.io/api/report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`,
-    });
+    if (tabState === 0) {
+      setRequestObj({
+        method: 'get',
+        url: `https://k8d201.p.ssafy.io/api/report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`,
+      });
+    } else if (tabState === 1) {
+      setRequestObj({
+        method: 'get',
+        url: `https://k8d201.p.ssafy.io/api/report?id=-1&equipments=`,
+      });
+    }
     // console.log(reportData);
   }, [historyDate, historyEq]);
 
   // 페이지네이션 state
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(pageElNum);
 
   // 모바일 페이지네이션 state
   const [mobilePage, setMobliePage] = useState(1);
@@ -103,7 +125,7 @@ function HistorySafetyIssue() {
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5]}
+                rowsPerPageOptions={[5, 10, 25]}
                 colSpan={4}
                 count={reportData.length}
                 rowsPerPage={rowsPerPage}

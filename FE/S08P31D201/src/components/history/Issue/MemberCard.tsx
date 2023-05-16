@@ -62,7 +62,7 @@ function MemberCard({
       >
         <img css={profileImageStyle} src={cardList[memberNum].image} alt="" />
         <div>
-          <p>{cardList[memberNum].name} Pro</p>
+          <p>{cardList[memberNum].name}</p>
           <p>{teamList.teamName}팀</p>
         </div>
         <span>
@@ -77,7 +77,7 @@ function MemberCard({
               <ProfileCard onClick={() => chooseMemberHandler(index)}>
                 <img css={profileImageStyle} src={member.image} alt="" />
                 <div>
-                  <p>{member.name} Pro</p>
+                  <p>{member.name}</p>
                   <p>{teamList.teamName}팀</p>
                 </div>
                 <span></span>

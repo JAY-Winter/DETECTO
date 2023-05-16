@@ -22,16 +22,6 @@ function useHistorySort(): [
   const [sortField, setSortField] = useRecoilState(HistorySortField);
   const [order, setOrder] = useRecoilState(HistorySortOrder);
 
-  useEffect(() => {
-    setData(prev => {
-      const clonedPrev = Array.from(prev);
-      clonedPrev.sort((a, b) => {
-        return new Date(b.time).getTime() - new Date(a.time).getTime();
-      });
-      return clonedPrev;
-    });
-  }, []);
-
   const changeSortHandler = (accessor: THistorySortField) => {
     const sortOrder =
       accessor === sortField && order === 'desc' ? 'asc' : 'desc';
