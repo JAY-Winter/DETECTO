@@ -8,7 +8,7 @@ import lombok.Data;
 public class AdminObjectionDto {
     @NotNull
     private int id;
-    @NotNull
+
     private String comment;
 
     private ObjectionStatus status;

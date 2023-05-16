@@ -19,7 +19,7 @@ function HistoryPage() {
 
   return (
     <HistoryDiv>
-      <HistoryTitle>히스토리</HistoryTitle>
+      <HistoryTitle>위반 목록</HistoryTitle>
       <HistoryTabDiv>
         <HistoryTabul>
           {tablist.map((tab, idx) => (

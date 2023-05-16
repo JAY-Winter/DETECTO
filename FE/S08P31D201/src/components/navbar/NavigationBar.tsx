@@ -84,10 +84,10 @@ function NavigationBar({setMode, isModal=false}: NavigationBarProps) {
         {/* 네비게이션 아이템들 */}
         <ul css={listContainer}>
           <StyledIndicatorDiv selectedItemOffsetTop={selectedItemOffsetTop}/>
-          <ListItem renderMode='desktop' icon={<SpaceDashboardOutlinedIcon/>} label={"히스토리"} pathName="/history" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
-          <ListItem renderMode='desktop' icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
+          <ListItem renderMode='desktop' icon={<SpaceDashboardOutlinedIcon/>} label={"위반 목록"} pathName="/history" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
+          <ListItem renderMode='desktop' icon={<VideocamOutlinedIcon/>} label={"CCTV"} pathName="/monitor" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
           <ListItem renderMode='desktop' icon={<ArticleOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
-          <ListItem renderMode='desktop' icon={<VideocamOutlinedIcon/>} label={"모니터링"} pathName="/monitor" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
+          <ListItem renderMode='desktop' icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
         </ul>
         
         <div css={footerContainer}>

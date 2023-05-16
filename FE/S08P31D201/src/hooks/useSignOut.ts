@@ -12,7 +12,7 @@ function useSignOut() {
     setIsAuthenticated(false);
     setIsFire(false);
   }
-  const [data, isLoading, setRequestObj] = useAxios({finallyHandler: finallyHandler, baseURL: "https://k8d201.p.ssafy.io/api/"});
+  const [data, isLoading, setRequestObj] = useAxios({finallyHandler: finallyHandler, baseURL: "https://detecto.kr/api/"});
   const [isFire, setIsFire] = useState(false);
 
   useEffect(() => {
