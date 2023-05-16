@@ -13,7 +13,7 @@ function ObjectionFilter({obFilter, setFilterOb}: {obFilter: string[], setFilter
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const resetFilterEq = () => {
-    setFilterOb(['REJECTED', 'PENDING', 'APPLIED'])
+    setFilterOb([])
   };
 
   return (

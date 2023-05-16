@@ -17,9 +17,6 @@ function HistoryPage() {
     setTabState(idx);
   };
 
-  
-
- 
   return (
     <HistoryDiv>
       <HistoryTitle>히스토리</HistoryTitle>

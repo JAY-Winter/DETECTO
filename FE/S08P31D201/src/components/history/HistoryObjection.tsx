@@ -6,7 +6,7 @@ import ObjectionCards from './Objection/ObjectionCards';
 import ObjectionFilter from './Objection/ObjectionFilter';
 
 function HistoryObjection() {
-  const [obFilter, setObFilter] = useState(['REJECTED', 'PENDING', 'APPLIED']);
+  const [obFilter, setObFilter] = useState(['PENDING']);
   const [objectionList, setObjectionList] = useState<IssueType[]>([])
 
   const obFiltering = (obState: string[]) => {
@@ -17,7 +17,7 @@ function HistoryObjection() {
         setObFilter(prev => [...prev, obState[0]])
       }
     } else {
-      setObFilter(obState)
+      setObFilter(['PENDING'])
     }
   };
 
@@ -30,7 +30,7 @@ function HistoryObjection() {
   return (
     <HistoryObjectionDiv>
       <ObjectionFilter obFilter={obFilter} setFilterOb={obFiltering} />
-      <ObjectionCards obList={objectionList}/>
+      <ObjectionCards obList={objectionList.filter(obj => obFilter.includes(obj.status))}/>
     </HistoryObjectionDiv>
   );
 }

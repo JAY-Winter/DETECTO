@@ -17,12 +17,9 @@ import React from 'react';
 import { TeamType } from 'ReportTypes';
 import IssueImage from '../Issue/IssueImage';
 import MemberCard from '../Issue/MemberCard';
+import CardCollapse from './CardCollapse';
 
 const ObjectionCard = ({ objectionIssue }: { objectionIssue: IssueType }) => {
-  const violateUser = objectionIssue.team.users.filter(
-    user => user.name === objectionIssue.name
-  );
-
   return (
     <IssueWrapper>
       <PaperStyle state={objectionIssue.status} elevation={3}>
@@ -35,28 +32,7 @@ const ObjectionCard = ({ objectionIssue }: { objectionIssue: IssueType }) => {
             <IssueItemTop issue={objectionIssue} />
           </AccordionSummaryStyle>
           <AccordionDetails>
-            <IssueImage reportid={objectionIssue.reportId.toString()} />
-            <MemberCard
-              reportId={objectionIssue.reportId}
-              teamList={objectionIssue.team}
-              violate_member={violateUser[0]}
-            />
-            <TextFieldStyle
-              label="이의 제기 메시지"
-              placeholder="근로자에게 전송할 메시지를 입력해주세요."
-              variant="filled"
-              // onChange={inputHandler}
-              // onKeyDown={keyDownHandler}
-            />
-            <Button color="error" variant="contained">
-              이의 거절
-            </Button>
-            <Button color="secondary" variant="contained">
-              리포트 삭제
-            </Button>
-            <Button color="success" variant="contained" disabled>
-              이의 승낙 및 근로자 재할당
-            </Button>
+            <CardCollapse objectionIssue={objectionIssue} />
           </AccordionDetails>
         </AccordionStyle>
       </PaperStyle>
@@ -81,6 +57,7 @@ export default ObjectionCards;
 
 const IssueWrapper = styled.div`
   margin-bottom: 1rem;
+  margin-top: 1rem;
   width: 100%;
 `;
 
