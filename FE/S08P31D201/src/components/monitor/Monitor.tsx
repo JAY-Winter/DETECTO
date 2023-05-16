@@ -107,7 +107,7 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
       ws.current.send(JSON.stringify({ offset: 2 + movingOffset, type: 3 }));
       setTimeout(() => {
         setMovingOffset(null);
-      }, 1000);
+      }, 1200);
     } else {
       console.error('웹소켓이 열려있지 않습니다.');
     }
