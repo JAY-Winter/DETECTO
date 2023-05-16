@@ -18,7 +18,7 @@ const pushHandler = (event) => {
       },
     ],
   };
-  event.watiUntil(self.registration.showNotification(title, options));
+  event.waitUntil(self.registration.showNotification(title, options));
 };
 
 self.addEventListener('push', pushHandler);

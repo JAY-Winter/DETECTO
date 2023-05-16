@@ -2,11 +2,13 @@ import SignIn from '@/pages/SignIn';
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import authState from '@/store/authState';
 import useAxios from '@/hooks/useAxios';
 import { UserInfo } from '@/store/userInfoStroe';
 import { UserType } from 'UserTypes';
+import usePush from '@/hooks/usePush';
+import LoadingWithLogo from '@/components/common/LoadingWithLogo';
 
 type AuthProviderProps = {
   children: React.ReactNode;
@@ -16,7 +18,8 @@ function AuthProvider({ children }: AuthProviderProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useRecoilState(authState);
-  const setUserInfo = useSetRecoilState(UserInfo);
+  const [userInfo, setUserInfo] = useRecoilState(UserInfo);
+  const getSubscription = usePush();
 
   // 쿠키값 유효할 경우 핸들러
   const tryHandler = (response: AxiosResponse) => {
@@ -45,23 +48,42 @@ function AuthProvider({ children }: AuthProviderProps) {
     setIsAuthenticated(false);
   };
 
-  const [data, isLoading, setRequestObj] = useAxios({
+  const [authData, isAuthLoading, setAuthRequestObj] = useAxios({
     tryHandler: tryHandler,
     catchHandler: catchHandler,
     baseURL: 'https://k8d201.p.ssafy.io/api/',
   });
 
+  const sendSubscription = async () => {
+    try {
+      const [endpoint, p256dh, auth] = await getSubscription();
+      if (endpoint && p256dh && auth) {
+        // 서버에게 구독 객체 전송
+        console.log("------------전송할 구독 객체 정보------------");
+        console.log("id:", userInfo.id);
+        console.log("endpoint:", endpoint);
+        console.log("p256dh:", p256dh);
+        console.log("auth:", auth);
+        console.log("----------------------------------------");
+      }
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
   // 로그인 상태가 변경되면 액션을 달리 취함
   useEffect(() => {
     if (isAuthenticated === undefined) {
       // useAxios Hook의 요청객체 세팅 --> useAxios Hook은 곧바로 요청 시작함
-      setRequestObj({
+      setAuthRequestObj({
         url: 'user/auth',
         method: 'post',
       });
     } else if (isAuthenticated === true) {
+      sendSubscription();
       navigate(location.pathname);
     } else {
+      sendSubscription();
       navigate('/', { replace: true });
     }
   }, [isAuthenticated]);
@@ -71,7 +93,9 @@ function AuthProvider({ children }: AuthProviderProps) {
   } else if (isAuthenticated === false) {
     return <SignIn />;
   } else {
-    return <div>로딩중...</div>;
+    return (
+      <LoadingWithLogo />
+    );
   }
 }
 

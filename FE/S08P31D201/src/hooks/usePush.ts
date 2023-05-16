@@ -9,11 +9,11 @@ function usePush() {
       if (subscription) {
         const keys = subscription.toJSON().keys;
         if (keys && 'p256dh' in keys && 'auth' in keys) {
-          console.log("endpoint:", subscription.endpoint);
-          console.log("p256dh:", keys.p256dh);
-          console.log("auth:", keys.auth);
+          const endpoint = subscription.endpoint;
+          const p256dh = keys.p256dh;
+          const auth = keys.auth;
+          return [endpoint, p256dh, auth];
         }
-        // 기존 subscription 객체 반환
       } else {
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,  // 이거 뭐지??
@@ -21,12 +21,14 @@ function usePush() {
         })
         const keys = subscription.toJSON().keys;
         if (keys && 'p256dh' in keys && 'auth' in keys) {
-          console.log("endpoint:", subscription.endpoint);
-          console.log("p256dh:", keys.p256dh);
-          console.log("auth:", keys.auth);
+          const endpoint = subscription.endpoint;
+          const p256dh = keys.p256dh;
+          const auth = keys.auth;
+          return [endpoint, p256dh, auth];
         }
       }
     }
+    return [undefined, undefined, undefined];
   }
 
   return getSubscription;
