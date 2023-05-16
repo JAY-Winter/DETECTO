@@ -19,7 +19,9 @@ public class ObjectionResponseDto {
 
     private String name;
 
-    private String img;
+    private int reportId;
+
+    private ReportSearchResponseTeamDto team;
 
     private LocalDateTime createdAt;
 
@@ -30,7 +32,8 @@ public class ObjectionResponseDto {
         this.adminComment = objection.getAdminComment();
         this.status = objection.getStatus();
         this.name = objection.getUser().getName();
-        this.img = objection.getUser().getImage();
+        this.reportId = objection.getReport().getId();
+        this.team = new ReportSearchResponseTeamDto(objection.getUser().getTeam());
         this.createdAt = objection.getCreatedAt();
     }
 }
