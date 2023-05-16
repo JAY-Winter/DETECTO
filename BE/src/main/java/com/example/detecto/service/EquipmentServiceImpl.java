@@ -82,9 +82,7 @@ public class EquipmentServiceImpl implements EquipmentService{
         if(equipmentEditDto.getAble() > 1 || equipmentEditDto.getAble() < 0) {
             throw new InvalidData("able 값으로 0 또는 1 값을 넣어주세요");
         }
-//        if(equipmentRepository.findByTypeCount(equipmentEditDto.getType()) > 0 && equipmentEditDto.getAble() == 1){
-//            throw new AlreadyExistData("같은 type의 equipment가 이미 able상태입니다.");
-//        }
+
         Equipment equipment = equipmentRepository.findById(equipmentEditDto.getName()).get();
         String url = equipment.getUrl();
         if(file != null) {
