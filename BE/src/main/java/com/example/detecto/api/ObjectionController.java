@@ -58,4 +58,13 @@ public class ObjectionController {
 
         return response.builder();
     }
+
+    @DeleteMapping("/{id}")
+    private ResponseEntity<?> deleteObjection(@PathVariable int id){
+        RespData<Void> response = new RespData<>();
+
+        objectionService.deleteObjection(id);
+
+        return response.builder();
+    }
 }

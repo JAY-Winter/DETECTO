@@ -11,4 +11,5 @@ public interface ObjectionService {
     List<Objection> getObjectionList(int id);
     void postObjection(ObjectionDto objectionDto);
     void postAdminComment(ObjectionAdminCommentDto objectionAdminCommentDto);
+    void deleteObjection(int id);
 }

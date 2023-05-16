@@ -86,5 +86,14 @@ public class ObjectionServiceImpl implements ObjectionService{
 
         obj.setAdminComment(objectionAdminCommentDto.getComment());
         obj.setType(objectionAdminCommentDto.getStatus());
+
+        objectionRepository.save(obj);
+    }
+
+    @Override
+    public void deleteObjection(int id) {
+        Objection obj = objectionRepository.findById(id).orElseThrow(() -> new DoesNotExistData("Report : 아이디가 존재하지 않습니다."));
+
+        objectionRepository.delete(obj);
     }
 }
