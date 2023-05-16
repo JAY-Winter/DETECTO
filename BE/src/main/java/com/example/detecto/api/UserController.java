@@ -1,7 +1,7 @@
 package com.example.detecto.api;
 
 import com.example.detecto.data.RespData;
-import com.example.detecto.dto.EquipmentEditDto;
+import com.example.detecto.dto.UserTokenDto;
 import com.example.detecto.dto.UserDto;
 import com.example.detecto.dto.UserResponseDto;
 import com.example.detecto.entity.User;
@@ -11,14 +11,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,13 +49,21 @@ public class UserController {
         res.addHeader("Set-Cookie", sessionCookie.toString() + "; SameSite=Strict");
         res.addCookie(sessionCookie);
 
-        user.setFcmToken(userDto.getFcmToken());
         user.setSessionId(session.getId());
 
         // User 객체를 데이터베이스에 저장
         userService.save(user);
 
         response.setData(new UserResponseDto(user));
+
+        return response.builder();
+    }
+
+    @PostMapping("/token")
+    private ResponseEntity<?> postToken(@RequestBody @Valid UserTokenDto userTokenDto){
+        RespData<Void> response = new RespData<>();
+
+        userService.token(userTokenDto);
 
         return response.builder();
     }

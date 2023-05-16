@@ -1,8 +1,7 @@
 package com.example.detecto.api;
 
 import com.example.detecto.data.RespData;
-import com.example.detecto.dto.MessageResponseDto;
-import com.example.detecto.dto.ObjectionAdminCommentDto;
+import com.example.detecto.dto.AdminObjectionDto;
 import com.example.detecto.dto.ObjectionDto;
 import com.example.detecto.dto.ObjectionResponseDto;
 import com.example.detecto.service.ObjectionService;
@@ -51,10 +50,19 @@ public class ObjectionController {
     }
 
     @PostMapping("/admin")
-    private ResponseEntity<?> postAdminComment(@RequestBody @Valid ObjectionAdminCommentDto objectionAdminCommentDto){
+    private ResponseEntity<?> postAdminComment(@RequestBody @Valid AdminObjectionDto adminObjectionDto){
         RespData<Void> response = new RespData<>();
 
-        objectionService.postAdminComment(objectionAdminCommentDto);
+        objectionService.postAdminObjection(adminObjectionDto);
+
+        return response.builder();
+    }
+
+    @DeleteMapping("/{id}")
+    private ResponseEntity<?> deleteObjection(@PathVariable int id){
+        RespData<Void> response = new RespData<>();
+
+        objectionService.deleteObjection(id);
 
         return response.builder();
     }
