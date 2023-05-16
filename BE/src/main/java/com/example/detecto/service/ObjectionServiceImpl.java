@@ -23,6 +23,7 @@ import java.util.List;
 
 import static com.example.detecto.entity.QObjection.objection;
 import static com.example.detecto.entity.QReport.report;
+import static com.example.detecto.entity.QTeam.team;
 import static com.example.detecto.entity.QUser.user;
 
 @Slf4j
@@ -48,6 +49,7 @@ public class ObjectionServiceImpl implements ObjectionService{
             objections = queryFactory
                     .selectFrom(objection)
                     .leftJoin(objection.user, user).fetchJoin()
+                    .leftJoin(user.team, team).fetchJoin()
                     .leftJoin(objection.report, report).fetchJoin()
                     .where(user.id.eq(id))
                     .distinct()
