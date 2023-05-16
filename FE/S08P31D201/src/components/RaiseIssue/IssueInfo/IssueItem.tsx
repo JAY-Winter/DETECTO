@@ -1,51 +1,40 @@
 import React from 'react';
-import useAxios from '@/hooks/useAxios';
+
 import { IssueType } from 'IssueTypes';
 import styled from '@emotion/styled';
-import { Button, Chip, Paper } from '@mui/material';
-import IssueInfo from './IssueInfo';
-import WorkerTableCollapseCard from '@components/foul/WorkerTableCollapseCard';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Paper,
+} from '@mui/material';
+import { mobileV } from '@/utils/Mixin';
+import { KeyboardArrowDown } from '@mui/icons-material';
+import IssueItemTop from './IssueItemTop';
+import IssueItemBottom from './IssueItemBottom';
 
-function IssueItem({ issue }: { issue: IssueType }) {
-  const [data, isLoading, setRequestObj] = useAxios({
-    baseURL: 'https://k8d201.p.ssafy.io/api/',
-  });
-
-  // TODO: delete API
-  const cancelHandler = () => {
-    setRequestObj({
-      method: 'delete',
-      url: `??`,
-    });
-    console.log(`[DEBUG] IssueItem - 이의제기 취소 ${issue.id}`);
-    alert('취소되었습니다.');
-  };
-
-  const statusFormatter = (status: IssueType['status']) => {
-    if (status === 'APPLIED') return '처리 완료';
-    if (status === 'PENDING') return '처리 중';
-    if (status === 'REJECTED') return '거절됨';
-  };
-
+function IssueItem({
+  issue,
+  removeItem,
+}: {
+  issue: IssueType;
+  removeItem: (id: number) => void;
+}) {
   return (
     <IssueWrapper>
-      <PaperStyle state={issue.status}>
-        <TopRow>
-          <ChipStyle
-            label={statusFormatter(issue.status)}
-            state={issue.status}
-          />
-          <Button
-            onClick={cancelHandler}
-            disabled={
-              (issue.status === 'REJECTED' || issue.status === 'APPLIED') &&
-              true
-            }
+      <PaperStyle state={issue.status} elevation={3}>
+        <AccordionStyle>
+          <AccordionSummaryStyle
+            expandIcon={<KeyboardArrowDown />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
           >
-            취소하기
-          </Button>
-        </TopRow>
-        <IssueInfo issue={issue} />
+            <IssueItemTop issue={issue} />
+          </AccordionSummaryStyle>
+          <AccordionDetails>
+            <IssueItemBottom issue={issue} removeItem={removeItem} />
+          </AccordionDetails>
+        </AccordionStyle>
       </PaperStyle>
     </IssueWrapper>
   );
@@ -59,32 +48,47 @@ const IssueWrapper = styled.div`
 `;
 
 const PaperStyle = styled(Paper)<{ state: IssueType['status'] }>`
-  padding: 1.3rem;
-  border: 3px solid
-    ${props =>
-      props.state === 'REJECTED'
-        ? props.theme.palette.error.main
-        : props.state === 'APPLIED'
-        ? props.theme.palette.success.main
-        : props.theme.palette.secondary.main};
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
 `;
 
-const TopRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+const AccordionStyle = styled(Accordion)`
+  width: 100%;
+  box-shadow: none;
+  border-radius: 10px;
 
-  button {
-    font-weight: bold;
+  :hover {
+    background-color: ${props => props.theme.palette.neutral.section};
+    div div {
+      border-color: ${props => props.theme.palette.neutral.cardHover};
+    }
+  }
+
+  ${mobileV} {
+    :hover {
+      background-color: transparent;
+    }
   }
 `;
 
-const ChipStyle = styled(Chip)<{ state: IssueType['status'] }>`
-  background-color: ${props =>
-    props.state === 'REJECTED'
-      ? props.theme.palette.error.main
-      : props.state === 'APPLIED'
-      ? props.theme.palette.success.main
-      : props.theme.palette.secondary.main};
-  color: ${props => props.theme.palette.primary.contrastText};
+const AccordionSummaryStyle = styled(AccordionSummary)`
+  height: 100%;
+  margin: 0;
+  padding: 1rem 0.8rem;
+
+  .Mui-expanded {
+    margin: 0;
+  }
+
+  > div {
+    margin: 0;
+
+    ${mobileV} {
+      display: flex;
+      flex-direction: column;
+    }
+  }
 `;
