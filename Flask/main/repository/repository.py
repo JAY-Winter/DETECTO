@@ -7,7 +7,6 @@ class Report(db.Model):
     cctv_area = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     time = db.Column(db.TIMESTAMP(6))
-    report_status = db.Column(db.String(255), nullable=True)
     x = db.Column(db.Integer, nullable=False)
     y = db.Column(db.Integer, nullable=False)
 
