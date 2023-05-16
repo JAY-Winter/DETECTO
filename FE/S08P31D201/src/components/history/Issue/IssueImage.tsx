@@ -13,10 +13,10 @@ function IssueImage({ reportid }: { reportid: string }) {
 
   const mouseMoveHandler = (event: React.MouseEvent<HTMLImageElement>) => {
     if (workerImage.current) {
-      
+      console.log(workerImage.current.clientWidth)
       const { clientX, clientY } = event;
       const boundingRect = event.currentTarget.getBoundingClientRect();
-      const offsetX = clientX - boundingRect.left
+      const offsetX = clientX - boundingRect.left + (workerImage.current.clientWidth / 4)
       const offsetY = clientY - boundingRect.top - (workerImage.current.clientHeight / 3);
       setIoffset({ x: offsetX, y: offsetY });
     }
@@ -70,7 +70,7 @@ const IssueImageStyle = css`
 
 const IssueWorkerImageDiv = styled.div<{ open: boolean }>`
   position: absolute;
-  display: ${props => (props.open ? 'block' : 'none')};
+  visibility: ${props => (props.open ? 'visible' : 'hidden')};
 
   z-index: 1000;
 `;
