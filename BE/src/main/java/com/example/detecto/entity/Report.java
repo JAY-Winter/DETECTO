@@ -1,7 +1,6 @@
 package com.example.detecto.entity;
 
 import com.example.detecto.dto.ReportCoordDto;
-import com.example.detecto.entity.enums.ReportStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,9 +33,9 @@ public class Report {
     @Column(name = "cctv_area")
     private int cctvArea;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="report_status")
-    private ReportStatus reportStatus;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name="report_status")
+//    private ReportStatus reportStatus;
 
     private LocalDateTime time;
 
@@ -54,7 +53,6 @@ public class Report {
         this.x = x;
         this.y = y;
         this.time = LocalDateTime.now();
-        this.reportStatus = ReportStatus.NOT_APPLIED;
         this.cctvArea = cctvArea;
     }
 
@@ -71,11 +69,6 @@ public class Report {
         this.x = reportCoordDto.getX();
         this.y = reportCoordDto.getY();
     }
-
-    public void setReportStatus(ReportStatus reportStatus){
-        this.reportStatus = reportStatus;
-    }
-
 }
 
 
