@@ -7,7 +7,7 @@ import { RequestObj } from 'AxiosRequest';
 
 function useEquipments() {
   const [equipments, setEquipments] = useRecoilState(EquipmentsAtom);
-  const [fetchedData, isLoading, setRequestObj] = useAxios({baseURL: 'https://k8d201.p.ssafy.io/api/'});
+  const [fetchedData, isLoading, setRequestObj] = useAxios({baseURL: 'https://detecto.kr/api/'});
 
   // 비동기 요청 함수
   const fetchEquipments = () => {
