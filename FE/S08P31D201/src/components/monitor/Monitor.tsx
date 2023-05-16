@@ -31,7 +31,7 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
 
   async function connectWebSocket(date: number) {
     const websocket = new WebSocket(
-      `wss://k8d201.p.ssafy.io/fast?cctvnumber=${monitorId}&partition=${date}`
+      `wss://detecto.kr/fast?cctvnumber=${monitorId}&partition=${date}`
     );
 
     // const websocket = new WebSocket(
@@ -74,7 +74,7 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
     if (ws.current) ws.current.close();
     axios({
       method: 'get',
-      url: `https://k8d201.p.ssafy.io/fast/max_offset?cctvnumber=${monitorId}&partition=${date.diff(
+      url: `https://detecto.kr/fast/max_offset?cctvnumber=${monitorId}&partition=${date.diff(
         dayjs(date).startOf('year'),
         'day'
       )}`,

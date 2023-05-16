@@ -4,33 +4,42 @@ import { IssueType } from 'IssueTypes';
 import React, { useEffect, useState } from 'react';
 import ObjectionCards from './Objection/ObjectionCards';
 import ObjectionFilter from './Objection/ObjectionFilter';
+import { useRecoilState } from 'recoil';
+import { ObjectionQuery } from '@/store/ObjectionQuery';
 
 function HistoryObjection() {
   const [obFilter, setObFilter] = useState(['PENDING']);
-  const [objectionList, setObjectionList] = useState<IssueType[]>([])
+  const [objectionList, setObjectionList] = useState<IssueType[]>([]);
+  const [ObjectionQ, setObjectionQ] = useRecoilState(ObjectionQuery);
 
   const obFiltering = (obState: string[]) => {
     if (obState.length === 1) {
       if (obFilter.includes(obState[0])) {
-        setObFilter(prev => prev.filter(x => x !== obState[0]))
+        setObFilter(prev => prev.filter(x => x !== obState[0]));
       } else {
-        setObFilter(prev => [...prev, obState[0]])
+        setObFilter(prev => [...prev, obState[0]]);
       }
     } else {
-      setObFilter(['PENDING'])
+      setObFilter(['PENDING']);
     }
   };
 
-  useEffect(() => { axios({ method: 'get', url: `https://k8d201.p.ssafy.io/api/objection` }).then(
-    res => setObjectionList(res.data.data)
-  );}, [])
-
-  console.log(objectionList)
+  useEffect(() => {
+    if (!ObjectionQ.valid) return;
+    axios({ method: 'get', url: `https://detecto.kr/api/objection` }).then(
+      res =>
+        setObjectionQ(prev => {
+          return { valid: false, data: res.data.data };
+        })
+    );
+  }, [ObjectionQ.valid]);
 
   return (
     <HistoryObjectionDiv>
       <ObjectionFilter obFilter={obFilter} setFilterOb={obFiltering} />
-      <ObjectionCards obList={objectionList.filter(obj => obFilter.includes(obj.status))}/>
+      <ObjectionCards
+        obList={ObjectionQ.data.filter(obj => obFilter.includes(obj.status))}
+      />
     </HistoryObjectionDiv>
   );
 }

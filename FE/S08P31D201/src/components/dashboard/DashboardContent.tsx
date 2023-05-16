@@ -202,7 +202,7 @@ function DashboardContent() {
   const [data, isLoading, setRequestObj] = useAxios({
     tryHandler: tryHandler,
     catchHandler: catchHandler,
-    baseURL: 'https://k8d201.p.ssafy.io/api/',
+    baseURL: 'https://detecto.kr/api/',
   });
 
   useEffect(() => {
