@@ -16,6 +16,7 @@ export default RowText;
 const RowDiv = styled.div`
   margin: 0 0.2rem 1rem 0;
   padding: 0 1rem;
+  height: 100%;
 
   p.title {
     font-weight: 700;
