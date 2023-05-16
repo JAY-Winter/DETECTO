@@ -1,7 +1,7 @@
+import React from 'react'
 import NavigationBar from '@components/navbar/NavigationBar';
 import NavigationBarMobile from '@components/navbar/NavigationBarMobile';
 import NavigationBarTablet from '@components/navbar/NavigationBarTablet';
-import React from 'react'
 
 type NavProviderProps = {
   children: React.ReactNode,
