@@ -1,6 +1,7 @@
 package com.example.detecto.service;
 
 import com.example.detecto.dto.UserDto;
+import com.example.detecto.dto.UserTokenDto;
 import com.example.detecto.entity.enums.ThemeType;
 import com.example.detecto.entity.User;
 import com.example.detecto.exception.DoesNotExistData;
@@ -32,7 +33,6 @@ public class UserServiceImpl implements UserService{
     public void delete(UserDto userDto) {
         User user = userRepository.findById(userDto.getId()).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
 
-        user.setFcmToken(null);
         user.setSessionId(null);
         userRepository.save(user);
     }
@@ -47,6 +47,16 @@ public class UserServiceImpl implements UserService{
             user.setThemeType(ThemeType.DARK);
         }
 
+        userRepository.save(user);
+    }
+
+    @Override
+    public void token(UserTokenDto userTokenDto) {
+        User user = userRepository.findById(userTokenDto.getId()).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+
+        String token = userTokenDto.getEndpoint() + ' ' + userTokenDto.getP256dh() + ' ' + userTokenDto.getAuth();
+
+        user.setToken(token);
         userRepository.save(user);
     }
 
