@@ -23,7 +23,7 @@ function Summary() {
 
   const [data, isLoading, setRequestObj] = useAxios({
     tryHandler: summaryTryHandler,
-    baseURL: 'https://k8d201.p.ssafy.io/api/',
+    baseURL: 'https://detecto.kr/api/',
   });
 
   useEffect(() => {
