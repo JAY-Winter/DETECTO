@@ -26,10 +26,10 @@ function DashboardDatePicker() {
   const tabChange = (event: React.SyntheticEvent, newValue: number) => {
     switch(newValue) {
       case 1:
-        setDate({startDay: dayjs().startOf('month'), endDay: dayjs().endOf('month')})
+        setDate({startDay: dayjs().startOf('month').add(1, 'day'), endDay: dayjs().endOf('month')})
         break
       case 0:
-        setDate({startDay: dayjs().startOf('year'), endDay: dayjs().endOf('year')})
+        setDate({startDay: dayjs().startOf('year').add(1, 'day'), endDay: dayjs().endOf('year')})
         break
     }
     setTabValue(newValue);
@@ -39,10 +39,10 @@ function DashboardDatePicker() {
     if (newValue)
     switch(type) {
       case 'month':
-        setDate({startDay: newValue?.startOf('month'), endDay: newValue?.endOf('month')})
+        setDate({startDay: newValue?.startOf('month').add(1, 'day'), endDay: newValue?.endOf('month')})
         break
       case 'year':
-        setDate({startDay: newValue?.startOf('year'), endDay: newValue?.endOf('year')})
+        setDate({startDay: newValue?.startOf('year').add(1, 'day'), endDay: newValue?.endOf('year')})
         break
     }
   }

@@ -33,7 +33,7 @@ function TableCollapseCard({
         <IssueImage reportid={reportid.toString()} />
       </CollapseCardDiv>
       <CollapseCardDiv>
-        <MemberCard teamList={teamList} violate_member={violate_member} />
+        <MemberCard teamList={teamList} violate_member={violate_member} reportId={reportid} />
       </CollapseCardDiv>
       {/* <div
         style={{

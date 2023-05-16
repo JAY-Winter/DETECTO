@@ -1,9 +1,34 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+import IssueWorkerImage from './IssueWorkerImage';
 import { mobileV } from '@/utils/Mixin';
-import { styled } from '@mui/material';
 
 function IssueImage({ reportid }: { reportid: string }) {
+  const [wi, setWi] = useState<boolean>(false);
+  const [iOffset, setIoffset] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
+  const workerImage = useRef<HTMLDivElement>(null);
+
+  const mouseMoveHandler = (event: React.MouseEvent<HTMLImageElement>) => {
+    if (workerImage.current) {
+      console.log(workerImage.current.clientWidth)
+      const { clientX, clientY } = event;
+      const boundingRect = event.currentTarget.getBoundingClientRect();
+      const offsetX = clientX - boundingRect.left + (workerImage.current.clientWidth / 4)
+      const offsetY = clientY - boundingRect.top - (workerImage.current.clientHeight / 3);
+      setIoffset({ x: offsetX, y: offsetY });
+    }
+  };
+
+  useEffect(() => {
+    if (workerImage.current) {
+      workerImage.current.style.transform = `translate(${iOffset.x}px, ${iOffset.y}px)`;
+    }
+  }, [iOffset]);
+
   return (
     <div
       style={{
@@ -19,7 +44,17 @@ function IssueImage({ reportid }: { reportid: string }) {
         css={IssueImageStyle}
         src={`https://kr.object.ncloudstorage.com/detec/report/${reportid}.jpg`}
         alt=""
+        onMouseEnter={() => {
+          setWi(true);
+        }}
+        onMouseMove={mouseMoveHandler}
+        onMouseLeave={() => {
+          setWi(false);
+        }}
       />
+      <IssueWorkerImageDiv open={wi} ref={workerImage}>
+        <IssueWorkerImage reportid={reportid} />
+      </IssueWorkerImageDiv>
     </div>
   );
 }
@@ -34,6 +69,12 @@ const IssueImageStyle = css`
   border-radius: 10px;
 `;
 
+const IssueWorkerImageDiv = styled.div<{ open: boolean }>`
+  position: absolute;
+  visibility: ${props => (props.open ? 'visible' : 'hidden')};
+
+  z-index: 1000;
+  `
 const IssueImageTitle = styled('h2')`
   margin: 0.5rem 0 1rem 0;
 

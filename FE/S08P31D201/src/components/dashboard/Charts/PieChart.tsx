@@ -16,14 +16,16 @@ function PieChart({ data }: { data: CountItemData[] | undefined }) {
     if (Array.isArray(data) && data.length > 0) {
       d3.select(svgRef.current).selectAll('tspan').remove();
 
-      const { width, height } = size;
+      const { width } = size;
+      const height = Math.max(width * 0.5, 300);
+      console.log(Math.max(width * 0.5, 300))
       // const height = width * 0.75;
       const radius = Math.min(height, width) / 2 - 60;
 
       const svg = d3
         .select(svgRef.current)
         .attr('width', width)
-        .attr('height', height - 10);
+        .attr('height', height);
 
       const pie = d3
         .pie<{ reportItem: string; count: number }>()
