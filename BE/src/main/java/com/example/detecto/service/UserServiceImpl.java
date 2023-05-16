@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findById(userDto.getId()).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
 
         user.setSessionId(null);
+        user.setToken(null);
         userRepository.save(user);
     }
 
