@@ -55,7 +55,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     baseURL: 'https://detecto.kr/api/',
   });
   const [pushData, isPushLoading, setPushRequestObj] = useAxios({
-    baseURL: 'basebase',
+    baseURL: '',
   });
 
   const sendSubscription = async () => {
