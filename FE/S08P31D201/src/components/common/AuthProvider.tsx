@@ -52,10 +52,10 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [authData, isAuthLoading, setAuthRequestObj] = useAxios({
     tryHandler: tryHandler,
     catchHandler: catchHandler,
-    baseURL: 'https://k8d201.p.ssafy.io/api/',
+    baseURL: 'https://detecto.kr/api/',
   });
   const [pushData, isPushLoading, setPushRequestObj] = useAxios({
-    baseURL: 'https://k8d201.p.ssafy.io/api/',
+    baseURL: 'https:/detecto.kr/api/',
   });
 
   const sendSubscription = async () => {

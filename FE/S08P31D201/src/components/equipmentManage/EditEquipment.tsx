@@ -24,7 +24,7 @@ function EditEquipment({ equipment, fetchEquipments, onClose, setWillEditEquipme
   const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [data, isLoading, setRequestObj] = useAxios({baseURL: "https://detec.store:5000/"});
-  const [duplicatedData, isDuplicatedLoading, setDuplicatedObj] = useAxios({baseURL: "https://k8d201.p.ssafy.io/api/"})
+  const [duplicatedData, isDuplicatedLoading, setDuplicatedObj] = useAxios({baseURL: "https://detecto.kr/api/"})
 
   const submit = () => {
     if (selectedZip === null) {

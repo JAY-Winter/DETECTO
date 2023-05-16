@@ -68,7 +68,7 @@ function SignIn() {
   const [data, isLoading, setRequestObj] = useAxios({
     tryHandler: tryHandler,
     catchHandler: catchHandler,
-    baseURL: 'https://k8d201.p.ssafy.io/api/',
+    baseURL: 'https://detecto.kr/api/',
   });
 
   // 아이디 입력 핸들러
