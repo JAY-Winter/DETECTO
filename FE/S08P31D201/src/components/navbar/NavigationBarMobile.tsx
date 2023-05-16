@@ -31,9 +31,9 @@ function NavigationBarMobile() {
       {/* 네비게이션 아이템들 */}
       <ul css={listContainer}>
         <ListItem renderMode='mobile' icon={<HomeOutlinedIcon fontSize='medium'/>} pathName="/history" currentPathName={currentPathName} />
-        <ListItem renderMode='mobile' icon={<EngineeringOutlinedIcon  fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
-        <ListItem renderMode='mobile' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
-        <ListItem renderMode='mobile' icon={<VideocamOutlinedIcon/>} label={"모니터링"} pathName="/monitor" currentPathName={currentPathName} />
+        <ListItem renderMode='mobile' icon={<VideocamOutlinedIcon fontSize='medium'/>} pathName="/monitor" currentPathName={currentPathName} />
+        <ListItem renderMode='mobile' icon={<ArticleOutlinedIcon fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
+        <ListItem renderMode='mobile' icon={<EngineeringOutlinedIcon fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
         <ListItem renderMode='mobile' icon={<MenuIcon  fontSize='medium'/>} pathName="/more" currentPathName={currentPathName} />
       </ul>
     </MobileNav>
