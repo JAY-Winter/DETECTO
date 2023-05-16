@@ -10,18 +10,19 @@ import com.example.detecto.repository.UserRepository;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nl.martijndwars.webpush.Notification;
+import nl.martijndwars.webpush.PushService;
+import nl.martijndwars.webpush.Subscription;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.StringTokenizer;
 
 @Slf4j
 @Service
@@ -65,34 +66,58 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendMessage(int id) {
+    public void sendMessage(int id){
         // id를 통해서 fcmToken 가져오기
         User user = userRepository.findById(id).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
-        log.info("Sent message: " + user);
-        // fcmToken이 있다면 알림 보내기
-        if(user.getToken() != null){
-            Notification notification = new Notification("위반사항 안내", user.getName()+"님께서는 보호구 착용을 위반하였습니다. \n 이의제기를 원하시면 홈페이지를 방문해주세요.");
+//        log.info("Sent message: " + user);
+//        // fcmToken이 있다면 알림 보내기
+//        if(user.getToken() != null){
+//            Notification notification = new Notification("", ");
+//
+//            Message message = Message.builder()
+//                    .setNotification(notification)
+//                    .setToken(user.getToken())
+//                    .build();
+//            try {
+//                String response = FirebaseMessaging.getInstance().send(message);
+//                log.info("Sent message: " + response);
+//            }catch (Exception e){
+//                throw new MessageException(e.getMessage());
+//            }
+//        }
+        StringTokenizer st = new StringTokenizer(user.getToken());
 
-            Message message = Message.builder()
-                    .setNotification(notification)
-                    .setToken(user.getToken())
-                    .build();
-            try {
-                String response = FirebaseMessaging.getInstance().send(message);
-                log.info("Sent message: " + response);
-            }catch (Exception e){
-                throw new MessageException(e.getMessage());
-            }
+        String endpoint = st.nextToken();
+        String p256dh = st.nextToken();
+        String auth = st.nextToken();
+
+        log.info(endpoint);
+        log.info(p256dh);
+        log.info(auth);
+
+
+        try {
+
+            PushService pushService = new PushService(
+                    "BNTfmBKaXrAYZD2GMXsIs4I4BzvvJcR4yJRkJ9SN1xUmO0kTxB1OgSpe0njYaBpaW-SvJipp5oYlyUXn8-9v3LE",
+                    "et70mIvLIq8_y2EkhTIgb2TunRj58Nqf5-xAB4sZ1B8",
+                    "tasdvzsv123est@naver.com"
+            );
+
+            Subscription.Keys keys = new Subscription.Keys(p256dh, auth);
+            Subscription sub = new Subscription(endpoint,keys);
+
+
+            String payload = "{\"title\":\"위반사항 안내\", \"body\" :\"" + user.getName() + "님께서는 보호구 착용을 위반하였습니다. \\n 이의제기를 원하시면 홈페이지를 방문해주세요.\"}";
+            Notification notification = new Notification(sub, payload);
+
+
+            pushService.send(notification);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw new MessageException("Push 알람이 error로 인해 실패하였습니다.");
         }
 
-//        // 데이터 저장
-//        EMessage newMessage = EMessage.builder()
-//                            .title(messageDto.getTitle())
-//                            .message(messageDto.getMessage())
-//                            .user(user)
-//                            .build();
-//
-//        messageRepository.save(newMessage);
     }
 
     @Override
