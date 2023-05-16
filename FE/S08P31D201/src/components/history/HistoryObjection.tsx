@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
+import { IssueType } from 'IssueTypes';
 import React, { useEffect, useState } from 'react';
 import ObjectionCards from './Objection/ObjectionCards';
 import ObjectionFilter from './Objection/ObjectionFilter';
 
 function HistoryObjection() {
   const [obFilter, setObFilter] = useState(['REJECTED', 'PENDING', 'APPLIED']);
-  const [objectionList, setObjectionList] = useState([])
+  const [objectionList, setObjectionList] = useState<IssueType[]>([])
 
   const obFiltering = (obState: string[]) => {
     if (obState.length === 1) {
