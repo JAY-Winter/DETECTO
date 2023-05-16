@@ -69,22 +69,7 @@ public class MessageServiceImpl implements MessageService {
     public void sendMessage(int id){
         // id를 통해서 fcmToken 가져오기
         User user = userRepository.findById(id).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
-//        log.info("Sent message: " + user);
-//        // fcmToken이 있다면 알림 보내기
-//        if(user.getToken() != null){
-//            Notification notification = new Notification("", ");
-//
-//            Message message = Message.builder()
-//                    .setNotification(notification)
-//                    .setToken(user.getToken())
-//                    .build();
-//            try {
-//                String response = FirebaseMessaging.getInstance().send(message);
-//                log.info("Sent message: " + response);
-//            }catch (Exception e){
-//                throw new MessageException(e.getMessage());
-//            }
-//        }
+
         StringTokenizer st = new StringTokenizer(user.getToken());
 
         String endpoint = st.nextToken();
@@ -101,7 +86,7 @@ public class MessageServiceImpl implements MessageService {
             PushService pushService = new PushService(
                     "BNTfmBKaXrAYZD2GMXsIs4I4BzvvJcR4yJRkJ9SN1xUmO0kTxB1OgSpe0njYaBpaW-SvJipp5oYlyUXn8-9v3LE",
                     "et70mIvLIq8_y2EkhTIgb2TunRj58Nqf5-xAB4sZ1B8",
-                    "tasdvzsv123est@naver.com"
+                    "mailto:tasdvzsv123est@naver.com"
             );
 
             Subscription.Keys keys = new Subscription.Keys(p256dh, auth);
