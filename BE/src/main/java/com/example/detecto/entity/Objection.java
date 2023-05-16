@@ -1,7 +1,6 @@
 package com.example.detecto.entity;
 
 import com.example.detecto.entity.enums.ObjectionStatus;
-import com.example.detecto.entity.enums.ReportStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;

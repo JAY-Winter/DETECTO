@@ -47,15 +47,6 @@ public class ReportController {
         return  response.builder();
     }
 
-    @PutMapping("/objection")
-    public ResponseEntity<?> objection(@RequestBody ReportObjectionDto reportObjectionDto){
-        RespData<List> response = new RespData<>();
-
-        reportService.objection(reportObjectionDto);
-
-        return  response.builder();
-    }
-
     @PutMapping
     public ResponseEntity<?> editReport(@RequestBody @Valid ReportEditDto reportEditDto){
         RespData<Void> response = new RespData<>();

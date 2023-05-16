@@ -3,7 +3,6 @@ package com.example.detecto.service;
 import com.example.detecto.dto.*;
 import com.example.detecto.entity.Report;
 import com.example.detecto.entity.User;
-import com.example.detecto.entity.enums.ReportStatus;
 import com.example.detecto.entity.enums.UserType;
 import com.example.detecto.exception.DatabaseFetchException;
 import com.example.detecto.exception.DoesNotExistData;
@@ -59,12 +58,8 @@ public class ReportServiceImpl implements ReportService {
             whereClause.and(report.time.between(startDateTime, endDateTime));
         }
 
-        if (!reportSearchDto.getEquipments().isEmpty()) {
+        if (reportSearchDto.getEquipments() != null && !reportSearchDto.getEquipments().isEmpty()) {
             whereClause.and(equipment.name.in(reportSearchDto.getEquipments()));
-        }
-
-        if(reportSearchDto.getStatus() != null){
-            whereClause.and(report.reportStatus.eq(reportSearchDto.getStatus()));
         }
 
         if(reportSearchDto.getId() != null){
@@ -102,7 +97,7 @@ public class ReportServiceImpl implements ReportService {
                             .map(item -> item.getEquipment().getName())
                             .collect(Collectors.toList());
 
-                    return new ReportSearchResponseDto(rd.getId(), rd.getTime(), rd.getX(), rd.getY(), rd.getCctvArea(), rd.getReportStatus(),
+                    return new ReportSearchResponseDto(rd.getId(), rd.getTime(), rd.getX(), rd.getY(), rd.getCctvArea(),
                             rs_user, rs_team, equipmentNames);
                 })
                 .collect(Collectors.toList());
@@ -116,18 +111,6 @@ public class ReportServiceImpl implements ReportService {
         reportRepository.save(r);
     }
 
-    @Override
-    public void objection(ReportObjectionDto reportObjectionDto) {
-        Report r = reportRepository.findById(reportObjectionDto.getId()).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
-
-        if(r.getReportStatus() == ReportStatus.REJECTED){
-            throw new ObjectionException("이미 거절된 상태입니다.");
-        }
-
-        r.setReportStatus(reportObjectionDto.getStatus());
-
-        reportRepository.save(r);
-    }
 
     @Override
     public ReportCountResponseDto count(int id) {
@@ -159,7 +142,6 @@ public class ReportServiceImpl implements ReportService {
         Report r = reportRepository.findById(reportEditDto.getReportId()).orElseThrow(() -> new DoesNotExistData("Report : 아이디가 존재하지 않습니다."));
         User userinfo = userRepository.findById(reportEditDto.getUserId()).orElseThrow(() -> new DoesNotExistData("User : 아이디가 존재하지 않습니다."));
 
-        r.setReportStatus(ReportStatus.NOT_APPLIED);
         r.setUser(userinfo);
         reportRepository.save(r);
     }

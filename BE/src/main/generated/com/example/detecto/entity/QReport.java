@@ -30,8 +30,6 @@ public class QReport extends EntityPathBase<Report> {
 
     public final ListPath<ReportItem, QReportItem> reportItems = this.<ReportItem, QReportItem>createList("reportItems", ReportItem.class, QReportItem.class, PathInits.DIRECT2);
 
-    public final EnumPath<com.example.detecto.entity.enums.ReportStatus> reportStatus = createEnum("reportStatus", com.example.detecto.entity.enums.ReportStatus.class);
-
     public final DateTimePath<java.time.LocalDateTime> time = createDateTime("time", java.time.LocalDateTime.class);
 
     public final QUser user;

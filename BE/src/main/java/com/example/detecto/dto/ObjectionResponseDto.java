@@ -1,14 +1,7 @@
 package com.example.detecto.dto;
 
 import com.example.detecto.entity.Objection;
-import com.example.detecto.entity.Report;
-import com.example.detecto.entity.User;
 import com.example.detecto.entity.enums.ObjectionStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 import java.time.LocalDateTime;
