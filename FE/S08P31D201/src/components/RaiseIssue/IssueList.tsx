@@ -35,7 +35,7 @@ function IssueList() {
 
   return (
     <IssueContainer>
-      {issueList ? (
+      {issueList && issueList.length > 0 ? (
         issueList.map((issue: IssueType, key: number) => {
           return <IssueItem issue={issue} removeItem={removeItem} key={key} />;
         })
