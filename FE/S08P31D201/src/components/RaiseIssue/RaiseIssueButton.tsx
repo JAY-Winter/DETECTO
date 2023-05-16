@@ -32,8 +32,24 @@ function RaiseIssueButton({ report }: { report: ReportType }) {
     }
   };
 
+  const successHandler = () => {
+    alert(`관리자에게 제출되었습니다.`);
+  };
+
+  const errorHandler = () => {
+    alert(`이의 신청을 이미 하셨습니다.`);
+  };
+
+  const finalHandler = () => {
+    setSubmmited(true);
+    setOpen(false);
+  };
+
   const [data, isLoading, setRequestObj] = useAxios({
     baseURL: 'https://k8d201.p.ssafy.io/api/',
+    tryHandler: successHandler,
+    catchHandler: errorHandler,
+    finallyHandler: finalHandler,
   });
 
   const submitHandler = () => {
@@ -48,9 +64,6 @@ function RaiseIssueButton({ report }: { report: ReportType }) {
     };
     console.log(`[DEBUG - RaiseIssue] ${JSON.stringify(requestObj)}`);
     setRequestObj(requestObj);
-    setSubmmited(true);
-    setOpen(false);
-    alert(`관리자에게 제출되었습니다.`);
   };
 
   return (
