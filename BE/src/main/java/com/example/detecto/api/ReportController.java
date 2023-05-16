@@ -55,4 +55,13 @@ public class ReportController {
 
         return response.builder();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteReport(@PathVariable int id){
+        RespData<Void> response = new RespData<>();
+
+        reportService.deleteReport(id);
+
+        return response.builder();
+    }
 }

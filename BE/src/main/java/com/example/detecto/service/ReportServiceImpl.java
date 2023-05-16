@@ -145,4 +145,11 @@ public class ReportServiceImpl implements ReportService {
         r.setUser(userinfo);
         reportRepository.save(r);
     }
+
+    @Override
+    public void deleteReport(int id) {
+        Report r = reportRepository.findById(id).orElseThrow(() -> new DoesNotExistData("Report : 아이디가 존재하지 않습니다."));
+
+        reportRepository.delete(r);
+    }
 }

@@ -1,12 +1,13 @@
 package com.example.detecto.service;
 
 
-import com.example.detecto.dto.ObjectionAdminCommentDto;
+import com.example.detecto.dto.AdminObjectionDto;
 import com.example.detecto.dto.ObjectionDto;
 import com.example.detecto.entity.Objection;
 import com.example.detecto.entity.Report;
 import com.example.detecto.entity.User;
 import com.example.detecto.entity.enums.ObjectionStatus;
+import com.example.detecto.exception.AlreadyExistData;
 import com.example.detecto.exception.DatabaseFetchException;
 import com.example.detecto.exception.DoesNotExistData;
 import com.example.detecto.repository.ObjectionRepository;
@@ -70,6 +71,11 @@ public class ObjectionServiceImpl implements ObjectionService{
         Report r = reportRepository.findById(objectionDto.getReportId()).orElseThrow(() -> new DoesNotExistData("Report : 아이디가 존재하지 않습니다."));
         User u = userRepository.findById(objectionDto.getUserId()).orElseThrow(() -> new DoesNotExistData("User : 아이디가 존재하지 않습니다."));
 
+        int count = objectionRepository.findObjectionByUserAndReport(u, r);
+
+        if(count > 0) {
+            throw new AlreadyExistData("이의신청을 이미 하셨습니다.");
+        }
 
         Objection obj = Objection.builder()
                 .comment(objectionDto.getComment())
@@ -81,11 +87,20 @@ public class ObjectionServiceImpl implements ObjectionService{
     }
 
     @Override
-    public void postAdminComment(ObjectionAdminCommentDto objectionAdminCommentDto) {
-        Objection obj = objectionRepository.findById(objectionAdminCommentDto.getId()).orElseThrow(() -> new DoesNotExistData("Report : 아이디가 존재하지 않습니다."));
+    public void postAdminObjection(AdminObjectionDto adminObjectionDto) {
+        Objection obj = objectionRepository.findById(adminObjectionDto.getId()).orElseThrow(() -> new DoesNotExistData("Report : 아이디가 존재하지 않습니다."));
 
-        obj.setAdminComment(objectionAdminCommentDto.getComment());
-        obj.setType(objectionAdminCommentDto.getStatus());
+        obj.setAdminComment(adminObjectionDto.getComment());
+
+        if(adminObjectionDto.getStatus() == ObjectionStatus.APPLIED){
+            Report r = obj.getReport();
+            User u = userRepository.findById(adminObjectionDto.getChangeId()).orElseThrow(() -> new DoesNotExistData("User : 아이디가 존재하지 않습니다."));
+
+            r.setUser(u);
+            reportRepository.save(r);
+        }
+
+        obj.setType(adminObjectionDto.getStatus());
 
         objectionRepository.save(obj);
     }
