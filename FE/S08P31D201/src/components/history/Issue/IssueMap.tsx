@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { rgb } from 'd3-color';
 import useResize from '@/hooks/useResize';
-import { CoordinationItemData } from 'ChartTypes';
 import { Button } from '@mui/material';
 import axios from 'axios';
-import { transform } from 'lodash';
 
 const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 

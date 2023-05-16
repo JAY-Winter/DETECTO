@@ -39,9 +39,9 @@ function ZoomChart({
       .attr('id', `clip${name}`)
       .append('rect')
       .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', width - margin.right - margin.left)
-      .attr('height', height - margin.top - margin.bottom);
+      .attr('y', -3)
+      .attr('width', width - margin.right - margin.left + 2)
+      .attr('height', height - margin.top - margin.bottom + 6);
 
     // fill graident
     const gradient = defs
@@ -89,14 +89,30 @@ function ZoomChart({
 
     // X 축은 시간을 기점으로 리니어하게 지정
     if (data !== undefined) {
+      const dates = data.map(d => d.date as Date);
+      const [minDate, maxDate] = d3.extent(dates) as [Date, Date];
+
+      let minXDate = minDate;
+      let maxXDate = maxDate;
+
+      // 데이터의 길이가 1인 경우에 대한 처리
+      if (dates.length === 1) {
+        minXDate = d3.timeDay.offset(minXDate, -1); // 최소값을 하루 이전으로 조정
+        maxXDate = d3.timeDay.offset(maxXDate, 1); // 최대값을 하루 이후로 조정
+      }
+
+      const tickValues = d3.timeDay.range(
+        minXDate as Date,
+        maxXDate as Date,
+        Math.ceil(
+          (maxXDate.getTime() - minXDate.getTime()) / (1000 * 60 * 60 * 24) / 5
+        )
+      );
+
       const xScale = d3
         .scaleUtc()
-        .domain(
-          d3.extent(data, function (d) {
-            return +(d.date as Date);
-          }) as [number, number]
-        )
-        .range([0, width - margin.right - margin.left]);
+        .domain([minXDate, maxXDate])
+        .range([0, width - margin.right - margin.left + 1]);
 
       // 축에 대한 그룹을 만들고 지정
       const xAxis = AxisG.append('g')
@@ -115,7 +131,7 @@ function ZoomChart({
               const day = date.getDate();
               return `${year}.${month}.${day}`;
             })
-            .ticks(5)
+            .tickValues(tickValues)
         );
 
       // Y 축은 값(value)를 기점으로 리니어하게 지정
@@ -141,8 +157,16 @@ function ZoomChart({
           })
           .y(function (d) {
             return yScale(d.value as any);
-          })
-          .curve(d3.curveCatmullRom.alpha(0.5)) as any;
+          }) as any;
+
+      const circle = g
+        .selectAll('circle')
+        .data(data)
+        .join('circle')
+        .attr('cx', d => xScale(d.date as Date))
+        .attr('cy', d => yScale(+(d.value as string)))
+        .attr('r', 3)
+        .attr('fill', color || '#5688c1');
 
       const path = g
         .append('path')
@@ -163,8 +187,7 @@ function ZoomChart({
           .y0(yScale(0))
           .y1(function (d) {
             return yScale(d.value as any);
-          })
-          .curve(d3.curveCatmullRom.alpha(0.5)) as any;
+          }) as any;
 
       const fillArea = g
         .append('path')
@@ -178,8 +201,22 @@ function ZoomChart({
         const newXScale = event.transform.rescaleX(xScale);
         // 도메인도 다시 지정
         xScale.copy().domain(newXScale.domain());
+
+        const newTickValues = d3.timeDay.range(
+          newXScale.domain()[0],
+          newXScale.domain()[1],
+          Math.ceil(
+            (newXScale.domain()[1].getTime() -
+              newXScale.domain()[0].getTime()) /
+              (1000 * 60 * 60 * 24) /
+              5
+          )
+        );
+
         // 라인 위치도 다시 지정
         path.attr('d', line(newXScale));
+
+        circle.attr('cx', d => newXScale(d.date as Date));
 
         fillArea.attr('d', area(newXScale));
 
@@ -194,7 +231,7 @@ function ZoomChart({
               const day = date.getDate();
               return `${year}.${month}.${day}`;
             })
-            .ticks(4)
+            .tickValues(newTickValues)
         );
 
         // 툴팁 함수 재지정
@@ -204,7 +241,7 @@ function ZoomChart({
       // zoom함수 할당
       const zoom = d3
         .zoom()
-        .scaleExtent([1, 32])
+        .scaleExtent([1, 30])
         .extent([
           [0, 0],
           [
@@ -237,8 +274,11 @@ function ZoomChart({
 
       const formatDate = xScale.tickFormat(undefined, '%b %-d, %Y');
       const formatValue = yScale.tickFormat(100);
-      const title = (i: number) =>
-        `${formatDate(new Date(X[i]))}\n${formatValue(+(Y[i] as string))}`;
+      const title = (i: number) => {
+        const date = new Date(X[i]);
+        date.setDate(date.getDate() + 1); // 날짜에 하루를 더함
+        return `${formatDate(date)}\n${formatValue(+(Y[i] as string))}`;
+      };
       const T = title;
 
       // 마우스 포인트 움직임 함수
@@ -275,16 +315,16 @@ function ZoomChart({
             .selectAll('text')
             .data([null])
             .join('text')
-            .call(text =>
-              text
+            .call(text => {
+              return text
                 .selectAll('tspan')
                 .data(`${title(i)}`.split(/\n/))
                 .join('tspan')
                 .attr('x', 0)
                 .attr('y', (_, i) => `${i * 1.1}em`)
                 .attr('font-weight', (_, i) => (i ? null : 'bold'))
-                .text(d => d)
-            );
+                .text(d => d);
+            });
 
           const { x: tx, y, width: w, height: h } = text.node().getBBox();
           tooltipCircle.attr('transform', `translate(${0},${y + 15})`);
