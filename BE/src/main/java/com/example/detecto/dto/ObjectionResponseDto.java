@@ -1,14 +1,7 @@
 package com.example.detecto.dto;
 
 import com.example.detecto.entity.Objection;
-import com.example.detecto.entity.Report;
-import com.example.detecto.entity.User;
 import com.example.detecto.entity.enums.ObjectionStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -26,7 +19,9 @@ public class ObjectionResponseDto {
 
     private String name;
 
-    private String img;
+    private int reportId;
+
+    private ReportSearchResponseTeamDto team;
 
     private LocalDateTime createdAt;
 
@@ -37,7 +32,8 @@ public class ObjectionResponseDto {
         this.adminComment = objection.getAdminComment();
         this.status = objection.getStatus();
         this.name = objection.getUser().getName();
-        this.img = objection.getUser().getImage();
+        this.reportId = objection.getReport().getId();
+        this.team = new ReportSearchResponseTeamDto(objection.getUser().getTeam());
         this.createdAt = objection.getCreatedAt();
     }
 }

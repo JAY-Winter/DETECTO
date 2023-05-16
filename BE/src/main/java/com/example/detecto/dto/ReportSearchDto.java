@@ -1,6 +1,5 @@
 package com.example.detecto.dto;
 
-import com.example.detecto.entity.enums.ReportStatus;
 import com.example.detecto.entity.enums.UserType;
 import lombok.Data;
 
@@ -14,5 +13,4 @@ public class ReportSearchDto {
     private LocalDate endDate;
     private List<String> equipments;
     private UserType type;
-    private ReportStatus status;
 }

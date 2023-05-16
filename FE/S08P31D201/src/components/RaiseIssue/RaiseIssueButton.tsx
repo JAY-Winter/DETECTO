@@ -1,6 +1,6 @@
 import useAxios from '@/hooks/useAxios';
 import { mobileV } from '@/utils/Mixin';
-import { KeyboardArrowUp } from '@mui/icons-material';
+import { KeyboardArrowDown } from '@mui/icons-material';
 import styled from '@emotion/styled';
 import {
   Accordion,
@@ -26,8 +26,30 @@ function RaiseIssueButton({ report }: { report: ReportType }) {
     setComment(event.target.value);
   };
 
+  const keyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      submitHandler();
+    }
+  };
+
+  const successHandler = () => {
+    alert(`관리자에게 제출되었습니다.`);
+  };
+
+  const errorHandler = () => {
+    alert(`이의 신청을 이미 하셨습니다.`);
+  };
+
+  const finalHandler = () => {
+    setSubmmited(true);
+    setOpen(false);
+  };
+
   const [data, isLoading, setRequestObj] = useAxios({
     baseURL: 'https://k8d201.p.ssafy.io/api/',
+    tryHandler: successHandler,
+    catchHandler: errorHandler,
+    finallyHandler: finalHandler,
   });
 
   const submitHandler = () => {
@@ -40,11 +62,8 @@ function RaiseIssueButton({ report }: { report: ReportType }) {
         comment: comment,
       },
     };
-    // console.log(`[DEBUG - RaiseIssue] ${JSON.stringify(requestObj)}`);
+    console.log(`[DEBUG - RaiseIssue] ${JSON.stringify(requestObj)}`);
     setRequestObj(requestObj);
-    setSubmmited(true);
-    setOpen(false);
-    alert(`관리자에게 제출되었습니다.`);
   };
 
   return (
@@ -52,16 +71,14 @@ function RaiseIssueButton({ report }: { report: ReportType }) {
       <AccordionStyle
         open={open}
         expanded={submitted ? false : open ? true : false}
-        disabled={report.status !== 'NOT_APPLIED' || submitted ? true : false}
+        disabled={submitted ? true : false}
       >
         <AccordionSummaryStyle
-          expandIcon={<KeyboardArrowUp />}
+          expandIcon={<KeyboardArrowDown />}
           open={open}
           onClick={() => setOpen(!open)}
         >
-          <Typography>
-            {report.status !== 'NOT_APPLIED' ? '이의 제기 중' : '이의 제기'}
-          </Typography>
+          <Typography>이의 제기</Typography>
         </AccordionSummaryStyle>
         <AccordionDetails>
           <ButtonWrapper>
@@ -70,19 +87,10 @@ function RaiseIssueButton({ report }: { report: ReportType }) {
               placeholder="관리자에게 전송할 메시지를 입력해주세요."
               variant="filled"
               onChange={inputHandler}
-              disabled={
-                report.status !== 'NOT_APPLIED' || submitted ? true : false
-              }
+              onKeyDown={keyDownHandler}
             />
-            <ButtonStyle
-              variant="contained"
-              disabled={
-                report.status !== 'NOT_APPLIED' || submitted ? true : false
-              }
-              onClick={submitHandler}
-            >
-              {report.status === 'NOT_APPLIED' && '이의 제기하기'}
-              {report.status === 'PENDING' && '이의제기 중'}
+            <ButtonStyle variant="contained" onClick={submitHandler}>
+              제출하기
             </ButtonStyle>
           </ButtonWrapper>
         </AccordionDetails>
@@ -98,7 +106,8 @@ const AccordionWrapper = styled.div`
   margin-top: 2rem;
 
   ${mobileV} {
-    margin-right: 1rem;
+    width: auto;
+    margin: 1rem 1rem;
   }
 `;
 
@@ -147,8 +156,8 @@ const TextFieldStyle = styled(TextField)`
 `;
 
 const ButtonStyle = styled(Button)`
-  min-width: 8rem;
-  height: 100%;
+  min-width: 6rem;
+  height: 3.6rem;
   white-space: nowrap;
 
   ${mobileV} {

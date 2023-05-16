@@ -47,20 +47,20 @@ public class ReportController {
         return  response.builder();
     }
 
-    @PutMapping("/objection")
-    public ResponseEntity<?> objection(@RequestBody ReportObjectionDto reportObjectionDto){
-        RespData<List> response = new RespData<>();
-
-        reportService.objection(reportObjectionDto);
-
-        return  response.builder();
-    }
-
     @PutMapping
     public ResponseEntity<?> editReport(@RequestBody @Valid ReportEditDto reportEditDto){
         RespData<Void> response = new RespData<>();
 
         reportService.edit(reportEditDto);
+
+        return response.builder();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteReport(@PathVariable int id){
+        RespData<Void> response = new RespData<>();
+
+        reportService.deleteReport(id);
 
         return response.builder();
     }

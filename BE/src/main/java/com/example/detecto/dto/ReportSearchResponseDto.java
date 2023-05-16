@@ -1,6 +1,5 @@
 package com.example.detecto.dto;
 
-import com.example.detecto.entity.enums.ReportStatus;
 import lombok.Data;
 
 
@@ -14,18 +13,16 @@ public class ReportSearchResponseDto {
     private int x;
     private int y;
     private int cctvArea;
-    private ReportStatus status;
     private ReportSearchResponseUserDto user;
     private ReportSearchResponseTeamDto team;
     private List<String> reportItems;
 
-    public ReportSearchResponseDto(int id, LocalDateTime time, int x, int y,int cctvArea, ReportStatus status,ReportSearchResponseUserDto user, ReportSearchResponseTeamDto team, List<String> reportItems){
+    public ReportSearchResponseDto(int id, LocalDateTime time, int x, int y,int cctvArea, ReportSearchResponseUserDto user, ReportSearchResponseTeamDto team, List<String> reportItems){
         this.id = id;
         this.time = time;
         this.x = x;
         this.y = y;
         this.cctvArea = cctvArea;
-        this.status = status;
         this.user = user;
         this.team = team;
         this.reportItems = reportItems;

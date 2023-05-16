@@ -118,6 +118,7 @@ function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
 }
 
 const StyledNav = styled.nav`
+  z-index: 999;
   position: fixed;
   top: 0px;
   left: 0px;

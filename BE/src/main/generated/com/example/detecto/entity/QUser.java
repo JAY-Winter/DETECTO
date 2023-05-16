@@ -22,8 +22,6 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
-    public final StringPath fcmToken = createString("fcmToken");
-
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
     public final StringPath image = createString("image");
@@ -43,6 +41,8 @@ public class QUser extends EntityPathBase<User> {
     public final QTeam team;
 
     public final EnumPath<com.example.detecto.entity.enums.ThemeType> themeType = createEnum("themeType", com.example.detecto.entity.enums.ThemeType.class);
+
+    public final StringPath token = createString("token");
 
     public final EnumPath<com.example.detecto.entity.enums.UserType> type = createEnum("type", com.example.detecto.entity.enums.UserType.class);
 

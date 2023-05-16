@@ -24,6 +24,7 @@ import FoulPage from './pages/FoulPage';
 import IssuePage from './pages/IssuePage';
 import NotFound from './pages/NotFound';
 import usePush from './hooks/usePush';
+import NavProvider from '@components/common/NavProvider';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -49,35 +50,61 @@ function App() {
       <AuthProvider>
         {userInfo.type === 'ADMIN' ? (
           <>
-            <NavigationBar setMode={setMode} />
-            <NavigationBarTablet setMode={setMode} />
             <RouterContainerDiv>
               <Routes>
                 <Route path="/" element={<Navigate replace to="/history" />} />
-                <Route path="/history" element={<HistoryPage />} />
-                <Route path="/manage" element={<EquipmentManagePage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/monitor" element={<MonitorPage />} />
-                <Route path="/more" element={<MorePage setMode={setMode} />} />
+                <Route path="/history" element={
+                  <NavProvider setMode={setMode}>
+                    <HistoryPage />
+                  </NavProvider>
+                } />
+                <Route path="/manage" element={
+                  <NavProvider setMode={setMode}>
+                    <EquipmentManagePage />
+                  </NavProvider>
+                } />
+                <Route path="/dashboard" element={
+                  <NavProvider setMode={setMode}>
+                    <DashboardPage />
+                  </NavProvider>
+                } />
+                <Route path="/monitor" element={
+                  <NavProvider setMode={setMode}>
+                    <MonitorPage />
+                  </NavProvider>
+                } />
+                <Route path="/more" element={
+                  <NavProvider setMode={setMode}>
+                    <MorePage setMode={setMode} />
+                  </NavProvider>
+                } />
                 <Route path="/*" element={<NotFound />}/>
               </Routes>
             </RouterContainerDiv>
-            <NavigationBarMobile />
           </>
         ) : (
           <>
-            <WorkerNavigationBar setMode={setMode} />
-            <WorkerNavigationBarTablet setMode={setMode} />
             <RouterContainerDiv>
               <Routes>
                 <Route path="/" element={<Navigate replace to="/foul" />} />
-                <Route path="/foul" element={<FoulPage />} />
-                <Route path="/issue" element={<IssuePage />} />
-                <Route path="/more" element={<MorePage setMode={setMode} />} />
+                <Route path="/foul" element={
+                  <NavProvider setMode={setMode}>
+                    <FoulPage />
+                  </NavProvider>
+                } />
+                <Route path="/issue" element={
+                  <NavProvider setMode={setMode}>
+                    <IssuePage />
+                  </NavProvider>
+                } />
+                <Route path="/more" element={
+                  <NavProvider setMode={setMode}>
+                    <MorePage setMode={setMode} />
+                  </NavProvider>
+                } />
                 <Route path="/*" element={<NotFound />}/>
               </Routes>
             </RouterContainerDiv>
-            <WorkerNavigationBarMobile />
           </>
         )}
       </AuthProvider>

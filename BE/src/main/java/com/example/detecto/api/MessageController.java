@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/fcm")
+@RequestMapping("/subscribe")
 public class MessageController {
 
     private final MessageService messageService;
@@ -39,7 +39,7 @@ public class MessageController {
     }
 
     @GetMapping("/send/{id}")
-    private ResponseEntity<?> sendMessage(@PathVariable int id){
+    private ResponseEntity<?> sendMessage(@PathVariable int id) throws Exception{
         RespData<Void> response = new RespData<>();
 
         messageService.sendMessage(id);

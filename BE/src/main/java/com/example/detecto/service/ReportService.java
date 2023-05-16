@@ -9,9 +9,9 @@ public interface ReportService {
 
     void coord(ReportCoordDto reportCoordDto);
 
-    void objection(ReportObjectionDto reportObjectionDto);
-
     ReportCountResponseDto count(int id);
 
     void edit(ReportEditDto reportEditDto);
+
+    void deleteReport(int id);
 }

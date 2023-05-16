@@ -5,15 +5,37 @@ from main.distance.is_detect import detect_non_wearing
 from main.distance.draw_map import draw_map
 from main.distance.cal_from_cctv_to_head import cal_from_cctv_to_head, get_mean_coord
 from main.distance.save_non_wear import save_non_wear
-
+from main.repository.repository import Equipment
+from kafka import KafkaProducer
+from ultralytics import YOLO
+from main.constants.constant import MODEL_PATH, MODEL_FACE_PATH
 # 미착용 클래스 번호
-pro = set({1, 2, 3, 6, 7})
+from main.app import app
+from main.stream.receive_image import q
+model = YOLO(MODEL_PATH)
+face_model = YOLO(MODEL_FACE_PATH)
+
+
+kafka_producer = KafkaProducer(
+            bootstrap_servers='k8d201.p.ssafy.io:9092',
+            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+            acks='all', 
+            retries=5,
+        )
+
 
 def findHuman(boxes):
     center_box = []
     human_box = []
     human_detect = {}
-
+    equipments = Equipment.query.all()
+    pro = set({})
+    i= 0
+    for equip in equipments :
+        if equip.type == 0 and equip.able == 1 and equip.name != 'human' and equip.name != 'person':
+            pro.add(i)
+        i=i+1
+        
     for box in boxes:
         xyxy = box.xyxy[0]
         x1, y1, x2, y2 = xyxy.cpu().numpy()
@@ -57,55 +79,63 @@ def distance(point1, point2):
     return np.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
 
 # 이미지 처리
-def calculate(kafka_producer,cctv_id,img, model, face_model):
+def calculate():
+    while True:
+        with app.app_context():
+            item = q.get()
+            if item is None:
+                continue
+            q.all_tasks_done
+            cctv_id, img = item
+            # q.task_done()
+        # yolo_images = []
+        # yolo_classes = []
+        # distances = np.zeros((5))
 
-    # yolo_images = []
-    yolo_classes = []
-    # distances = np.zeros((5))
+        # 사진마다 YOLO 적용
+        # for i in imglist:
 
-    # 사진마다 YOLO 적용
-    # for i in imglist:
-    img = cv2.resize(img, (640, 640))
-    results = model(img, conf=0.5)
-    year = 23
-    cctv_number = cctv_id
-    today = datetime.now()
-    partition_key = today.timetuple().tm_yday - 1
-    # partition_key = 133
-    kafka_topic = f'cctv.{cctv_number}.{year}'
-    yolo_image = results[0].plot()
-    _, img_encoded = cv2.imencode('.jpg', yolo_image)
-    
-    encoded_frame = base64.b64encode(img_encoded).decode('utf8')
-    
-    kafka_data = {
-        'frame': encoded_frame,
-        'timestamp': base64.b64encode(bytes(str(datetime.now()), 'utf-8')).decode('utf-8'),
-    }
+            img = cv2.resize(img, (640, 640))
+            results = model(img, conf=0.5,device="0")
+            year = 23
+            cctv_number = cctv_id
+            today = datetime.now()
+            partition_key = today.timetuple().tm_yday - 1
+            # partition_key = 133
+            kafka_topic = f'cctv.{cctv_number}.{year}'
+            yolo_image = results[0].plot()
+            _, img_encoded = cv2.imencode('.jpg', yolo_image)
+            
+            encoded_frame = base64.b64encode(img_encoded).decode('utf8')
+            
+            kafka_data = {
+                'frame': encoded_frame,
+                'timestamp': base64.b64encode(bytes(str(datetime.now()), 'utf-8')).decode('utf-8'),
+            }
 
-    kafka_producer.send(
-        topic=kafka_topic,
-        value=kafka_data,
-        partition=partition_key,
-    )
-    kafka_producer.flush()
-    human_detect = findHuman(results[0].boxes)
-    # yolo_class = results[0].boxes.cls
+            kafka_producer.send(
+                topic=kafka_topic,
+                value=kafka_data,
+                partition=partition_key,
+            )
+            kafka_producer.flush()
+            human_detect = findHuman(results[0].boxes)
+            # yolo_class = results[0].boxes.cls
 
-    # cctv ~ 사람 거리
-    # distances[i] = cal_from_cctv_to_head(results)
+            # cctv ~ 사람 거리
+            # distances[i] = cal_from_cctv_to_head(results)
 
-    # print('[%] distances: ', distances)
+            # print('[%] distances: ', distances)
 
-    # 4개 이미지에서 미착용자 찾기
-    # non_wearing_class = detect_non_wearing(pro, yolo_class)
-    # print('non_wearing_class : ', non_wearing_class)
+            # 4개 이미지에서 미착용자 찾기
+            # non_wearing_class = detect_non_wearing(pro, yolo_class)
+            # print('non_wearing_class : ', non_wearing_class)
 
-    # arr_map = draw_map(distances)               # 맵 그리기 / 반환
-    # mean_coord = get_mean_coord(arr_map)        # 맵으로 평균 좌표 구하기
-    # print('mean: ', mean_coord)
+            # arr_map = draw_map(distances)               # 맵 그리기 / 반환
+            # mean_coord = get_mean_coord(arr_map)        # 맵으로 평균 좌표 구하기
+            # print('mean: ', mean_coord)
 
-    # DB에 미착용자 저장
-    save_non_wear(cctv_id,human_detect, yolo_image, img, face_model)
+            # DB에 미착용자 저장
+            save_non_wear(cctv_id,human_detect, yolo_image, img, face_model)
 
     return
