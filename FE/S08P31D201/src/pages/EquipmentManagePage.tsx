@@ -115,7 +115,6 @@ function EquipmentManagePage() {
 export default EquipmentManagePage;
 
 const EquipmentManageDiv = styled.div`
-  height: 100%;
   display: flex;
   flex-direction: column;
   /* align-items: center; */
@@ -128,6 +127,7 @@ const EquipmentManageDiv = styled.div`
 const EquipmentCardDiv = styled.div`
   display: grid;
   width: 100%;
+  height: 100%;
   place-items: center;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
   column-gap: 30px;
@@ -137,6 +137,7 @@ const EquipmentCardDiv = styled.div`
 
 const EquipmentAddButton = styled.button`
   width: 100%;
+  max-width: 22rem;
   height: 100%;
   min-height: 400px;
   border: none;

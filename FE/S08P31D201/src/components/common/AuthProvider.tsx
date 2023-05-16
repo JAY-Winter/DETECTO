@@ -9,6 +9,7 @@ import { UserInfo } from '@/store/userInfoStroe';
 import { UserType } from 'UserTypes';
 import usePush from '@/hooks/usePush';
 import LoadingWithLogo from '@/components/common/LoadingWithLogo';
+import { RequestObj } from 'AxiosRequest';
 
 type AuthProviderProps = {
   children: React.ReactNode;
@@ -53,8 +54,14 @@ function AuthProvider({ children }: AuthProviderProps) {
     catchHandler: catchHandler,
     baseURL: 'https://k8d201.p.ssafy.io/api/',
   });
+  const [pushData, isPushLoading, setPushRequestObj] = useAxios({
+    baseURL: 'https://k8d201.p.ssafy.io/api/',
+  });
 
   const sendSubscription = async () => {
+    if (!userInfo.id) {
+      return;
+    }
     try {
       const [endpoint, p256dh, auth] = await getSubscription();
       if (endpoint && p256dh && auth) {
@@ -66,6 +73,17 @@ function AuthProvider({ children }: AuthProviderProps) {
         console.log("auth:", auth);
         console.log("----------------------------------------");
       }
+      const requestObj: RequestObj = {
+        url: '/user/token',
+        method: 'post',
+        body: {
+          id: userInfo.id,
+          endpoint: endpoint,
+          p256dh: p256dh,
+          auth: auth
+        }
+      }
+      setPushRequestObj(requestObj);
     } catch(error) {
       console.error(error);
     }

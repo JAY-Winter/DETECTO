@@ -1,5 +1,5 @@
 import React from 'react'
-import loadingImage from '/public/icons/icon-192x192-rounded.png'
+import loadingImage from '@/assets/img/icons/icon-192x192-rounded.png'
 import { css } from '@emotion/react'
 
 function LoadingWithLogo() {

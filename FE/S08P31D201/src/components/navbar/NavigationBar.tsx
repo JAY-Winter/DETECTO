@@ -88,6 +88,7 @@ function NavigationBar({setMode, isModal=false}: NavigationBarProps) {
           <ListItem renderMode='desktop' icon={<EngineeringOutlinedIcon/>} label={"보호구 관리"} pathName="/manage" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
           <ListItem renderMode='desktop' icon={<ArticleOutlinedIcon/>} label={"대시보드"} pathName="/dashboard" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
           <ListItem renderMode='desktop' icon={<VideocamOutlinedIcon/>} label={"모니터링"} pathName="/monitor" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
+          <ListItem renderMode='desktop' icon={<VideocamOutlinedIcon/>} label={"모니터링"} pathName="/12314361ASDKAJHSDF" currentPathName={currentPathName} onSetOffset={setSelectedItemOffsetTop} />
         </ul>
         
         <div css={footerContainer}>
@@ -109,6 +110,7 @@ function NavigationBar({setMode, isModal=false}: NavigationBarProps) {
 }
 
 const StyledNav = styled.nav<{isModal: boolean}>`
+  z-index: 999;
   display: flex;
   position: fixed;
   top: 0px;
