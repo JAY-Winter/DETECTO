@@ -50,7 +50,11 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<EMessage> EMessages = new ArrayList<>();
+    private List<EMessage> messages = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Objection> objections = new ArrayList<>();
 
     @Builder
     public User(int id, String password, String name, String image, String fcmToken, String sessionId, UserType type, ThemeType themeType){

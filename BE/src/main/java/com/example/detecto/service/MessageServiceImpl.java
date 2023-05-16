@@ -66,13 +66,13 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendMessage(MessageDto messageDto) {
+    public void sendMessage(int id) {
         // id를 통해서 fcmToken 가져오기
-        User user = userRepository.findById(messageDto.getId()).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+        User user = userRepository.findById(id).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
 
         // fcmToken이 있다면 알림 보내기
         if(user.getFcmToken() != null){
-            Notification notification = new Notification(messageDto.getTitle(), messageDto.getMessage());
+            Notification notification = new Notification("위반사항 안내", user.getName()+"님께서는 보호구 착용을 위반하였습니다. \n 이의제기를 원하시면 홈페이지를 방문해주세요.");
 
             Message message = Message.builder()
                     .setNotification(notification)
@@ -86,18 +86,18 @@ public class MessageServiceImpl implements MessageService {
             }
         }
 
-        // 데이터 저장
-        EMessage newMessage = EMessage.builder()
-                            .title(messageDto.getTitle())
-                            .message(messageDto.getMessage())
-                            .user(user)
-                            .build();
-
-        messageRepository.save(newMessage);
+//        // 데이터 저장
+//        EMessage newMessage = EMessage.builder()
+//                            .title(messageDto.getTitle())
+//                            .message(messageDto.getMessage())
+//                            .user(user)
+//                            .build();
+//
+//        messageRepository.save(newMessage);
     }
 
     @Override
     public void deleteMessage(int id) {
-        messageRepository.deleteById(id);
+    //    messageRepository.deleteById(id);
     }
 }

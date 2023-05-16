@@ -1,16 +1,12 @@
 import { mobileV } from '@/utils/Mixin';
-import HistoryDatePicker from '@components/history/DatePicker';
-import HistoryEquipmentFilter from '@components/history/EquipmentFilter';
-import HistorySafetyIssue from '@components/history/SafetyIssue';
+import IssueList from '@components/RaiseIssue/IssueList';
 import styled from '@emotion/styled';
 
 function IssuePage() {
   return (
     <IssueDiv>
       <IssueTitle>이의제기 목록</IssueTitle>
-      <HistoryDatePicker />
-      <HistoryEquipmentFilter />
-      <HistorySafetyIssue />
+      <IssueList />
     </IssueDiv>
   );
 }

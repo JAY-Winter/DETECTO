@@ -5,7 +5,6 @@ import IssueImage from './IssueImage';
 import { TeamType, ReportUserType, ReportType } from 'ReportTypes';
 import { useRecoilValue } from 'recoil';
 import { UserInfo } from '@/store/userInfoStroe';
-import RaiseIssue from '@components/RaiseIssue/RaiseIssue';
 
 type TableCollapseCardPropsType = {
   x: number;
@@ -34,11 +33,7 @@ function TableCollapseCard({
         <IssueImage reportid={reportid.toString()} />
       </CollapseCardDiv>
       <CollapseCardDiv>
-        {userInfo.type === 'ADMIN' ? (
-          <MemberCard teamList={teamList} violate_member={violate_member} reportId={reportid} />
-        ) : (
-          <RaiseIssue report={report} />
-        )}
+        <MemberCard teamList={teamList} violate_member={violate_member} reportId={reportid} />
       </CollapseCardDiv>
       {/* <div
         style={{

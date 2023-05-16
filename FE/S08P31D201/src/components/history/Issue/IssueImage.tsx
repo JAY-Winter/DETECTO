@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import IssueWorkerImage from './IssueWorkerImage';
+import { mobileV } from '@/utils/Mixin';
 
 function IssueImage({ reportid }: { reportid: string }) {
   const [wi, setWi] = useState<boolean>(false);
@@ -38,7 +39,7 @@ function IssueImage({ reportid }: { reportid: string }) {
         alignItems: 'center',
       }}
     >
-      <h2 style={{ margin: '0.5rem 0 1rem 0' }}>위반 사진</h2>
+      <IssueImageTitle>위반 사진</IssueImageTitle>
       <img
         css={IssueImageStyle}
         src={`https://kr.object.ncloudstorage.com/detec/report/${reportid}.jpg`}
@@ -73,4 +74,12 @@ const IssueWorkerImageDiv = styled.div<{ open: boolean }>`
   visibility: ${props => (props.open ? 'visible' : 'hidden')};
 
   z-index: 1000;
+  `
+const IssueImageTitle = styled('h2')`
+  margin: 0.5rem 0 1rem 0;
+
+  ${mobileV} {
+    width: 100%;
+    font-size: 2rem;
+  }
 `;

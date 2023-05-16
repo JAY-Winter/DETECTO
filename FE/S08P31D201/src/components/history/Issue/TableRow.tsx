@@ -5,10 +5,14 @@ import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { ReportType } from 'ReportTypes';
 import TableCollapseCard from './TableCollapseCard';
 import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
+import { useRecoilValue } from 'recoil';
+import { UserInfo } from '@/store/userInfoStroe';
+import WorkerTableCollapseCard from '@components/foul/WorkerTableCollapseCard';
 
 function Row(props: { row: ReportType }) {
   const { row } = props;
   const [open, setOpen] = useState(false);
+  const userInfo = useRecoilValue(UserInfo);
 
   return (
     <>
@@ -30,15 +34,19 @@ function Row(props: { row: ReportType }) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <TableCollapseCard
-              x={row.x}
-              y={row.y}
-              reportid={row.id}
-              area={row.cctvArea}
-              violate_member={row.user}
-              teamList={row.team}
-              report={row}
-            />
+            {userInfo.type === 'ADMIN' ? (
+              <TableCollapseCard
+                x={row.x}
+                y={row.y}
+                reportid={row.id}
+                area={row.cctvArea}
+                violate_member={row.user}
+                teamList={row.team}
+                report={row}
+              />
+            ) : (
+              <WorkerTableCollapseCard reportid={row.id} report={row} />
+            )}
           </Collapse>
         </TableCell>
       </TableRow>

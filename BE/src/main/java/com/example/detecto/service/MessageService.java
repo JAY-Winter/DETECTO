@@ -11,7 +11,7 @@ public interface MessageService {
 
     List<EMessage> messageList(int id);
 
-    void sendMessage(MessageDto messageDto);
+    void sendMessage(int id);
 
     void deleteMessage(int id);
 }

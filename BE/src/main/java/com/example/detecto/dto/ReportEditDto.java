@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class MessageDto {
-    private int id;
+public class ReportEditDto {
+    @NotNull
+    private int reportId;
+    @NotNull
+    private int userId;
 }

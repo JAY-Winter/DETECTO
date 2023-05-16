@@ -1,10 +1,17 @@
 package com.example.detecto.dto;
 
-import com.example.detecto.entity.enums.ReportStatus;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class ObjectionDto {
-    private int id;
-    private ReportStatus status;
+
+    @NotNull
+    private int userId;
+
+    @NotNull
+    private int reportId;
+
+    @NotNull
+    private String comment;
 }

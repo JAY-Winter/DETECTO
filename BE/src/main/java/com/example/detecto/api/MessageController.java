@@ -2,10 +2,8 @@ package com.example.detecto.api;
 
 
 import com.example.detecto.data.RespData;
-import com.example.detecto.dto.MessageDto;
 import com.example.detecto.dto.MessageResponseDto;
 import com.example.detecto.service.MessageService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,11 +38,11 @@ public class MessageController {
         return response.builder();
     }
 
-    @PostMapping
-    private ResponseEntity<?> sendMessage(@RequestBody @Valid MessageDto messageDto){
+    @GetMapping("/send/{id}")
+    private ResponseEntity<?> sendMessage(@PathVariable int id){
         RespData<Void> response = new RespData<>();
 
-        messageService.sendMessage(messageDto);
+        messageService.sendMessage(id);
 
         return response.builder();
     }

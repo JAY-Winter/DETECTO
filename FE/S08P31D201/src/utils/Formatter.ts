@@ -1,6 +1,6 @@
 // 시간 문자열 -> YYYY-MM-DD HH:MM:SS
 export const timeFormatter = (time: string) => {
-  return new Date(time).toISOString().replace('T', ' ').slice(0, -5);
+  return time.replace('T', ' ').slice(0, 19);
 };
 
 // 문자열 배열 -> 문자열 간 쉼표 연결 (문자열, 문자열)

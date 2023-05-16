@@ -40,12 +40,14 @@ public class Report {
 
     private LocalDateTime time;
 
-//    @Column(name="objection_time")
-//    private LocalDateTime objectionTime;
 
     @JsonIgnore
     @OneToMany(mappedBy = "report", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ReportItem> reportItems = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "report", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Objection> objections = new ArrayList<>();
 
     @Builder
     public Report(int x, int y, int cctvArea){

@@ -8,7 +8,7 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(of ={"name"})
+@ToString(of ={"name", "description", "type", "able", "training"})
 public class Equipment {
 
     @Id
