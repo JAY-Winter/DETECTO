@@ -3,11 +3,14 @@ import styled from '@emotion/styled';
 import MemberCard from './MemberCard';
 import IssueImage from './IssueImage';
 import { TeamType, ReportUserType, ReportType } from 'ReportTypes';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { UserInfo } from '@/store/userInfoStroe';
 import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
 import RaiseIssueButton from '@components/RaiseIssue/RaiseIssueButton';
 import { EquipmentsAtom } from '@/store/EquipmentStore';
+import { Button } from '@mui/material';
+import axios from 'axios';
+import { HistoryIssue } from '@/store/HistoryIssue';
 
 type TableCollapseCardPropsType = {
   x: number;
@@ -30,6 +33,22 @@ function TableCollapseCard({
 }: TableCollapseCardPropsType) {
   const userInfo = useRecoilValue(UserInfo);
   const equipmentList = useRecoilValue(EquipmentsAtom);
+  const [reportList, setReportList] = useRecoilState(HistoryIssue)
+
+  const removeHandler = () => {
+    const remove = window.confirm('정말 리포트를 삭제 하시겠습니까?');
+    if (remove) {
+      console.log('삭제 눌렸습니다!');
+      axios({
+        method: 'delete',
+        url: `https://detecto.kr/api/report/${reportid}`,
+      })
+        .then(res =>
+          setReportList(prev => prev.filter(report => report.id !== reportid))
+        )
+        .catch(err => console.log(err));
+    }
+  };
 
   return (
     <TableCollapseDiv>
@@ -75,13 +94,7 @@ function TableCollapseCard({
           />
         </CollapseCardDiv>
       </CollapseContentDiv>
-      {/* <div
-        style={{
-          width: '50%',
-        }}
-      >
-        <IssueWorkerImage reportid={reportid.toString()} />
-      </div> */}
+      <Button onClick={removeHandler}>리포트삭제요!</Button>
     </TableCollapseDiv>
   );
 }

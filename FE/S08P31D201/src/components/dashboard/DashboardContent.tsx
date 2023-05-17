@@ -18,10 +18,13 @@ import {
   CountTimeTeamData,
 } from 'ChartTypes';
 import { useRecoilValue } from 'recoil';
-import DashboardDayAtom from '@/store/DashboardFilter'
+import DashboardDayAtom from '@/store/DashboardFilter';
 import useAxios from '@/hooks/useAxios';
 import { RequestObj } from 'AxiosRequest';
 
+import SamLogoLight from '@/assets/img/samlogoLight.svg';
+import SamLogoDark from '@/assets/img/samlogoDark.svg';
+import { css, useTheme } from '@emotion/react';
 
 function DashboardContent() {
   const [timedata, settimeData] = useState<CountTimeData[]>();
@@ -29,6 +32,8 @@ function DashboardContent() {
   const [ctidata, setCtiData] = useState<CountTimeItemData[]>();
   const [teamdata, setTeamData] = useState<CountTimeTeamData[]>();
   const [teamIndex, setTeamIndex] = useState(0);
+
+  const theme = useTheme();
 
   const dashDate = useRecoilValue(DashboardDayAtom);
 
@@ -158,7 +163,7 @@ function DashboardContent() {
         const transformedData = processData(response.data.data);
         // 시간대별로 데이터 그룹화
         const dayData = countByTime(transformedData);
-        console.log(dayData)
+        console.log(dayData);
         settimeData(dayData);
 
         // 장구별로 횟수 그룹화
@@ -172,7 +177,7 @@ function DashboardContent() {
         const teamData = countByTimeByTeams(transformedData);
         setTeamData(teamData);
       } else {
-        settimeData(undefined)
+        settimeData(undefined);
         seteqData(undefined);
         setCtiData(undefined);
         setTeamData(undefined);
@@ -206,13 +211,13 @@ function DashboardContent() {
   });
 
   useEffect(() => {
-    const startDate = dashDate.startDay.toISOString().slice(0, 10)
-    const endDate = dashDate.endDay.toISOString().slice(0, 10)
+    const startDate = dashDate.startDay.toISOString().slice(0, 10);
+    const endDate = dashDate.endDay.toISOString().slice(0, 10);
     const requestObj: RequestObj = {
       url: `report?startDate=${startDate}&endDate=${endDate}&equipments=`,
       method: 'get',
     };
-    setRequestObj(requestObj)
+    setRequestObj(requestObj);
   }, [dashDate]);
 
   return (
@@ -265,7 +270,15 @@ function DashboardContent() {
             </TeamZoomCard>
           </ChartCardDiv>
         </>
-      ) : (<div><h1>No Data</h1><h2>Maybe 204?</h2></div>)}
+      ) : (
+        <NoContentDiv>
+          <img
+            css={logoContainer}
+            src={theme.palette.mode === 'light' ? SamLogoLight : SamLogoDark}
+          />
+          <p>데이터가 존재하지 않습니다.</p>
+        </NoContentDiv>
+      )}
     </DashboardContentDiv>
   );
 }
@@ -295,8 +308,6 @@ const DashboardContentDiv = styled.div`
 const ChartCardDiv = styled.div`
   display: flex;
   flex-direction: column;
-
-  
 `;
 
 const TotalChartDiv = styled.div`
@@ -308,7 +319,6 @@ const TotalChartDiv = styled.div`
 `;
 
 const ZoomCard = styled(ChartCard)`
-
   ${tabletV} {
     width: 100%;
   }
@@ -345,3 +355,22 @@ const EQCard = styled(ChartCard)`
 const ScatterCard = styled(ChartCard)``;
 
 const TeamZoomCard = styled(ChartCard)``;
+
+const NoContentDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  font-size: 2rem;
+`;
+
+const logoContainer = css`
+  width: 100%;
+  height: 3rem;
+  /* padding: 0px 10px; */
+  /* margin-left: 10px; */
+  margin: 10px 0px 30px 0px;
+`;
