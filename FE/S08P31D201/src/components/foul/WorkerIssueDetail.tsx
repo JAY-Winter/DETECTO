@@ -12,7 +12,7 @@ function WorkerIssueDetail({ report }: { report: ReportType }) {
           <h4>위반 일시</h4>
           <p>{timeFormatter(report.time)}</p>
           <h4>소속 팀</h4>
-          <p>{report.team.teamName}팀</p>
+          <p>{report.team.teamName}</p>
           <h4>위반 사항</h4>
           <p>{stringListFormatter(report.reportItems)}</p>
           <h4>위반 지역</h4>

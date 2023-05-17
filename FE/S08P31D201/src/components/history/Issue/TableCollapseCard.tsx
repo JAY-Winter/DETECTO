@@ -63,7 +63,7 @@ function TableCollapseCard({
               <h3>위반 일시</h3>
               <p>{timeFormatter(report.time)}</p>
               <h3>소속 팀</h3>
-              <p>{report.team.teamName}팀</p>
+              <p>{report.team.teamName}</p>
               <h3>위반 사항</h3>
               <p>
                 {stringListFormatter(
@@ -133,11 +133,11 @@ const CollapseImageCardDiv = styled.div`
   background-color: ${props => props.theme.palette.neutral.main};
 
   border-radius: 1rem;
-`
+`;
 
 const CollapseContentDiv = styled.div`
   flex-basis: calc(50% - 2rem);
-`
+`;
 
 // width를 일정 수치 안주면 resize가 정상작동을 하지 않습니다
 const CollapseCardDiv = styled.div`

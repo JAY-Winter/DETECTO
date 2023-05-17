@@ -14,7 +14,7 @@ import { mobileV } from '@/utils/Mixin';
 function ObjectMember({
   teamList,
   violate_member,
-  setUserId
+  setUserId,
 }: {
   teamList: TeamType;
   violate_member: ReportUserType | undefined;
@@ -32,7 +32,7 @@ function ObjectMember({
 
   const chooseMemberHandler = (idx: number) => {
     setMemberNum(idx);
-    setUserId(cardList[idx].id)
+    setUserId(cardList[idx].id);
     setOpenArcodian(false);
   };
 
@@ -53,7 +53,7 @@ function ObjectMember({
         <img css={profileImageStyle} src={cardList[memberNum].image} alt="" />
         <div>
           <p>{cardList[memberNum].name}</p>
-          <p>{teamList.teamName}팀</p>
+          <p>{teamList.teamName}</p>
         </div>
         <span>
           <KeyboardArrowDown />
@@ -68,7 +68,7 @@ function ObjectMember({
                 <img css={profileImageStyle} src={member.image} alt="" />
                 <div>
                   <p>{member.name}</p>
-                  <p>{teamList.teamName}팀</p>
+                  <p>{teamList.teamName}</p>
                 </div>
                 <span></span>
               </ProfileCard>
@@ -154,7 +154,7 @@ const SelectWorker = styled.div<{ open: boolean }>`
     margin-top: 1rem;
     :hover {
       background-color: ${props => props.theme.palette.primary.main};
-      color: ${props => props.theme.palette.primary.contrastText}
+      color: ${props => props.theme.palette.primary.contrastText};
     }
   }
 `;
