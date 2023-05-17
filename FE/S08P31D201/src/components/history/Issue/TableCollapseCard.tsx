@@ -6,7 +6,6 @@ import { TeamType, ReportUserType, ReportType } from 'ReportTypes';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { UserInfo } from '@/store/userInfoStroe';
 import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
-import RaiseIssueButton from '@components/RaiseIssue/RaiseIssueButton';
 import { EquipmentsAtom } from '@/store/EquipmentStore';
 import { Button } from '@mui/material';
 import axios from 'axios';

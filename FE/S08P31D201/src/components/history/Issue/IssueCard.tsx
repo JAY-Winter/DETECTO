@@ -89,34 +89,35 @@ function IssueCard(issue: ReportType) {
               <p>{stringListFormatter(issue.reportItems)}</p>
               <h4>위반 지역</h4>
               <p>{issue.cctvArea}번 구역</p>
-              {userInfo.type === 'WORKER' && (
-                <RaiseIssueButton report={issue} />
-              )}
             </MobileCard>
             {userInfo.type === 'WORKER' && <RaiseIssueButton report={issue} />}
-            <Paper
-              sx={{
-                margin: '0 1rem',
-                borderRadius: '5px',
-                padding: '1rem 0.5rem 0.2rem 0.5rem',
-              }}
-            >
-              <MemberCard
-                reportId={issue.id}
-                teamList={issue.team}
-                violate_member={issue.user}
-              />
-            </Paper>
-            <Button
-              sx={{
-                float: 'right',
-                margin: '0.8rem 1rem 0.5rem 0',
-                color: 'error.main',
-              }}
-              onClick={removeHandler}
-            >
-              위반 내역 삭제
-            </Button>
+            {userInfo.type === 'ADMIN' && (
+              <>
+                <Paper
+                  sx={{
+                    margin: '0 1rem',
+                    borderRadius: '5px',
+                    padding: '1rem 0.5rem 0.2rem 0.5rem',
+                  }}
+                >
+                  <MemberCard
+                    reportId={issue.id}
+                    teamList={issue.team}
+                    violate_member={issue.user}
+                  />
+                </Paper>
+                <Button
+                  sx={{
+                    float: 'right',
+                    margin: '0.8rem 1rem 0.5rem 0',
+                    color: 'error.main',
+                  }}
+                  onClick={removeHandler}
+                >
+                  위반 내역 삭제
+                </Button>
+              </>
+            )}
           </IssueBottomSheet>
         )}
       </ModalPortal>

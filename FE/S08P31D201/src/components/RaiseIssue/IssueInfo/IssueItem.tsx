@@ -22,7 +22,7 @@ function IssueItem({
 }) {
   return (
     <IssueWrapper>
-      <PaperStyle state={issue.status} elevation={3}>
+      <PaperStyle state={issue.status} elevation={2}>
         <AccordionStyle>
           <AccordionSummaryStyle
             expandIcon={<KeyboardArrowDown />}
