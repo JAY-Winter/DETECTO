@@ -16,14 +16,23 @@ type EquipmentCardProps = {
   onDelete: (willDeleteName: string) => void;
   onToggleActiveness: (willToggleType: number, willToggleName: string) => void;
   setIsShowEditModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setWillEditEquipment: React.Dispatch<React.SetStateAction<EquipmentType | null>>;
+  setWillEditEquipment: React.Dispatch<
+    React.SetStateAction<EquipmentType | null>
+  >;
 };
 
 type progressDataType = {
   data: number;
 };
 
-function EquipmentCard({equipment, fetchEquipments, onDelete, onToggleActiveness, setIsShowEditModal, setWillEditEquipment}: EquipmentCardProps) {
+function EquipmentCard({
+  equipment,
+  fetchEquipments,
+  onDelete,
+  onToggleActiveness,
+  setIsShowEditModal,
+  setWillEditEquipment,
+}: EquipmentCardProps) {
   const [isShowDropdown, setIsShowDropdown] = useState(false);
   const editRef = useRef<HTMLDivElement>(null);
   const [checkData, isCheckLoading, setCheckRequestObj] = useAxios({
@@ -117,13 +126,13 @@ function EquipmentCard({equipment, fetchEquipments, onDelete, onToggleActiveness
     <EqCardDiv ischecked={equipment.able}>
       <div css={headerContainer}>
         <div css={titleContainer}>
-          <h2>{equipment.name}</h2>
+          <h2>{equipment.description}</h2>
           <Switch
             checked={equipment.able}
             onChange={() => onToggleActiveness(equipment.type, equipment.name)}
           />
         </div>
-        <div ref={editRef}>
+        {/* <div ref={editRef}>
           <button css={menuButtonStyle} onClick={toggleEditDropdown}>
             <MoreVertIcon color="action" />
           </button>
@@ -136,14 +145,12 @@ function EquipmentCard({equipment, fetchEquipments, onDelete, onToggleActiveness
               setWillEditEquipment={setWillEditEquipment}
             />
           )}
-        </div>
+        </div> */}
       </div>
       <div css={bodyContainer}>
         <img css={imageStyle} src={equipment.url} />
         <p css={descContainer}>
-          {equipment.description === ''
-            ? '(설명이 없습니다)'
-            : equipment.description}
+          {equipment.description === '' ? '(설명이 없습니다)' : equipment.name}
         </p>
       </div>
       <div css={footerContainer}>
@@ -174,6 +181,7 @@ const EqCardDiv = styled.div<{ ischecked: boolean }>`
   background-color: ${props => props.theme.palette.neutral.section};
   opacity: ${props => (props.ischecked === false ? 0.5 : 1)};
   box-shadow: rgba(0, 0, 0, 0.125) 0px 4px 16px 0px;
+  border-radius: 10px;
   ${mobileV} {
     width: 100%;
   }
