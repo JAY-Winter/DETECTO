@@ -13,13 +13,13 @@ import {
   TextField,
 } from '@mui/material';
 import { IssueType } from 'IssueTypes';
-import React from 'react';
-import { TeamType } from 'ReportTypes';
-import IssueImage from '../Issue/IssueImage';
-import MemberCard from '../Issue/MemberCard';
 import CardCollapse from './CardCollapse';
+import SamLogoLight from '@/assets/img/samlogoLight.svg';
+import SamLogoDark from '@/assets/img/samlogoDark.svg';
+import { css, useTheme } from '@emotion/react';
 
 const ObjectionCard = ({ objectionIssue }: { objectionIssue: IssueType }) => {
+  
   return (
     <IssueWrapper>
       <PaperStyle state={objectionIssue.status} elevation={3}>
@@ -41,8 +41,17 @@ const ObjectionCard = ({ objectionIssue }: { objectionIssue: IssueType }) => {
 };
 
 function ObjectionCards({ obList }: { obList: IssueType[] }) {
+  const theme = useTheme();
   if (obList.length === 0) {
-    return <></>;
+    return (
+      <NoContentDiv>
+        <img
+          css={logoContainer}
+          src={theme.palette.mode === 'light' ? SamLogoLight : SamLogoDark}
+        />
+        <p>데이터가 존재하지 않습니다.</p>
+      </NoContentDiv>
+    );
   }
   return (
     <>
@@ -122,4 +131,24 @@ const TextFieldStyle = styled(TextField)`
   ${mobileV} {
     margin-right: 0;
   }
+`;
+
+const NoContentDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  font-size: 2rem;
+  padding: 1rem;
+`;
+
+const logoContainer = css`
+  width: 100%;
+  height: 3rem;
+  /* padding: 0px 10px; */
+  /* margin-left: 10px; */
+  margin: 10px 0px 30px 0px;
 `;

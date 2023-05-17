@@ -25,6 +25,7 @@ import { RequestObj } from 'AxiosRequest';
 import SamLogoLight from '@/assets/img/samlogoLight.svg';
 import SamLogoDark from '@/assets/img/samlogoDark.svg';
 import { css, useTheme } from '@emotion/react';
+import MonitorLoading from '@components/monitor/MonitorLoading';
 
 function DashboardContent() {
   const [timedata, settimeData] = useState<CountTimeData[]>();
@@ -222,7 +223,7 @@ function DashboardContent() {
 
   return (
     <DashboardContentDiv>
-      {timedata ? (
+      {isLoading ? <MonitorLoading /> : timedata ? (
         <>
           <DashboardCards eqData={eqdata} teamData={teamdata} />
           <ChartCardDiv>
@@ -364,6 +365,8 @@ const NoContentDiv = styled.div`
   width: 100%;
   height: 100%;
 
+  padding: 1rem;
+
   font-size: 2rem;
 `;
 
@@ -373,4 +376,5 @@ const logoContainer = css`
   /* padding: 0px 10px; */
   /* margin-left: 10px; */
   margin: 10px 0px 30px 0px;
+  
 `;
