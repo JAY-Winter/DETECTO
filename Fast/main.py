@@ -72,7 +72,7 @@ async def consume_message(websocket, consumer, topic, partition):
         # if start_offset == total_offsets:
         #     await asyncio.sleep(0.1)
         if not pause:
-            start_offset = max(start_offset, 0)
+            start_offset = max(start_offset-1, 0)
         consumer.seek(partition_list[0], start_offset)
         for message in consumer:
             # await asyncio.sleep(0.5)
@@ -114,7 +114,7 @@ async def consume_message(websocket, consumer, topic, partition):
             await websocket.send_text(context)
             
             try:
-                recv_data = await asyncio.wait_for(websocket.receive_text(), timeout=0.5)
+                recv_data = await asyncio.wait_for(websocket.receive_text(), timeout=0.15)
                 if recv_data:
                     msg = json.loads(recv_data)
                     type = int(msg.get('type'))
