@@ -161,7 +161,7 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
 
   if (maxoffset === 0) {
     return (
-      <NocontentDiv>
+      <NocontentDiv style={{ border: `1px solid #e0e0e0` }}>
         <img
           css={logoContainer}
           src={theme.palette.mode === 'light' ? SamLogoLight : SamLogoDark}
@@ -236,6 +236,8 @@ const MonitorDiv = styled.div`
     height: 100%;
     object-fit: fill;
   }
+
+  border: 1px solid #e0e0e0;
 `;
 
 const MonitorTitle = styled.div<{ hoverd: boolean }>`

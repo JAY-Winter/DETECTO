@@ -65,15 +65,13 @@ function MonitorPage() {
   const TouchNavOpenHandler = () => {
     setNavOpen(true);
 
-
     if (navSetTimeout.current) {
       clearTimeout(navSetTimeout.current);
     }
 
     navSetTimeout.current = setTimeout(() => {
       setNavOpen(false);
-      if (navSetTimeout.current)
-      navSetTimeout.current = null; // 타이머 종료 후 null로 초기화
+      if (navSetTimeout.current) navSetTimeout.current = null; // 타이머 종료 후 null로 초기화
     }, 2000);
   };
 
@@ -82,18 +80,47 @@ function MonitorPage() {
   return (
     <MonitorContainer>
       <MonitorHeader>
-        <VideocamOutlinedIcon />
+        {/* <VideocamOutlinedIcon /> */}
         <h1>모니터링</h1>
       </MonitorHeader>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <MonitorDatePicker
-          onChange={value => DateChangeHandler(value as Dayjs)}
-          value={monitorDay}
-          label="날짜 선택"
-          format="YYYY.MM.DD"
-          maxDate={dayjs()}
-        />
-      </LocalizationProvider>
+      <ButtonWrapper>
+        <NotMonitorContentsDiv>
+          <NotMonitorNav>
+            <Button variant="contained" onClick={() => cctvButtonHandler([0])}>
+              1번
+            </Button>
+            <Button variant="contained" onClick={() => cctvButtonHandler([1])}>
+              2번
+            </Button>
+            <Button variant="contained" onClick={() => cctvButtonHandler([2])}>
+              3번
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => cctvButtonHandler([0, 1, 2, 3])}
+            >
+              전체
+            </Button>
+            <Button
+              onClick={enterFullScreen}
+              color="success"
+              variant="contained"
+            >
+              <FullscreenIcon />
+            </Button>
+          </NotMonitorNav>
+        </NotMonitorContentsDiv>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            onChange={value => DateChangeHandler(value as Dayjs)}
+            value={monitorDay}
+            label="날짜 선택"
+            format="YYYY.MM.DD"
+            maxDate={dayjs()}
+          />
+        </LocalizationProvider>
+      </ButtonWrapper>
+
       <MonitorContentsDiv ref={containerRef}>
         <MonitorNav
           open={navOpen}
@@ -116,20 +143,11 @@ function MonitorPage() {
           >
             전체
           </Button>
-          {fullScreenState ? (
-            <Button onClick={exitFullScreen} color="error" variant="contained">
-              <FullscreenExitIcon />
-            </Button>
-          ) : (
-            <Button
-              onClick={enterFullScreen}
-              color="success"
-              variant="contained"
-            >
-              <FullscreenIcon />
-            </Button>
-          )}
+          <Button onClick={exitFullScreen} color="error" variant="contained">
+            <FullscreenExitIcon />
+          </Button>
         </MonitorNav>
+
         <MonitorsDiv>
           {cctvList.map(id => {
             return (
@@ -162,12 +180,41 @@ const MonitorContainer = styled.div`
 
 const MonitorHeader = styled.div`
   display: flex;
+  justify-content: flex-start;
   align-items: center;
-  margin: 2rem;
+  padding: 2.5rem 0 1.5rem 1rem;
+  width: 100%;
 
   svg {
     font-size: 2.5rem;
     margin-right: 1rem;
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 1rem 1rem 1rem;
+`;
+
+const NotMonitorContentsDiv = styled.div`
+  display: flex;
+`;
+
+const NotMonitorNav = styled.div`
+  display: flex;
+
+  button {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-right: 0.3rem;
+    background-color: ${props => props.theme.palette.primary.dark};
+
+    :nth-last-of-type(1) {
+      background-color: ${props => props.theme.palette.neutral.cardHover};
+      color: ${props => props.theme.palette.neutral.opposite};
+    }
   }
 `;
 
@@ -204,21 +251,19 @@ const MonitorNav = styled.div<{ open: boolean }>`
   min-width: 360px;
 
   ${({ open }) =>
-      open
-        ? css`
-            transform: translate(-50%, -0.5rem);
-            button {
-              transform: translate(0, 0);
-            }
-          `
-        : css`
-            transform: translate(-50%, 3.5rem);
-            button {
-              transform: translate(0, 2rem);
-            }
-          `};
-
-  
+    open
+      ? css`
+          transform: translate(-50%, -0.5rem);
+          button {
+            transform: translate(0, 0);
+          }
+        `
+      : css`
+          transform: translate(-50%, 3.5rem);
+          button {
+            transform: translate(0, 2rem);
+          }
+        `};
 
   height: fit-content;
 
@@ -301,9 +346,4 @@ const MonitorsDiv = styled.div`
       height: 25vh;
     }
   }
-`;
-
-const MonitorDatePicker = styled(DatePicker)`
-  width: calc(100% - 4rem);
-  margin: 2rem;
 `;

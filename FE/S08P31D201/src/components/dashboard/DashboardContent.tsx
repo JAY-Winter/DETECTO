@@ -223,7 +223,9 @@ function DashboardContent() {
 
   return (
     <DashboardContentDiv>
-      {isLoading ? <MonitorLoading /> : timedata ? (
+      {isLoading ? (
+        <MonitorLoading />
+      ) : timedata ? (
         <>
           <DashboardCards eqData={eqdata} teamData={teamdata} />
           <ChartCardDiv>
@@ -240,7 +242,7 @@ function DashboardContent() {
             <EQChartDiv>
               {ctidata &&
                 ctidata.map((d, index) => (
-                  <EQCard>
+                  <EQCard key={index}>
                     <h1>{d.reportItem}</h1>
                     <ZoomChart
                       name={d.reportItem + 'def'}
@@ -253,7 +255,7 @@ function DashboardContent() {
             </EQChartDiv>
             <TeamZoomCard>
               <h1>팀 별 기간 차트</h1>
-              <div>
+              <div className="buttons">
                 {teamdata &&
                   teamdata.map((d, index) => (
                     <Button
@@ -355,7 +357,16 @@ const EQCard = styled(ChartCard)`
 
 const ScatterCard = styled(ChartCard)``;
 
-const TeamZoomCard = styled(ChartCard)``;
+const TeamZoomCard = styled(ChartCard)`
+  .buttons {
+    margin-top: 1rem;
+    button {
+      margin-right: 0.5rem;
+      background-color: ${props => props.theme.palette.primary.main};
+      color: ${props => props.theme.palette.primary.contrastText};
+    }
+  }
+`;
 
 const NoContentDiv = styled.div`
   display: flex;
@@ -376,5 +387,4 @@ const logoContainer = css`
   /* padding: 0px 10px; */
   /* margin-left: 10px; */
   margin: 10px 0px 30px 0px;
-  
 `;

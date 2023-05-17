@@ -32,7 +32,7 @@ function HistoryDatePicker() {
   };
 
   return (
-    <DatePaper elevation={0}>
+    <DatePaper elevation={1}>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
       <DateHeaderDiv
         onClick={() => {
@@ -40,7 +40,7 @@ function HistoryDatePicker() {
         }}
       >
         <div>
-          {mobileOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
+          {mobileOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           날짜 선택
         </div>
         <Button

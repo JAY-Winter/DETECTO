@@ -162,9 +162,9 @@ function SignIn() {
         >
           {isLoading ? <CircularProgress size="1.7rem" /> : '로그인'}
         </Button>
-        <ButtonContainerDiv>
+        {/* <ButtonContainerDiv>
           <button>관리자에게 문의하기</button>
-        </ButtonContainerDiv>
+        </ButtonContainerDiv> */}
       </RightContainerDiv>
     </div>
   );
@@ -269,6 +269,7 @@ const lockIconStyle = css`
   display: flex;
   justify-content: center;
   align-content: center;
+  margin-top: 1rem;
   margin-bottom: 10px;
 `;
 

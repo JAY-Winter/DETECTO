@@ -10,7 +10,7 @@ function DashboardPage() {
   return (
     <DashboardContainer>
       <DashboardHeader>
-        <SpaceDashboard />
+        {/* <SpaceDashboard /> */}
         <h1>대시보드</h1>
       </DashboardHeader>
       <DashboardDatePicker />
@@ -41,7 +41,7 @@ const DashboardHeader = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  margin: 0rem 0rem 2rem;
+  margin: 0rem 0rem 1rem;
 
   svg {
     font-size: 2.5rem;

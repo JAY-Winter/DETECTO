@@ -23,7 +23,7 @@ function HistoryEquipmentFilter() {
   };
 
   return (
-    <FilterPaper elevation={0}>
+    <FilterPaper elevation={1}>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
       <FilterHeaderDiv
         onClick={() => {
@@ -31,7 +31,7 @@ function HistoryEquipmentFilter() {
         }}
       >
         <div>
-          {mobileOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
+          {mobileOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           보호구 선택
         </div>
         <Button
