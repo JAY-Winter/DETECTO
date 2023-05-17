@@ -50,8 +50,6 @@ function HistorySafetyIssue({
     baseURL: 'https://detecto.kr/api/',
   });
 
-
-
   useEffect(() => {
     const startDate = historyDate.startDay.toISOString().slice(0, 10);
     const endDate = historyDate.endDay.toISOString().slice(0, 10);
@@ -101,6 +99,20 @@ function HistorySafetyIssue({
     setPage(0);
   };
 
+  const defaultLabelDisplayedRows = ({
+    from,
+    to,
+    count,
+  }: {
+    from: number;
+    to: number;
+    count: number;
+  }) => {
+    return `현재 페이지: ${from} – ${to} /  전체 개수: ${
+      count !== -1 ? count : `more than ${to}`
+    }`;
+  };
+
   return (
     <>
       <IssueTableContainer elevation={0}>
@@ -126,6 +138,14 @@ function HistorySafetyIssue({
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
+                labelRowsPerPage="페이지별 행 수:"
+                labelDisplayedRows={() =>
+                  defaultLabelDisplayedRows({
+                    from: page * rowsPerPage + 1,
+                    to: (page + 1) * rowsPerPage,
+                    count: reportData.length,
+                  })
+                }
                 colSpan={4}
                 count={reportData.length}
                 rowsPerPage={rowsPerPage}

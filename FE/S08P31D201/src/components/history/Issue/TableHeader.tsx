@@ -33,13 +33,12 @@ function TableHeader() {
               }}
               color="inherit"
             >
-              작업 조
+              위반 인원
               <UnfoldMore />
             </Button>
           )}
         </TableCell>
-
-        <TableCell align="left" sx={{ width: '35%' }}>
+        <TableCell align="left" sx={{ width: '40%' }}>
           {sortField === 'Equipment' ? (
             <Button
               onClick={() => {
@@ -63,7 +62,7 @@ function TableHeader() {
             </Button>
           )}
         </TableCell>
-        <TableCell sx={{ width: '40%' }}>
+        <TableCell sx={{ width: '35%' }}>
           {sortField === 'Date' ? (
             <Button
               onClick={() => {
