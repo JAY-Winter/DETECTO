@@ -21,7 +21,7 @@ import { HistoryIssue } from '@/store/HistoryIssue';
 import TableHeader from './Issue/TableHeader';
 import { HistoryDayAtom, HistoryEqAtom } from '@/store/HistoryFilter';
 import useAxios from '@/hooks/useAxios';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import useHistorySort from '@/hooks/useHistorySort';
 import { ReportType } from 'ReportTypes';
 
@@ -207,6 +207,9 @@ const IssueCardContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    nav {
+      min-width: 22rem;
+    }
   }
 `;
 

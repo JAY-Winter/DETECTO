@@ -33,7 +33,7 @@ function TableCollapseCard({
 }: TableCollapseCardPropsType) {
   const userInfo = useRecoilValue(UserInfo);
   const equipmentList = useRecoilValue(EquipmentsAtom);
-  const [reportList, setReportList] = useRecoilState(HistoryIssue)
+  const [reportList, setReportList] = useRecoilState(HistoryIssue);
 
   const removeHandler = () => {
     const remove = window.confirm('정말 리포트를 삭제 하시겠습니까?');
@@ -52,19 +52,17 @@ function TableCollapseCard({
 
   return (
     <TableCollapseDiv>
-      <CollapseImageCardDiv>
-        <IssueImage reportid={reportid.toString()} />
-      </CollapseImageCardDiv>
-      <CollapseContentDiv>
-        <CollapseCardDiv>
-          <h2>위반 내역</h2>
-          <CollapseCardContents>
-            <div>
-              <h3>위반 일시</h3>
+      <LineStyle>
+        <CollapseImageCardDiv>
+          <IssueImage reportid={reportid.toString()} />
+        </CollapseImageCardDiv>
+        <div>
+          <CollapseCardDiv>
+            <h2>위반 내역</h2>
+            <CollapseCardContents>
+              <h4>위반 일시</h4>
               <p>{timeFormatter(report.time)}</p>
-              <h3>소속 팀</h3>
-              <p>{report.team.teamName}</p>
-              <h3>위반 사항</h3>
+              <h4>위반 사항</h4>
               <p>
                 {stringListFormatter(
                   report.reportItems.map(item => {
@@ -77,24 +75,26 @@ function TableCollapseCard({
                   })
                 )}
               </p>
-            </div>
-            <div>
-              <h3>위반자</h3>
-              <p>{report.user.name}</p>
-              <h3>위반 지역</h3>
+              {/* <h4>위반자</h4>
+              <p>
+                {report.user.name} ({report.team.teamName})
+              </p> */}
+              <h4>위반 지역</h4>
               <p>{report.cctvArea}번 구역</p>
-            </div>
-          </CollapseCardContents>
-        </CollapseCardDiv>
-        <CollapseCardDiv>
-          <MemberCard
-            teamList={teamList}
-            violate_member={violate_member}
-            reportId={reportid}
-          />
-        </CollapseCardDiv>
-      </CollapseContentDiv>
-      <Button onClick={removeHandler}>리포트삭제요!</Button>
+            </CollapseCardContents>
+          </CollapseCardDiv>
+          <CollapseCardDiv>
+            <MemberCard
+              teamList={teamList}
+              violate_member={violate_member}
+              reportId={reportid}
+            />
+          </CollapseCardDiv>
+        </div>
+      </LineStyle>
+      <LineStyle className="button-wrapper">
+        <Button onClick={removeHandler}>위반 내역 삭제</Button>
+      </LineStyle>
     </TableCollapseDiv>
   );
 }
@@ -103,43 +103,48 @@ export default TableCollapseCard;
 
 const TableCollapseDiv = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  align-items: stretch; // 아이템들이 컨테이너 높이를 채우도록 설정
+  flex-direction: column;
   position: relative;
   width: 100%;
   height: auto;
-  padding: 1rem;
   background-color: ${props => props.theme.palette.neutral.cardHover};
   border-radius: 10px;
+  margin: 1rem 0;
+`;
+
+const LineStyle = styled.div`
+  width: 100%;
+  display: flex;
 
   > div {
     width: 100%;
+    flex-basis: 50%;
+    margin-right: 0.5rem;
+    :nth-last-of-type(1) {
+      margin-right: 0;
+    }
+  }
+
+  &.button-wrapper {
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+    button {
+      color: ${props => props.theme.palette.error.main};
+    }
   }
 `;
 
 const CollapseImageCardDiv = styled.div`
   display: flex;
-  flex-direction: column;
-  position: relative;
   width: 100%;
   height: auto;
   align-items: center;
   justify-content: center;
-  margin: 1rem;
   padding: 1rem;
-
-  flex-basis: calc(50% - 2rem);
-
   background-color: ${props => props.theme.palette.neutral.main};
-
-  border-radius: 1rem;
+  border-radius: 10px;
 `;
 
-const CollapseContentDiv = styled.div`
-  flex-basis: calc(50% - 2rem);
-`;
-
-// width를 일정 수치 안주면 resize가 정상작동을 하지 않습니다
 const CollapseCardDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -148,23 +153,24 @@ const CollapseCardDiv = styled.div`
   height: auto;
   align-items: center;
   justify-content: center;
-  margin: 1rem;
   padding: 1rem;
-
   background-color: ${props => props.theme.palette.neutral.main};
-
-  border-radius: 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  :nth-last-of-type(1) {
+    margin-bottom: 0;
+  }
 `;
 
 const CollapseCardContents = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+  flex-direction: column;
   width: 100%;
   text-align: start;
-  padding: 1rem;
+  padding: 0.6rem 1rem 0 1rem;
 
-  > div {
-    width: 30%;
+  > p {
+    margin-bottom: 0.5rem;
+    /* border-bottom: 1px solid ${props => props.theme.palette.neutral.card}; */
   }
 `;

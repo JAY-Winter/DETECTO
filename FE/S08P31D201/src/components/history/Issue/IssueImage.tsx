@@ -16,8 +16,10 @@ function IssueImage({ reportid }: { reportid: string }) {
     if (workerImage.current) {
       const { clientX, clientY } = event;
       const boundingRect = event.currentTarget.getBoundingClientRect();
-      const offsetX = clientX - boundingRect.left + (workerImage.current.clientWidth / 4)
-      const offsetY = clientY - boundingRect.top - (workerImage.current.clientHeight / 3);
+      const offsetX =
+        clientX - boundingRect.left + workerImage.current.clientWidth / 4;
+      const offsetY =
+        clientY - boundingRect.top - workerImage.current.clientHeight / 3;
       setIoffset({ x: offsetX, y: offsetY });
     }
   };
@@ -71,11 +73,11 @@ const IssueImageStyle = css`
 const IssueWorkerImageDiv = styled.div<{ open: boolean }>`
   position: absolute;
   visibility: ${props => (props.open ? 'visible' : 'hidden')};
-
   z-index: 1000;
-  `
+`;
+
 const IssueImageTitle = styled('h2')`
-  margin: 0.5rem 0 1rem 0;
+  margin: 0.5rem 0 0.8rem 0;
 
   ${mobileV} {
     width: 100%;
