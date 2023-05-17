@@ -14,30 +14,31 @@ function TableHeader() {
   return (
     <TableHead>
       <TableRow>
-        <TableCell sx={{ width: '40%' }}>
-          {sortField === 'Date' ? (
+        <TableCell align="left" sx={{ width: '20%' }}>
+          {sortField === 'Team' ? (
             <Button
               onClick={() => {
-                changeSortHandler('Date');
+                changeSortHandler('Team');
               }}
               color="primary"
               variant="contained"
             >
-              안전사항 위반 날짜
+              위반 인원
               {order === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
             </Button>
           ) : (
             <Button
               onClick={() => {
-                changeSortHandler('Date');
+                changeSortHandler('Team');
               }}
               color="inherit"
             >
-              안전사항 위반 날짜
+              작업 조
               <UnfoldMore />
             </Button>
           )}
         </TableCell>
+
         <TableCell align="left" sx={{ width: '35%' }}>
           {sortField === 'Equipment' ? (
             <Button
@@ -62,26 +63,26 @@ function TableHeader() {
             </Button>
           )}
         </TableCell>
-        <TableCell align="left" sx={{ width: '20%' }}>
-          {sortField === 'Team' ? (
+        <TableCell sx={{ width: '40%' }}>
+          {sortField === 'Date' ? (
             <Button
               onClick={() => {
-                changeSortHandler('Team');
+                changeSortHandler('Date');
               }}
               color="primary"
               variant="contained"
             >
-              작업 조
+              안전사항 위반 날짜
               {order === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
             </Button>
           ) : (
             <Button
               onClick={() => {
-                changeSortHandler('Team');
+                changeSortHandler('Date');
               }}
               color="inherit"
             >
-              작업 조
+              안전사항 위반 날짜
               <UnfoldMore />
             </Button>
           )}

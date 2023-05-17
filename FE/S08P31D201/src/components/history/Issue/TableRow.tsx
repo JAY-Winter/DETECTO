@@ -9,29 +9,45 @@ import { useRecoilValue } from 'recoil';
 import { UserInfo } from '@/store/userInfoStroe';
 import WorkerTableCollapseCard from '@components/foul/WorkerTableCollapseCard';
 
+import { EquipmentsAtom } from '@/store/EquipmentStore';
+import { css } from '@emotion/react';
+
 function Row(props: { row: ReportType }) {
   const { row } = props;
   const [open, setOpen] = useState(false);
   const userInfo = useRecoilValue(UserInfo);
+
+  const equipmentList = useRecoilValue(EquipmentsAtom);
 
   return (
     <>
       <IssueTableRow
         sx={{ '& > *': { borderBottom: 'unset' } }}
         onClick={() => setOpen(!open)}
+        open={open}
       >
+        <TableCell align="left">
+          {row.user.name} ({row.team.teamName}팀)
+        </TableCell>
+
+        <TableCell align="left">
+          {stringListFormatter(
+            row.reportItems.map(item => {
+              if (equipmentList) {
+                const foundItem = equipmentList.find(eq => eq.name === item);
+                return foundItem ? foundItem.description : '';
+              } else return '';
+            })
+          )}
+        </TableCell>
         <TableCell component="th" scope="row">
           {timeFormatter(row.time)}
         </TableCell>
-        <TableCell align="left">
-          {stringListFormatter(row.reportItems)}
-        </TableCell>
-        <TableCell align="left">{row.team.teamName}팀</TableCell>
         <TableCell align="right" padding="checkbox">
           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
         </TableCell>
       </IssueTableRow>
-      <TableRow>
+      <CollapseTableRow open={open}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             {userInfo.type === 'ADMIN' ? (
@@ -49,18 +65,19 @@ function Row(props: { row: ReportType }) {
             )}
           </Collapse>
         </TableCell>
-      </TableRow>
+      </CollapseTableRow>
     </>
   );
 }
 
 export default Row;
 
-const IssueTableRow = styled(TableRow)`
+const IssueTableRow = styled(TableRow)<{ open: boolean }>`
   th,
   td {
     padding: 0.8rem 1rem;
     border: none;
+    background-color: ${props => props.open ? props.theme.palette.neutral.cardHover : ""};
   }
 
   @media (hover: hover) {
@@ -71,5 +88,14 @@ const IssueTableRow = styled(TableRow)`
       }
       cursor: pointer;
     }
+  }
+`;
+
+const CollapseTableRow = styled(TableRow)<{ open: boolean }>`
+  th,
+  td {
+    padding: 0.8rem 1rem;
+    border: none;
+    background-color: ${props => props.theme.palette.neutral.cardHover};
   }
 `;
