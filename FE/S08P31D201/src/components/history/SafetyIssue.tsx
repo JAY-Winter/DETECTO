@@ -24,6 +24,7 @@ import useAxios from '@/hooks/useAxios';
 import { AxiosResponse } from 'axios';
 import useHistorySort from '@/hooks/useHistorySort';
 import { ReportType } from 'ReportTypes';
+import { UserInfo } from '@/store/userInfoStroe';
 
 function HistorySafetyIssue({
   pageElNum,
@@ -32,6 +33,7 @@ function HistorySafetyIssue({
   pageElNum: number;
   tabState: number;
 }) {
+  const userInfo = useRecoilValue(UserInfo);
   const [reportData, setReportData] = useRecoilState(HistoryIssue);
   const historyDate = useRecoilValue(HistoryDayAtom);
   const historyEq = useRecoilValue(HistoryEqAtom);
@@ -54,18 +56,30 @@ function HistorySafetyIssue({
     const startDate = historyDate.startDay.toISOString().slice(0, 10);
     const endDate = historyDate.endDay.toISOString().slice(0, 10);
     const eq = historyEq.toString();
+
+    let url = '';
     if (tabState === 0) {
-      setRequestObj({
-        method: 'get',
-        url: `report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`,
-      });
+      url = `report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`;
     } else if (tabState === 1) {
-      setRequestObj({
-        method: 'get',
-        url: `report?id=-1&equipments=`,
-      });
+      url = `report?equipments=`;
     }
-    // console.log(reportData);
+
+    let body = {};
+    if (userInfo.type === 'WORKER') {
+      body = {
+        id: userInfo.id,
+      };
+    } else {
+      body = {
+        id: null,
+      };
+    }
+
+    setRequestObj({
+      method: 'get',
+      url: url,
+      body: body,
+    });
   }, [historyDate, historyEq]);
 
   // 페이지네이션 state
