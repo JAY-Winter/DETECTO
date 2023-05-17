@@ -60,7 +60,7 @@ function IssueCard(issue: ReportType) {
               <h4>위반 일시</h4>
               <p>{timeFormatter(issue.time)}</p>
               <h4>소속 팀</h4>
-              <p>{issue.team.teamName}팀</p>
+              <p>{issue.team.teamName}</p>
               <h4>위반 사항</h4>
               <p>{stringListFormatter(issue.reportItems)}</p>
               <h4>위반 지역</h4>
@@ -73,7 +73,11 @@ function IssueCard(issue: ReportType) {
               <IssueImage reportid={issue.id.toString()} />
             </MobileCard>
             {userInfo.type === 'WORKER' && <RaiseIssueButton report={issue} />}
-            <MemberCard reportId={issue.id} teamList={issue.team} violate_member={issue.user} />
+            <MemberCard
+              reportId={issue.id}
+              teamList={issue.team}
+              violate_member={issue.user}
+            />
           </IssueBottomSheet>
         )}
       </ModalPortal>

@@ -15,7 +15,7 @@ function MemberCardInfo({ member, teamList, isTop }: MemberCardInfoType) {
       <img css={profileImageStyle} src={member.image} alt="" />
       <div>
         <p>{member.name}</p>
-        <p>{teamList.teamName}팀</p>
+        <p>{teamList.teamName}</p>
       </div>
       <span>{isTop && <KeyboardArrowDown />}</span>
     </>

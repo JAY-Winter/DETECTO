@@ -27,7 +27,7 @@ function Row(props: { row: ReportType }) {
         open={open}
       >
         <TableCell align="left">
-          {row.user.name} ({row.team.teamName}팀)
+          {row.user.name} ({row.team.teamName})
         </TableCell>
 
         <TableCell align="left">
@@ -77,7 +77,8 @@ const IssueTableRow = styled(TableRow)<{ open: boolean }>`
   td {
     padding: 0.8rem 1rem;
     border: none;
-    background-color: ${props => props.open ? props.theme.palette.neutral.cardHover : ""};
+    background-color: ${props =>
+      props.open ? props.theme.palette.neutral.cardHover : ''};
   }
 
   @media (hover: hover) {
