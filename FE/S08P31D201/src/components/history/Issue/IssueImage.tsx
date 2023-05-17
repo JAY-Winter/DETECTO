@@ -62,7 +62,7 @@ export default IssueImage;
 
 const IssueImageStyle = css`
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
   height: 100%;
   object-fit: cover;
   border-radius: 10px;

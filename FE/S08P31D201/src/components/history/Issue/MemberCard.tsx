@@ -4,6 +4,8 @@ import { Button, Card } from '@mui/material';
 import { TeamType, ReportUserType } from 'ReportTypes';
 import axios from 'axios';
 import { mobileV } from '@/utils/Mixin';
+import { useRecoilState } from 'recoil';
+import { HistoryIssue } from '@/store/HistoryIssue';
 import MemberCardInfo from './MemberCardInfo';
 
 function MemberCard({
@@ -23,19 +25,33 @@ function MemberCard({
   );
   const [openArcodian, setOpenArcodian] = useState<boolean>(false);
 
+  const [report, setReport] = useRecoilState(HistoryIssue);
+
   const chooseMemberHandler = (idx: number) => {
     setMemberNum(idx);
     setOpenArcodian(false);
   };
 
   const submitHandler = () => {
-    axios({
-      method: 'put',
-      url: 'https://detecto.kr/api/report',
-      data: { reportId: reportId, userId: cardList[memberNum].id },
-    })
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
+    const choose = window.confirm('정말 근로자를 새로 할당 하시겠습니까?');
+    if (choose) {
+      axios({
+        method: 'put',
+        url: 'https://detecto.kr/api/report',
+        data: { reportId: reportId, userId: cardList[memberNum].id },
+      })
+        .then(res => setReport(prev => {
+          const newList = prev.map(report => {
+            if (report.id === reportId) {
+              return {...report, user: cardList[memberNum]}
+            } else {
+              return report
+            }
+          })
+          return newList
+        }))
+        .catch(err => alert('알 수 없는 에러!'));
+    }
   };
 
   return (
