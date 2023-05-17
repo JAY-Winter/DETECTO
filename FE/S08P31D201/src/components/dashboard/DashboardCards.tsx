@@ -64,7 +64,7 @@ function HistoryCards({
 
   return (
     <HistoryCardDiv>
-      <HistoryCard linearcolor="primary">
+      <HistoryCard linearcolor="primary" elevation={1}>
         <div className="content-main">
           <div>{topEq}</div>
         </div>
@@ -73,7 +73,7 @@ function HistoryCards({
           <h4>위반 보호구 1위</h4>
         </div>
       </HistoryCard>
-      <HistoryCard linearcolor="error">
+      <HistoryCard linearcolor="error" elevation={1}>
         <div className="content-main">
           <div>{topTeam}</div>
         </div>
@@ -108,6 +108,11 @@ const HistoryCard = styled(Card)<{
 
   padding: 1rem;
   margin: 1rem;
+
+  ${mobileV} {
+    margin: 0;
+    margin-bottom: 1rem;
+  }
 
   flex-basis: calc(50% - 2rem);
 
@@ -147,7 +152,7 @@ const HistoryCard = styled(Card)<{
 
       ${mobileV} {
         height: 7rem;
-      width: 7rem;
+        width: 7rem;
       }
     }
   }

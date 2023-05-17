@@ -34,7 +34,7 @@ function Summary() {
   }, []);
 
   return (
-    <SummaryPaper elevation={0}>
+    <SummaryPaper elevation={1}>
       <SummaryItem title="24시간 내 위반사항" count={summary?.day || 0} />
       <SummaryItem title="일주일 내 위반사항" count={summary?.week || 0} />
       <SummaryItem title="한 달 내 위반사항" count={summary?.month || 0} />

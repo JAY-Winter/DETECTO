@@ -5,11 +5,11 @@ import HistoryObjection from '@components/history/HistoryObjection';
 import HistorySafetyIssue from '@components/history/SafetyIssue';
 import HistorySummary from '@components/history/Summary';
 import styled from '@emotion/styled';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { Button, ButtonGroup } from '@mui/material';
+import { useState } from 'react';
 
 function HistoryPage() {
-  const tablist = ['전체 목록', '인원 미지정', '이의 제기'];
+  const tablist = ['전체 목록', '미지정 인원 목록', '이의 제기 목록'];
 
   const [tabState, setTabState] = useState<number>(0);
 
@@ -19,20 +19,27 @@ function HistoryPage() {
 
   return (
     <HistoryDiv>
-      <HistoryTitle>위반 목록</HistoryTitle>
-      <HistoryTabDiv>
-        <HistoryTabul>
-          {tablist.map((tab, idx) => (
-            <HistoryTabli
-              key={tab + idx}
-              istab={tabState === idx}
-              onClick={() => listChangeHandler(idx)}
-            >
-              {tab}
-            </HistoryTabli>
-          ))}
-        </HistoryTabul>
-      </HistoryTabDiv>
+      <HistoryTitle>
+        <h1>
+          위반 목록 <span>{'>'}</span>
+        </h1>
+        <HistoryTabDiv>
+          <ButtonGroup
+            variant="contained"
+            aria-label="outlined primary button group"
+          >
+            {tablist.map((tab, idx) => (
+              <ButtonStyle
+                key={tab + idx}
+                istab={tabState === idx}
+                onClick={() => listChangeHandler(idx)}
+              >
+                {tab}
+              </ButtonStyle>
+            ))}
+          </ButtonGroup>
+        </HistoryTabDiv>
+      </HistoryTitle>
       {tabState === 0 ? (
         <>
           <HistorySummary />
@@ -55,50 +62,6 @@ function HistoryPage() {
 
 export default HistoryPage;
 
-const HistoryTabDiv = styled.div`
-  width: 100%;
-`;
-
-const HistoryTabul = styled.ul`
-  display: flex;
-  flex-direction: row;
-`;
-
-const HistoryTabli = styled.li<{ istab: boolean }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-basis: calc(100% / 3);
-
-  height: 3rem;
-  width: 100%;
-
-  border-top: ${props => `1px solid ${props.theme.palette.primary.main}`};
-  border-left: ${props => `1px solid ${props.theme.palette.primary.main}`};
-  border-right: ${props => `1px solid ${props.theme.palette.primary.main}`};
-  border-radius: 1rem 1rem 0 0;
-
-  background-color: ${props =>
-    props.istab
-      ? props.theme.palette.neutral.main
-      : props.theme.palette.primary.main};
-  color: ${props =>
-    props.istab
-      ? props.theme.palette.neutral.opposite
-      : props.theme.palette.primary.contrastText};
-
-  transition: 0.3s ease all;
-
-  list-style: none;
-`;
-
-const HistoryTitle = styled.div`
-  width: 100%;
-  font-weight: bold;
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-`;
-
 const HistoryDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -106,6 +69,59 @@ const HistoryDiv = styled.div`
   padding: 2.5rem 2rem;
   ${mobileV} {
     align-items: normal;
+  }
+`;
+
+const HistoryTitle = styled.div`
+  width: 100%;
+  margin-bottom: 1.8rem;
+  display: flex;
+
+  h1 {
+    min-width: fit-content;
+    span {
+      margin: 0 1rem 0 0.5rem;
+      color: ${props => props.theme.palette.primary.main};
+    }
+  }
+
+  ${mobileV} {
+    flex-direction: column;
+  }
+`;
+
+const HistoryTabDiv = styled.div`
+  width: 100%;
+
+  ${mobileV} {
+    margin-top: 1rem;
+    > div {
+      width: 100%;
+      display: flex;
+    }
+  }
+`;
+
+const ButtonStyle = styled(Button)<{ istab: boolean }>`
+  word-break: keep-all;
+  background-color: ${props =>
+    props.istab
+      ? props.theme.palette.primary.main
+      : props.theme.palette.primary.contrastText};
+
+  color: ${props =>
+    props.istab
+      ? props.theme.palette.primary.contrastText
+      : props.theme.palette.primary.main};
+
+  :hover {
+    background-color: ${props => props.theme.palette.primary.main};
+    color: ${props => props.theme.palette.primary.contrastText};
+  }
+
+  ${mobileV} {
+    font-size: 0.8rem;
+    flex-basis: 33%;
   }
 `;
 

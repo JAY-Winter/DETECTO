@@ -129,7 +129,7 @@ function HistorySafetyIssue({
 
   return (
     <>
-      <IssueTableContainer elevation={0}>
+      <IssueTableContainer elevation={1}>
         <Table stickyHeader aria-label="collapsible table">
           <TableHeader />
           <TableBody>

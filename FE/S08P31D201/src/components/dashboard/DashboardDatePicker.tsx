@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import {  Tabs, Tab, Box, Paper } from '@mui/material';
+import { Tabs, Tab, Box, Paper } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import dayjs, { Dayjs } from 'dayjs';
-import {
-  KeyboardArrowDown,
-  KeyboardArrowUp,
-} from '@mui/icons-material';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { mobileV } from '@/utils/Mixin';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -24,31 +21,46 @@ function DashboardDatePicker() {
 
   // MUI 탭 onChange + 년도, 월로 바꿀때 값을 같이 바꿈
   const tabChange = (event: React.SyntheticEvent, newValue: number) => {
-    switch(newValue) {
+    switch (newValue) {
       case 1:
-        setDate({startDay: dayjs().startOf('month').add(1, 'day'), endDay: dayjs().endOf('month')})
-        break
+        setDate({
+          startDay: dayjs().startOf('month').add(1, 'day'),
+          endDay: dayjs().endOf('month'),
+        });
+        break;
       case 0:
-        setDate({startDay: dayjs().startOf('year').add(1, 'day'), endDay: dayjs().endOf('year')})
-        break
+        setDate({
+          startDay: dayjs().startOf('year').add(1, 'day'),
+          endDay: dayjs().endOf('year'),
+        });
+        break;
     }
     setTabValue(newValue);
   };
 
-  const DateChangeHandler = (newValue: Dayjs | null, type: "month" | "year") => {
+  const DateChangeHandler = (
+    newValue: Dayjs | null,
+    type: 'month' | 'year'
+  ) => {
     if (newValue)
-    switch(type) {
-      case 'month':
-        setDate({startDay: newValue?.startOf('month').add(1, 'day'), endDay: newValue?.endOf('month')})
-        break
-      case 'year':
-        setDate({startDay: newValue?.startOf('year').add(1, 'day'), endDay: newValue?.endOf('year')})
-        break
-    }
-  }
+      switch (type) {
+        case 'month':
+          setDate({
+            startDay: newValue?.startOf('month').add(1, 'day'),
+            endDay: newValue?.endOf('month'),
+          });
+          break;
+        case 'year':
+          setDate({
+            startDay: newValue?.startOf('year').add(1, 'day'),
+            endDay: newValue?.endOf('year'),
+          });
+          break;
+      }
+  };
 
   return (
-    <DatePaper elevation={0}>
+    <DatePaper elevation={1}>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
       <DateHeaderDiv
         onClick={() => {
@@ -57,7 +69,7 @@ function DashboardDatePicker() {
       >
         <div>
           {mobileOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
-          기간 선택
+          <span>기간 선택</span>
         </div>
       </DateHeaderDiv>
       {/* mobileopen props를 통해 모바일에서 드롭다운 표시 */}
@@ -67,16 +79,23 @@ function DashboardDatePicker() {
           <Tabs
             value={tabValue}
             onChange={tabChange}
-            sx={{ marginBottom: '1rem' }}
+            sx={{ marginBottom: '1.5rem' }}
           >
-            <Tab label="년도 기준" value={0} />
+            <Tab label="연도 기준" value={0} />
             <Tab label="월 기준" value={1} />
           </Tabs>
           {/* 탭 패널 */}
           <div hidden={tabValue !== 0}>
             <TabPanelDiv>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker label={'년도 선택'} views={['year']} value={date.startDay} onChange={(newValue: Dayjs | null) => DateChangeHandler(newValue, "year")}/>
+                <DatePicker
+                  label={'연도 선택'}
+                  views={['year']}
+                  value={date.startDay}
+                  onChange={(newValue: Dayjs | null) =>
+                    DateChangeHandler(newValue, 'year')
+                  }
+                />
               </LocalizationProvider>
             </TabPanelDiv>
           </div>
@@ -86,9 +105,11 @@ function DashboardDatePicker() {
                 <DatePicker
                   label="월 선택"
                   views={['year', 'month']}
-                  format={"YYYY-MM"}
+                  format={'YYYY-MM'}
                   value={date.startDay}
-                  onChange={(newValue: Dayjs | null) => DateChangeHandler(newValue, "month")}
+                  onChange={(newValue: Dayjs | null) =>
+                    DateChangeHandler(newValue, 'month')
+                  }
                 />
               </LocalizationProvider>
             </TabPanelDiv>
@@ -104,11 +125,17 @@ export default DashboardDatePicker;
 const DatePaper = styled(Paper)`
   background-color: ${props => props.theme.palette.neutral.section};
   border-radius: 10px;
-  width: 100%;
-  padding: 1.5rem;
+  width: calc(100% - 2rem);
+  padding: 0.5rem 1.5rem 1.3rem 1.5rem;
   margin: 1rem;
 
   transition: 0.2s all ease;
+
+  ${mobileV} {
+    width: 100%;
+    margin: 0;
+    margin-bottom: 1rem;
+  }
 `;
 
 const DateHeaderDiv = styled.div`
@@ -122,11 +149,17 @@ const DateHeaderDiv = styled.div`
     svg {
       display: none;
     }
+    span {
+      display: none;
+    }
   }
 
   ${mobileV} {
     margin-bottom: 0;
     div {
+      span {
+        display: block;
+      }
       svg {
         display: block;
       }
