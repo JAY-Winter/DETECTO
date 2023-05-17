@@ -1,4 +1,4 @@
-import cv2, json, base64
+import cv2, json, base64, time, queue
 import numpy as np
 from datetime import datetime
 from main.distance.is_detect import detect_non_wearing
@@ -81,11 +81,13 @@ def distance(point1, point2):
 # 이미지 처리
 def calculate():
     while True:
+        start_time = time.time()
         with app.app_context():
+            start_time3 = time.time()
             item = q.get()
             if item is None:
                 continue
-            q.all_tasks_done
+            print("큐빼는 속도 시간",str(time.time()-start_time3))
             cctv_id, img = item
             # q.task_done()
         # yolo_images = []
@@ -95,7 +97,8 @@ def calculate():
         # 사진마다 YOLO 적용
         # for i in imglist:
 
-            img = cv2.resize(img, (640, 640))
+            # img = cv2.resize(img, (640, 640))
+            start_time3 = time.time()
             results = model(img, conf=0.5,device="0")
             year = 23
             cctv_number = cctv_id
@@ -104,6 +107,7 @@ def calculate():
             # partition_key = 133
             kafka_topic = f'cctv.{cctv_number}.{year}'
             yolo_image = results[0].plot()
+            # _, img_encoded = cv2.imencode('.jpg', yolo_image)
             _, img_encoded = cv2.imencode('.jpg', yolo_image)
             
             encoded_frame = base64.b64encode(img_encoded).decode('utf8')
@@ -119,7 +123,11 @@ def calculate():
                 partition=partition_key,
             )
             kafka_producer.flush()
+            print("카프카 전송 소모 시간",str(time.time()-start_time3))
+
+            start_time3 = time.time()
             human_detect = findHuman(results[0].boxes)
+            print("계산 소모 시간",str(time.time()-start_time3))
             # yolo_class = results[0].boxes.cls
 
             # cctv ~ 사람 거리
@@ -136,6 +144,10 @@ def calculate():
             # print('mean: ', mean_coord)
 
             # DB에 미착용자 저장
-            save_non_wear(cctv_id,human_detect, yolo_image, img, face_model)
+            if len(human_detect) != 0:
+                start_time2 = time.time()
+                save_non_wear(cctv_id,human_detect, yolo_image, img, face_model)
+                print("총 소모 시간",str(time.time()-start_time2))
+            print("총 소모 시간",str(time.time()-start_time))
 
     return
