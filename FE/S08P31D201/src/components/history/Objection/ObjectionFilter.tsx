@@ -8,12 +8,18 @@ import {
 import { Button, Chip, Paper } from '@mui/material';
 import React, { useState } from 'react';
 
-function ObjectionFilter({obFilter, setFilterOb}: {obFilter: string[], setFilterOb: (obState: string[]) => void}) {
+function ObjectionFilter({
+  obFilter,
+  setFilterOb,
+}: {
+  obFilter: string[];
+  setFilterOb: (obState: string[]) => void;
+}) {
   // 모바일 드롭다운 State
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const resetFilterEq = () => {
-    setFilterOb([])
+    setFilterOb([]);
   };
 
   return (
@@ -26,7 +32,7 @@ function ObjectionFilter({obFilter, setFilterOb}: {obFilter: string[], setFilter
       >
         <div>
           {mobileOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
-          이의 상태 선택
+          이의 처리 상태
         </div>
         <Button
           onClick={e => {
@@ -42,27 +48,30 @@ function ObjectionFilter({obFilter, setFilterOb}: {obFilter: string[], setFilter
       {/* 모바일이 아닐 경우 항상 표시 됨 */}
       <FilterContentDiv mobileopen={mobileOpen}>
         <ObjectionChip
-          label={"이의 거절"}
+          label={'이의 거절'}
           color="primary"
-          variant={obFilter.includes("REJECTED") ? 'filled' : 'outlined'}
+          variant={obFilter.includes('REJECTED') ? 'filled' : 'outlined'}
           onClick={() => {
-            setFilterOb(["REJECTED"])}}
+            setFilterOb(['REJECTED']);
+          }}
           clickable
         />
         <ObjectionChip
-          label={"이의 처리 중"}
+          label={'이의 대기'}
           color="primary"
-          variant={obFilter.includes("PENDING") ? 'filled' : 'outlined'}
+          variant={obFilter.includes('PENDING') ? 'filled' : 'outlined'}
           onClick={() => {
-            setFilterOb(["PENDING"])}}
+            setFilterOb(['PENDING']);
+          }}
           clickable
         />
         <ObjectionChip
-          label={"이의 승낙"}
+          label={'이의 승낙'}
           color="primary"
-          variant={obFilter.includes("APPLIED") ? 'filled' : 'outlined'}
+          variant={obFilter.includes('APPLIED') ? 'filled' : 'outlined'}
           onClick={() => {
-            setFilterOb(["APPLIED"])}}
+            setFilterOb(['APPLIED']);
+          }}
           clickable
         />
       </FilterContentDiv>
@@ -134,5 +143,5 @@ const FilterContentDiv = styled.div<{ mobileopen: boolean }>`
 
 const ObjectionChip = styled(Chip)`
   font-size: 1rem;
-  margin: 0 0 0.5rem 0.5rem;
+  margin-right: 0.5rem;
 `;

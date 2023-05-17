@@ -99,42 +99,40 @@ function CardCollapse({ objectionIssue }: { objectionIssue: IssueType }) {
           setUserId={setUserIdHandler}
         />
       </ObjectImgMemberDiv>
-      <TextFieldStyle
-        label="이의 메시지"
-        placeholder="근로자에게 전송할 메시지를 입력해주세요."
-        variant="filled"
-        onChange={inputHandler}
-        // onKeyDown={keyDownHandler}
-      />
-      <ButtonDiv>
-        <Button
-          color="error"
-          variant="contained"
-          onClick={rejectHandler}
-          disabled={objectionIssue.status !== 'PENDING'}
-        >
-          이의 거절
-        </Button>
-        <Button
-          color="secondary"
-          variant="contained"
-          onClick={removeHandler}
-          disabled={objectionIssue.status !== 'PENDING'}
-        >
-          리포트 삭제
-        </Button>
-        <Button
-          color="success"
-          variant="contained"
-          onClick={applyHandler}
-          disabled={
-            violateUser[0].id === currentUser ||
-            objectionIssue.status !== 'PENDING'
-          }
-        >
-          이의 승낙 및 근로자 재할당
-        </Button>
-      </ButtonDiv>
+      {objectionIssue.status === 'PENDING' && (
+        <>
+          <TextFieldStyle
+            label="승낙 및 거절 사유"
+            placeholder="근로자에게 전송할 메시지를 입력해주세요."
+            variant="filled"
+            onChange={inputHandler}
+            // onKeyDown={keyDownHandler}
+          />
+          <ButtonDiv>
+            <Button
+              color="error"
+              variant="contained"
+              onClick={rejectHandler}
+              disabled={objectionIssue.status !== 'PENDING'}
+            >
+              이의 거절
+            </Button>
+            <Button
+              variant="contained"
+              onClick={applyHandler}
+              disabled={
+                violateUser[0].id === currentUser ||
+                objectionIssue.status !== 'PENDING'
+              }
+            >
+              이의 승낙 및 근로자 재할당
+            </Button>
+          </ButtonDiv>
+        </>
+      )}
+      <ButtonWrapper>
+        <Button onClick={removeHandler}>위반 내역 삭제</Button>
+      </ButtonWrapper>
     </CardCollapseDiv>
   );
 }
@@ -148,6 +146,7 @@ const CardCollapseDiv = styled.div`
 
 const TextFieldStyle = styled(TextField)`
   margin: 1rem;
+  margin-top: 2rem;
 
   label {
     font-size: 1rem;
@@ -158,7 +157,8 @@ const TextFieldStyle = styled(TextField)`
   }
 
   ${mobileV} {
-    margin-right: 0;
+    margin: 0;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -173,21 +173,25 @@ const ObjectImgMemberDiv = styled.div`
   }
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin: 1.3rem 0.5rem 0.5rem 0;
+`;
+
 const ButtonDiv = styled.div`
   display: flex;
-  flex-direction: row;
+  justify-content: flex-end;
 
   button {
-    flex-basis: 33%;
-
-    margin: 1rem;
+    margin-right: 1rem;
   }
 
-  ${tabletV} {
-    flex-direction: column;
-
+  ${mobileV} {
     button {
-      flex-direction: 100%;
+      margin-right: 0;
+      margin-left: 0.5rem;
+      font-size: 0.8rem;
     }
   }
 `;
