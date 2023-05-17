@@ -30,6 +30,7 @@ declare module 'ReportTypes' {
     id: number;
     image: string;
     name: string;
+    type: 'ADMIN' | 'WORKER';
   };
   export type DateFilterType = {
     [key: string]: Dayjs;
