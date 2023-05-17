@@ -56,9 +56,6 @@ function IssueCard(issue: ReportType) {
         {isOpen && (
           <IssueBottomSheet handler={bottomSheetHandler}>
             <MobileCard>
-              <IssueImage reportid={issue.id.toString()} />
-            </MobileCard>
-            <MobileCard>
               <h1>위반 내역</h1>
               <h4>위반 일시</h4>
               <p>{timeFormatter(issue.time)}</p>
