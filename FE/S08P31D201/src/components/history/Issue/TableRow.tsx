@@ -77,7 +77,7 @@ const IssueTableRow = styled(TableRow)<{ open: boolean }>`
     padding-left: 1.5rem;
     border: none;
     background-color: ${props =>
-      props.open ? props.theme.palette.neutral.cardHover : ''};
+      props.open ? props.theme.palette.neutral.card : ''};
   }
 
   @media (hover: hover) {
@@ -95,7 +95,6 @@ const CollapseTableRow = styled(TableRow)<{ open: boolean }>`
   th,
   td {
     padding: 0.8rem 1.5rem;
-    border: none;
-    background-color: ${props => props.theme.palette.neutral.cardHover};
+    background-color: ${props => props.theme.palette.neutral.card};
   }
 `;

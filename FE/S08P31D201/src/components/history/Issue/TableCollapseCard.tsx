@@ -107,7 +107,7 @@ const TableCollapseDiv = styled.div`
   position: relative;
   width: 100%;
   height: auto;
-  background-color: ${props => props.theme.palette.neutral.cardHover};
+  background-color: ${props => props.theme.palette.neutral.card};
   border-radius: 10px;
   margin: 1rem 0;
 `;
