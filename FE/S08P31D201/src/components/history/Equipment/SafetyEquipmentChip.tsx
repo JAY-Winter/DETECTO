@@ -40,7 +40,7 @@ function EquipmentChips({equipments}: {equipments: EquipmentType[]}) {
       {equipments.map(equipment => {
         if (equipment.able)
         return (
-          <SafetyEquipmentChip eqLabel={equipment.name} key={equipment.name} />
+          <SafetyEquipmentChip eqLabel={equipment.description} key={equipment.name} />
         );
       })}
     </>
