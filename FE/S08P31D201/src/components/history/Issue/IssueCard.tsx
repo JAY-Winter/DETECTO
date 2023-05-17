@@ -13,12 +13,31 @@ import styled from '@emotion/styled';
 import { ReportType } from 'ReportTypes';
 import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
 import RaiseIssueButton from '@components/RaiseIssue/RaiseIssueButton';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { UserInfo } from '@/store/userInfoStroe';
+import { HistoryIssue } from '@/store/HistoryIssue';
+import axios from 'axios';
+import { Button, Paper } from '@mui/material';
 
 function IssueCard(issue: ReportType) {
   const { bottomSheetHandler, isOpen, open } = useBottomSheet();
   const userInfo = useRecoilValue(UserInfo);
+  const [reportList, setReportList] = useRecoilState(HistoryIssue);
+
+  const removeHandler = () => {
+    const remove = window.confirm('정말 리포트를 삭제 하시겠습니까?');
+    if (remove) {
+      console.log('삭제 눌렸습니다!');
+      axios({
+        method: 'delete',
+        url: `https://detecto.kr/api/report/${issue.id}`,
+      })
+        .then(res =>
+          setReportList(prev => prev.filter(report => report.id !== issue.id))
+        )
+        .catch(err => console.log(err));
+    }
+  };
 
   return (
     <>
@@ -33,7 +52,7 @@ function IssueCard(issue: ReportType) {
               {issue.user.id !== -1 ? issue.user.name[0] : 'X'}
             </Avatar>
           }
-          title={'위반날짜 : ' + timeFormatter(issue.time)}
+          title={timeFormatter(issue.time).replace('-', ' ')}
           subheader={
             issue.user?.name === undefined
               ? '위반자 : 미지정'
@@ -56,11 +75,16 @@ function IssueCard(issue: ReportType) {
         {isOpen && (
           <IssueBottomSheet handler={bottomSheetHandler}>
             <MobileCard>
+              <IssueImage reportid={issue.id.toString()} />
+            </MobileCard>
+            <MobileCard>
               <h1>위반 내역</h1>
               <h4>위반 일시</h4>
               <p>{timeFormatter(issue.time)}</p>
-              <h4>소속 팀</h4>
-              <p>{issue.team.teamName}</p>
+              <h4>위반 작업자</h4>
+              <p>
+                {issue.user.name} ({issue.team.teamName})
+              </p>
               <h4>위반 사항</h4>
               <p>{stringListFormatter(issue.reportItems)}</p>
               <h4>위반 지역</h4>
@@ -69,15 +93,30 @@ function IssueCard(issue: ReportType) {
                 <RaiseIssueButton report={issue} />
               )}
             </MobileCard>
-            <MobileCard>
-              <IssueImage reportid={issue.id.toString()} />
-            </MobileCard>
             {userInfo.type === 'WORKER' && <RaiseIssueButton report={issue} />}
-            <MemberCard
-              reportId={issue.id}
-              teamList={issue.team}
-              violate_member={issue.user}
-            />
+            <Paper
+              sx={{
+                margin: '0 1rem',
+                borderRadius: '5px',
+                padding: '1rem 0.5rem 0.2rem 0.5rem',
+              }}
+            >
+              <MemberCard
+                reportId={issue.id}
+                teamList={issue.team}
+                violate_member={issue.user}
+              />
+            </Paper>
+            <Button
+              sx={{
+                float: 'right',
+                margin: '0.8rem 1rem 0.5rem 0',
+                color: 'error.main',
+              }}
+              onClick={removeHandler}
+            >
+              위반 내역 삭제
+            </Button>
           </IssueBottomSheet>
         )}
       </ModalPortal>

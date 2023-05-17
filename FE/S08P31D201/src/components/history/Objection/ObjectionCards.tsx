@@ -19,7 +19,6 @@ import SamLogoDark from '@/assets/img/samlogoDark.svg';
 import { css, useTheme } from '@emotion/react';
 
 const ObjectionCard = ({ objectionIssue }: { objectionIssue: IssueType }) => {
-  
   return (
     <IssueWrapper>
       <PaperStyle state={objectionIssue.status} elevation={3}>
@@ -116,23 +115,6 @@ const AccordionSummaryStyle = styled(AccordionSummary)`
   }
 `;
 
-const TextFieldStyle = styled(TextField)`
-  width: 100%;
-  margin-right: 0.5rem;
-
-  label {
-    font-size: 1rem;
-  }
-
-  input::placeholder {
-    font-size: 1rem;
-  }
-
-  ${mobileV} {
-    margin-right: 0;
-  }
-`;
-
 const NoContentDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -148,7 +130,5 @@ const NoContentDiv = styled.div`
 const logoContainer = css`
   width: 100%;
   height: 3rem;
-  /* padding: 0px 10px; */
-  /* margin-left: 10px; */
   margin: 10px 0px 30px 0px;
 `;

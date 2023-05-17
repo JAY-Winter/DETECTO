@@ -5,6 +5,7 @@ import { mobileV } from '@/utils/Mixin';
 import { IssueType } from 'IssueTypes';
 import IssueInfo from './IssueInfo';
 import RowText from './RowText';
+import { css } from '@emotion/react';
 
 function IssueItemTop({ issue }: { issue: IssueType }) {
   const statusFormatter = (status: IssueType['status']) => {
@@ -20,7 +21,7 @@ function IssueItemTop({ issue }: { issue: IssueType }) {
           {statusFormatter(issue.status)}
         </ChipStyle>
       </CellStyle>
-      <CellStyle style={{ minWidth: '14rem' }}>
+      <CellStyle css={DateCellStyle}>
         <RowText title="신청 일자" content={timeFormatter(issue.createdAt)} />
       </CellStyle>
       <CellStyle style={{ width: '100%' }}>
@@ -49,6 +50,13 @@ const CellStyle = styled.div`
 
   ${mobileV} {
     border-left: none;
+  }
+`;
+
+const DateCellStyle = css`
+  min-width: 20rem;
+  ${mobileV} {
+    min-width: 10rem;
   }
 `;
 

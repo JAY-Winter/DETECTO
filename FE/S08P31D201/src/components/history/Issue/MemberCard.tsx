@@ -40,23 +40,25 @@ function MemberCard({
         url: 'https://detecto.kr/api/report',
         data: { reportId: reportId, userId: cardList[memberNum].id },
       })
-        .then(res => setReport(prev => {
-          const newList = prev.map(report => {
-            if (report.id === reportId) {
-              return {...report, user: cardList[memberNum]}
-            } else {
-              return report
-            }
+        .then(res =>
+          setReport(prev => {
+            const newList = prev.map(report => {
+              if (report.id === reportId) {
+                return { ...report, user: cardList[memberNum] };
+              } else {
+                return report;
+              }
+            });
+            return newList;
           })
-          return newList
-        }))
+        )
         .catch(err => alert('알 수 없는 에러!'));
     }
   };
 
   return (
     <MemberCardDiv>
-      <h2 style={{ margin: '0.5rem 0 1rem 0' }}>위반 사원</h2>
+      <h2 style={{ marginBottom: '0.5rem' }}>위반 사원</h2>
       <ProfileCard
         onMouseEnter={() => {
           setOpenArcodian(true);
@@ -106,7 +108,7 @@ function MemberCard({
 
       <Button
         variant="contained"
-        sx={{ width: '100%', maxWidth: '350px' }}
+        sx={{ width: '100%', maxWidth: '350px', marginTop: '1rem' }}
         onClick={submitHandler}
       >
         위반사원 수정
@@ -126,6 +128,14 @@ const MemberCardDiv = styled.div`
 
   ${mobileV} {
     height: fit-content;
+    & > button {
+      margin: 0 0 1rem 0;
+    }
+    & > h2 {
+      width: 100%;
+      font-size: 2rem;
+      margin-left: 0.2rem;
+    }
   }
 `;
 
@@ -172,13 +182,15 @@ const SelectWorkerWrapper = styled.div<{ open: boolean }>`
   position: absolute;
   top: 8rem;
   left: 0;
-  height: ${props => (props.open ? '18rem' : 0)};
+  height: fit-content;
   width: 100%;
   padding-top: 0.3rem;
+  margin-top: 0.1rem;
   transition: height 0.2s ease;
   overflow-y: auto;
   z-index: 999;
   border-radius: 10px;
+  background-color: ${props => props.theme.palette.neutral.main};
 
   ::-webkit-scrollbar {
     width: 6px; /* 스크롤바의 너비 */

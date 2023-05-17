@@ -8,9 +8,7 @@ import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
 import { useRecoilValue } from 'recoil';
 import { UserInfo } from '@/store/userInfoStroe';
 import WorkerTableCollapseCard from '@components/foul/WorkerTableCollapseCard';
-
 import { EquipmentsAtom } from '@/store/EquipmentStore';
-import { css } from '@emotion/react';
 
 function Row(props: { row: ReportType }) {
   const { row } = props;
@@ -27,9 +25,9 @@ function Row(props: { row: ReportType }) {
         open={open}
       >
         <TableCell align="left">
-          {row.user.name} ({row.team.teamName})
+          <span style={{ fontWeight: 'bold' }}>{row.user.name}</span> (
+          {row.team.teamName})
         </TableCell>
-
         <TableCell align="left">
           {stringListFormatter(
             row.reportItems.map(item => {
@@ -76,9 +74,10 @@ const IssueTableRow = styled(TableRow)<{ open: boolean }>`
   th,
   td {
     padding: 0.8rem 1rem;
+    padding-left: 1.5rem;
     border: none;
     background-color: ${props =>
-      props.open ? props.theme.palette.neutral.cardHover : ''};
+      props.open ? props.theme.palette.neutral.card : ''};
   }
 
   @media (hover: hover) {
@@ -95,8 +94,7 @@ const IssueTableRow = styled(TableRow)<{ open: boolean }>`
 const CollapseTableRow = styled(TableRow)<{ open: boolean }>`
   th,
   td {
-    padding: 0.8rem 1rem;
-    border: none;
-    background-color: ${props => props.theme.palette.neutral.cardHover};
+    padding: 0.8rem 1.5rem;
+    background-color: ${props => props.theme.palette.neutral.card};
   }
 `;
