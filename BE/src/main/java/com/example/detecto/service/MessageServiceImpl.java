@@ -67,41 +67,75 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void sendMessage(int id){
-        // id를 통해서 fcmToken 가져오기
-        User user = userRepository.findById(id).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
-
-        StringTokenizer st = new StringTokenizer(user.getToken());
-
-        String endpoint = st.nextToken();
-        String p256dh = st.nextToken();
-        String auth = st.nextToken();
-
-        log.info(endpoint);
-        log.info(p256dh);
-        log.info(auth);
-
-
-        try {
-
-            PushService pushService = new PushService(
-                    "BNTfmBKaXrAYZD2GMXsIs4I4BzvvJcR4yJRkJ9SN1xUmO0kTxB1OgSpe0njYaBpaW-SvJipp5oYlyUXn8-9v3LE",
-                    "et70mIvLIq8_y2EkhTIgb2TunRj58Nqf5-xAB4sZ1B8",
-                    "mailto:tasdvzsv123est@naver.com"
-            );
-
-            Subscription.Keys keys = new Subscription.Keys(p256dh, auth);
-            Subscription sub = new Subscription(endpoint,keys);
-
-
-            String payload = "{\"title\":\"위반사항 안내\", \"body\" :\"" + user.getName() + "님께서는 보호구 착용을 위반하였습니다. \\n 이의제기를 원하시면 홈페이지를 방문해주세요.\"}";
-            Notification notification = new Notification(sub, payload);
-
-
-            pushService.send(notification);
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            throw new MessageException("Push 알람이 error로 인해 실패하였습니다.");
-        }
+//        // id를 통해서 fcmToken 가져오기
+//        User user = userRepository.findById(id).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+//
+//        StringTokenizer st = new StringTokenizer(user.getToken());
+//
+//        String endpoint = st.nextToken();
+//        String p256dh = st.nextToken();
+//        String auth = st.nextToken();
+//
+//        log.info(endpoint);
+//        log.info(p256dh);
+//        log.info(auth);
+//
+//
+//        try {
+//
+//            PushService pushService = new PushService(
+//                    "BNTfmBKaXrAYZD2GMXsIs4I4BzvvJcR4yJRkJ9SN1xUmO0kTxB1OgSpe0njYaBpaW-SvJipp5oYlyUXn8-9v3LE",
+//                    "et70mIvLIq8_y2EkhTIgb2TunRj58Nqf5-xAB4sZ1B8",
+//                    "mailto:tasdvzsv123est@naver.com"
+//            );
+//
+//            Subscription.Keys keys = new Subscription.Keys(p256dh, auth);
+//            Subscription sub = new Subscription(endpoint,keys);
+//
+//
+//            String payload = "{\"title\":\"위반사항 안내\", \"body\" :\"" + user.getName() + "님께서는 보호구 착용을 위반하였습니다. \\n 이의제기를 원하시면 홈페이지를 방문해주세요.\"}";
+//            Notification notification = new Notification(sub, payload);
+//
+//
+//            pushService.send(notification);
+//        } catch (Exception e) {
+//            log.info(e.getMessage());
+//            throw new MessageException("Push 알람이 error로 인해 실패하였습니다.");
+//        }
+//
+//        User admin = userRepository.findById(730808).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+//
+//        st = new StringTokenizer(admin.getToken());
+//
+//        endpoint = st.nextToken();
+//        p256dh = st.nextToken();
+//        auth = st.nextToken();
+//
+//        log.info(endpoint);
+//        log.info(p256dh);
+//        log.info(auth);
+//
+//        try {
+//
+//            PushService pushService = new PushService(
+//                    "BNTfmBKaXrAYZD2GMXsIs4I4BzvvJcR4yJRkJ9SN1xUmO0kTxB1OgSpe0njYaBpaW-SvJipp5oYlyUXn8-9v3LE",
+//                    "et70mIvLIq8_y2EkhTIgb2TunRj58Nqf5-xAB4sZ1B8",
+//                    "mailto:tasdvzsv123est@naver.com"
+//            );
+//
+//            Subscription.Keys keys = new Subscription.Keys(p256dh, auth);
+//            Subscription sub = new Subscription(endpoint,keys);
+//
+//
+//            String payload = "{\"title\":\"위반인원 안내\", \"body\" :\"" + user.getName() + "님께서는 보호구 착용을 위반하였습니다.\"}";
+//            Notification notification = new Notification(sub, payload);
+//
+//
+//            pushService.send(notification);
+//        } catch (Exception e) {
+//            log.info(e.getMessage());
+//            throw new MessageException("Push 알람이 error로 인해 실패하였습니다.");
+//        }
 
     }
 
