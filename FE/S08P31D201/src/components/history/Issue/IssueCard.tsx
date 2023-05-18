@@ -53,7 +53,12 @@ function IssueCard(issue: ReportType) {
               {issue.user.id !== -1 ? issue.user.name[0] : 'X'}
             </Avatar>
           }
-          title={timeFormatter(issue.time).replace('-', ' ')}
+          title={
+            <div style={{ marginBottom: '0.2rem' }}>
+              <p>{timeFormatter(issue.time).split('-')[0]}</p>
+              <p>{timeFormatter(issue.time).split('-')[1]}</p>
+            </div>
+          }
           subheader={
             issue.user?.name === undefined
               ? '위반자 : 미지정'
@@ -100,9 +105,13 @@ function IssueCard(issue: ReportType) {
                 )}
               </p>
               <h4>위반 지역</h4>
-              <p>{issue.cctvArea}번 구역</p>
+              <p>{issue.cctvArea + 1}번 구역</p>
             </MobileCard>
-            {userInfo.type === 'WORKER' && <RaiseIssueButton report={issue} />}
+            {userInfo.type === 'WORKER' && (
+              <div style={{ marginBottom: '5rem' }}>
+                <RaiseIssueButton report={issue} />
+              </div>
+            )}
             {userInfo.type === 'ADMIN' && (
               <>
                 <Paper
