@@ -6,6 +6,7 @@ import useAxios from '@/hooks/useAxios';
 import { AxiosResponse } from 'axios';
 import { useRecoilValue } from 'recoil';
 import { UserInfo } from '@/store/userInfoStroe';
+import { mobileV } from '@/utils/Mixin';
 
 type summaryResponse = {
   day: number;
@@ -54,4 +55,8 @@ const SummaryPaper = styled(Paper)`
   transition: 0.2s all ease;
   background-color: ${props => props.theme.palette.neutral.section};
   border-radius: 10px;
+
+  ${mobileV} {
+    padding: 1rem;
+  }
 `;

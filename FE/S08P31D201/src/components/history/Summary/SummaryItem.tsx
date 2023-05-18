@@ -34,6 +34,10 @@ const SummaryDiv = styled('div')`
     margin-right: 0;
     border-right: none;
   }
+
+  ${mobileV} {
+    margin-right: 0.3rem;
+  }
 `;
 
 const SummaryTitleDiv = styled('div')`
@@ -51,6 +55,6 @@ const SummaryNumberDiv = styled('div')`
   display: flex;
   align-items: center;
   ${mobileV} {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 `;
