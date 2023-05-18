@@ -1,4 +1,4 @@
-import { tabletV } from '@/utils/Mixin';
+import { mobileV, tabletV } from '@/utils/Mixin';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
@@ -75,8 +75,6 @@ function MonitorPage() {
     }, 2000);
   };
 
-  console.log(navOpen);
-
   return (
     <MonitorContainer>
       <MonitorHeader>
@@ -84,8 +82,62 @@ function MonitorPage() {
         <h1>모니터링</h1>
       </MonitorHeader>
       <ButtonWrapper>
-        <NotMonitorContentsDiv>
-          <NotMonitorNav>
+        {!fullScreenState && (
+          <NotMonitorContentsDiv>
+            <NotMonitorNav>
+              <Button
+                variant="contained"
+                onClick={() => cctvButtonHandler([0])}
+              >
+                1번
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => cctvButtonHandler([1])}
+              >
+                2번
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => cctvButtonHandler([2])}
+              >
+                3번
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => cctvButtonHandler([0, 1, 2, 3])}
+              >
+                전체
+              </Button>
+              <Button
+                onClick={enterFullScreen}
+                color="success"
+                variant="contained"
+              >
+                <FullscreenIcon />
+              </Button>
+            </NotMonitorNav>
+          </NotMonitorContentsDiv>
+        )}
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            onChange={value => DateChangeHandler(value as Dayjs)}
+            value={monitorDay}
+            label="날짜 선택"
+            format="YYYY.MM.DD"
+            maxDate={dayjs()}
+          />
+        </LocalizationProvider>
+      </ButtonWrapper>
+
+      <MonitorContentsDiv ref={containerRef}>
+        {fullScreenState && (
+          <MonitorNav
+            open={navOpen}
+            onTouchEnd={TouchNavOpenHandler}
+            onMouseMove={() => setNavOpen(true)}
+            onMouseLeave={() => setNavOpen(false)}
+          >
             <Button variant="contained" onClick={() => cctvButtonHandler([0])}>
               1번
             </Button>
@@ -101,53 +153,11 @@ function MonitorPage() {
             >
               전체
             </Button>
-            <Button
-              onClick={enterFullScreen}
-              color="success"
-              variant="contained"
-            >
-              <FullscreenIcon />
+            <Button onClick={exitFullScreen} color="error" variant="contained">
+              <FullscreenExitIcon />
             </Button>
-          </NotMonitorNav>
-        </NotMonitorContentsDiv>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            onChange={value => DateChangeHandler(value as Dayjs)}
-            value={monitorDay}
-            label="날짜 선택"
-            format="YYYY.MM.DD"
-            maxDate={dayjs()}
-          />
-        </LocalizationProvider>
-      </ButtonWrapper>
-
-      <MonitorContentsDiv ref={containerRef}>
-        <MonitorNav
-          open={navOpen}
-          onTouchEnd={TouchNavOpenHandler}
-          onMouseMove={() => setNavOpen(true)}
-          onMouseLeave={() => setNavOpen(false)}
-        >
-          <Button variant="contained" onClick={() => cctvButtonHandler([0])}>
-            1번
-          </Button>
-          <Button variant="contained" onClick={() => cctvButtonHandler([1])}>
-            2번
-          </Button>
-          <Button variant="contained" onClick={() => cctvButtonHandler([2])}>
-            3번
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => cctvButtonHandler([0, 1, 2, 3])}
-          >
-            전체
-          </Button>
-          <Button onClick={exitFullScreen} color="error" variant="contained">
-            <FullscreenExitIcon />
-          </Button>
-        </MonitorNav>
-
+          </MonitorNav>
+        )}
         <MonitorsDiv>
           {cctvList.map(id => {
             return (
@@ -196,6 +206,11 @@ const ButtonWrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   padding: 0 1rem 1rem 1rem;
+
+  ${mobileV} {
+    display: flex;
+    flex-flow: column-reverse;
+  }
 `;
 
 const NotMonitorContentsDiv = styled.div`
@@ -215,6 +230,10 @@ const NotMonitorNav = styled.div`
       background-color: ${props => props.theme.palette.neutral.cardHover};
       color: ${props => props.theme.palette.neutral.opposite};
     }
+  }
+
+  ${mobileV} {
+    margin-top: 1rem;
   }
 `;
 
@@ -334,7 +353,6 @@ const MonitorsDiv = styled.div`
     justify-content: center;
 
     padding-bottom: 0px;
-    padding-top: 40px;
 
     > div {
       flex-basis: 100%;

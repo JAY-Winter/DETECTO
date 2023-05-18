@@ -65,11 +65,27 @@ function useHistorySort(): [
         case 'Team':
           if (sortOrder === 'asc') {
             clonedPrev.sort((a, b) => {
-              return a.team.id - b.team.id;
+              const nameA = a.user.name.toUpperCase();
+              const nameB = b.user.name.toUpperCase();
+              if (nameA < nameB) {
+                return -1;
+              }
+              if (nameA > nameB) {
+                return 1;
+              }
+              return 0;
             });
           } else {
             clonedPrev.sort((a, b) => {
-              return b.team.id - a.team.id;
+              const nameA = a.user.name.toUpperCase();
+              const nameB = b.user.name.toUpperCase();
+              if (nameA < nameB) {
+                return 1;
+              }
+              if (nameA > nameB) {
+                return -1;
+              }
+              return 0;
             });
           }
           break;

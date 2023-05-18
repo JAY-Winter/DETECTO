@@ -10,9 +10,11 @@ type MemberCardInfoType = {
 };
 
 function MemberCardInfo({ member, teamList, isTop }: MemberCardInfoType) {
+  console.log(member)
+
   return (
     <>
-      <img css={profileImageStyle} src={member.image} alt="" />
+      <img css={profileImageStyle} src={member.image ? member.image : ""} alt="" />
       <div>
         <p>{member.name}</p>
         <p>{teamList.teamName}</p>

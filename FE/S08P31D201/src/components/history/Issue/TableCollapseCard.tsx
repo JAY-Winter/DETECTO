@@ -17,7 +17,7 @@ type TableCollapseCardPropsType = {
   reportid: number;
   area: number;
   teamList: TeamType;
-  violate_member?: ReportUserType;
+  violate_member: ReportUserType;
   report: ReportType;
 };
 
@@ -79,7 +79,7 @@ function TableCollapseCard({
                 {report.user.name} ({report.team.teamName})
               </p> */}
               <h4>위반 지역</h4>
-              <p>{report.cctvArea}번 구역</p>
+              <p>{report.cctvArea + 1}번 구역</p>
             </CollapseCardContents>
           </CollapseCardDiv>
           <CollapseCardDiv>

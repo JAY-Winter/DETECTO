@@ -15,9 +15,9 @@ type Toptions = {
 };
 
 const options: Toptions[] = [
-  { label: '날짜 순 정렬', accessor: 'Date' },
-  { label: '위반사항 순 정렬', accessor: 'Equipment' },
-  { label: '작업 조 순 정렬', accessor: 'Team' },
+  { label: '위반 날짜 정렬', accessor: 'Date' },
+  { label: '위반 사항 정렬', accessor: 'Equipment' },
+  { label: '위반자명 정렬', accessor: 'Team' },
 ];
 
 function MobileSortButton() {
