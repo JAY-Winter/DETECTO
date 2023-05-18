@@ -43,7 +43,6 @@ function HistorySafetyIssue({
     const sortData = response.data.data.sort((a: ReportType, b: ReportType) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
-    console.log(response.data.data)
     setReportData(sortData);
   };
 
@@ -69,7 +68,6 @@ function HistorySafetyIssue({
     if (userInfo.type === 'WORKER') {
       url += `&id=${userInfo.id}`;
     }
-    console.log(url)
     setRequestObj({
       method: 'get',
       url: url,

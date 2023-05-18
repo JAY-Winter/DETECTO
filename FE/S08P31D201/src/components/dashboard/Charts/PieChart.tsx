@@ -18,7 +18,6 @@ function PieChart({ data }: { data: CountItemData[] | undefined }) {
 
       const { width } = size;
       const height = Math.max(width * 0.5, 300);
-      console.log(Math.max(width * 0.5, 300))
       // const height = width * 0.75;
       const radius = Math.min(height, width) / 2 - 60;
 

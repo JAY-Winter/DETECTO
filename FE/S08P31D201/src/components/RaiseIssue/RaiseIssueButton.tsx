@@ -62,7 +62,6 @@ function RaiseIssueButton({ report }: { report: ReportType }) {
         comment: comment,
       },
     };
-    console.log(`[DEBUG - RaiseIssue] ${JSON.stringify(requestObj)}`);
     setRequestObj(requestObj);
   };
 

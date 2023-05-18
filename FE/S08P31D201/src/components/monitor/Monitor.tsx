@@ -40,7 +40,6 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
 
     websocket.onmessage = async event => {
       const time = new Date()
-      console.log(time.getSeconds())
       const frameData = event.data;
       const data = JSON.parse(frameData);
 
@@ -121,7 +120,6 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
     }
     setMiddleShow(true);
     setPause(prev => {
-      console.log(prev);
       if (ws.current) {
         if (!prev) {
           ws.current.send(JSON.stringify({ type: 1 }));

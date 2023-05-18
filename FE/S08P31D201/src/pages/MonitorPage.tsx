@@ -75,6 +75,7 @@ function MonitorPage() {
     }, 2000);
   };
 
+
   return (
     <MonitorContainer>
       <MonitorHeader>

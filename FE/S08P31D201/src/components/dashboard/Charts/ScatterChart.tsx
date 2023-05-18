@@ -21,10 +21,7 @@ function ScatterChart({ data }: { data: CoordinationItemData[] | undefined }) {
       const mapWidth = width * 0.7;
       const height = mapWidth * 0.65;
 
-      // d3.csv(
-      //   'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/iris.csv'
-      // ).then(function (data) {
-      //   console.log(data)
+
       svg
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom);
