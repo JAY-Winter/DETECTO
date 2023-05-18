@@ -15,7 +15,7 @@ function MemberCard({
 }: {
   reportId: number;
   teamList: TeamType;
-  violate_member: ReportUserType | undefined;
+  violate_member: ReportUserType;
 }) {
   const [cardList] = useState<ReportUserType[]>([...teamList.users]);
   const [memberNum, setMemberNum] = useState(
@@ -24,7 +24,6 @@ function MemberCard({
       : 0
   );
   const [openArcodian, setOpenArcodian] = useState<boolean>(false);
-
   const [report, setReport] = useRecoilState(HistoryIssue);
 
   const chooseMemberHandler = (idx: number) => {
@@ -71,7 +70,7 @@ function MemberCard({
         }}
       >
         <MemberCardInfo
-          member={cardList[memberNum]}
+          member={violate_member}
           teamList={teamList}
           isTop={true}
         />

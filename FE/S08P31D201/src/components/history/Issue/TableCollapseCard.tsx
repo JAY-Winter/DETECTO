@@ -17,7 +17,7 @@ type TableCollapseCardPropsType = {
   reportid: number;
   area: number;
   teamList: TeamType;
-  violate_member?: ReportUserType;
+  violate_member: ReportUserType;
   report: ReportType;
 };
 
