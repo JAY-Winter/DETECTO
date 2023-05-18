@@ -10,6 +10,7 @@ import {
   TableFooter,
   TablePagination,
   Pagination,
+  Card,
 } from '@mui/material';
 import { mobileV } from '@/utils/Mixin';
 import IssueCard from './Issue/IssueCard';
@@ -139,49 +140,65 @@ function HistorySafetyIssue({
                 <TableCell colSpan={4} />
               </TableRow>
             )}
+            {reportData.length == 0 && (
+              <TableRow>
+                <TableCell colSpan={4}>
+                  위 검색 필터에 해당하는 위반사항이 없습니다.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                labelRowsPerPage="페이지별 행 수:"
-                labelDisplayedRows={() =>
-                  defaultLabelDisplayedRows({
-                    from: page * rowsPerPage + 1,
-                    to: (page + 1) * rowsPerPage,
-                    count: reportData.length,
-                  })
-                }
-                colSpan={4}
-                count={reportData.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                SelectProps={{
-                  inputProps: {
-                    'aria-label': 'rows',
-                  },
-                  native: true,
-                }}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
+          {reportData.length > 0 && (
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  labelRowsPerPage="페이지별 행 수:"
+                  labelDisplayedRows={() =>
+                    defaultLabelDisplayedRows({
+                      from: page * rowsPerPage + 1,
+                      to: (page + 1) * rowsPerPage,
+                      count: reportData.length,
+                    })
+                  }
+                  colSpan={4}
+                  count={reportData.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  SelectProps={{
+                    inputProps: {
+                      'aria-label': 'rows',
+                    },
+                    native: true,
+                  }}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </TableRow>
+            </TableFooter>
+          )}
         </Table>
       </IssueTableContainer>
       <IssueCardContainer>
         <MobileSortDiv>
           <MobileSortButton />
         </MobileSortDiv>
+        {reportData.length == 0 && (
+          <div style={{ margin: '2rem 0' }}>
+            위 검색 필터에 해당하는 위반사항이 없습니다.
+          </div>
+        )}
         {reportData.slice(mobilePage * 5 - 5, mobilePage * 5).map(issue => {
           return <IssueCard {...issue} key={issue.id} />;
         })}
-        <Pagination
-          count={Math.ceil(reportData.length / 5)}
-          page={mobilePage}
-          onChange={handleMobliePage}
-        />
+        {reportData.length > 0 && (
+          <Pagination
+            count={Math.ceil(reportData.length / 5)}
+            page={mobilePage}
+            onChange={handleMobliePage}
+          />
+        )}
       </IssueCardContainer>
     </>
   );

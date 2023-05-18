@@ -18,7 +18,7 @@ function WorkerIssueDetail({ report }: { report: ReportType }) {
           <h4>위반 사항</h4>
           <p>{stringListFormatter(report.reportItems)}</p>
           <h4>위반 지역</h4>
-          <p>{report.cctvArea}번 구역</p>
+          <p>{report.cctvArea + 1}번 구역</p>
         </div>
       </DetailInfoDiv>
     </Wrapper>

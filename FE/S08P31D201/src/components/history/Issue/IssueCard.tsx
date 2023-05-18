@@ -88,9 +88,13 @@ function IssueCard(issue: ReportType) {
               <h4>위반 사항</h4>
               <p>{stringListFormatter(issue.reportItems)}</p>
               <h4>위반 지역</h4>
-              <p>{issue.cctvArea}번 구역</p>
+              <p>{issue.cctvArea + 1}번 구역</p>
             </MobileCard>
-            {userInfo.type === 'WORKER' && <RaiseIssueButton report={issue} />}
+            {userInfo.type === 'WORKER' && (
+              <div style={{ marginBottom: '5rem' }}>
+                <RaiseIssueButton report={issue} />
+              </div>
+            )}
             {userInfo.type === 'ADMIN' && (
               <>
                 <Paper
