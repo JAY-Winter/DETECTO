@@ -2,12 +2,13 @@ package com.example.detecto.service;
 
 import com.example.detecto.dto.*;
 import com.example.detecto.entity.Report;
+import com.example.detecto.entity.Team;
 import com.example.detecto.entity.User;
 import com.example.detecto.entity.enums.UserType;
 import com.example.detecto.exception.DatabaseFetchException;
 import com.example.detecto.exception.DoesNotExistData;
-import com.example.detecto.exception.ObjectionException;
 import com.example.detecto.repository.ReportRepository;
+import com.example.detecto.repository.TeamRepository;
 import com.example.detecto.repository.UserRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -36,6 +37,7 @@ public class ReportServiceImpl implements ReportService {
     private final JPAQueryFactory queryFactory;
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
+    private final TeamRepository teamRepository;
 
     @Override
     public List<ReportSearchResponseDto> search(ReportSearchDto reportSearchDto) {
@@ -71,7 +73,7 @@ public class ReportServiceImpl implements ReportService {
             reports = queryFactory
                 .selectFrom(report)
                 .leftJoin(report.user, user).fetchJoin()
-                .leftJoin(user.team, team).fetchJoin()
+              //  .leftJoin(user.team, team).fetchJoin()
                 .leftJoin(report.reportItems, reportItem).fetchJoin()
                 .leftJoin(reportItem.equipment, equipment).fetchJoin()
                 .where(whereClause)
@@ -91,7 +93,18 @@ public class ReportServiceImpl implements ReportService {
         return reports.stream()
                 .map(rd -> {
                     ReportSearchResponseUserDto rs_user = new ReportSearchResponseUserDto(rd.getUser());
-                    ReportSearchResponseTeamDto rs_team = new ReportSearchResponseTeamDto(rd.getUser().getTeam());
+
+                    int hour = rd.getTime().getHour();
+                    Team t = null;
+                    if(hour >= 6 && hour < 14){
+                        t = teamRepository.findById(1).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+                    }else if(hour >= 14 && hour < 22){
+                        t = teamRepository.findById(2).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+                    }else{
+                        t = teamRepository.findById(3).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+                    }
+
+                    ReportSearchResponseTeamDto rs_team = new ReportSearchResponseTeamDto(t);
 
                     List<String> equipmentNames = rd.getReportItems().stream()
                             .map(item -> item.getEquipment().getName())
