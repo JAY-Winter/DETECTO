@@ -82,6 +82,7 @@ def distance(point1, point2):
 
 # 이미지 처리
 def calculate(cctv_id):
+    prev_time = time.time()
     while True:
         try:
             with app.app_context():
@@ -123,7 +124,10 @@ def calculate(cctv_id):
                     partition=partition_key,
                 )
                 kafka_producer.flush()
-
+                if  time.time()-prev_time < 5:
+                    list[cctv_id] = queue.Queue()
+                    continue
+                prev_time = time.time()
                 human_detect = findHuman(results[0].boxes)
                 # yolo_class = results[0].boxes.cls
 
