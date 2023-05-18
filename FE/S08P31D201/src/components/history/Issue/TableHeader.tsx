@@ -23,7 +23,7 @@ function TableHeader() {
               color="primary"
               variant="contained"
             >
-              위반 인원
+              위반자명
               {order === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
             </Button>
           ) : (
@@ -33,7 +33,7 @@ function TableHeader() {
               }}
               color="inherit"
             >
-              위반 인원
+              위반자명
               <UnfoldMore />
             </Button>
           )}
@@ -71,7 +71,7 @@ function TableHeader() {
               color="primary"
               variant="contained"
             >
-              안전사항 위반 날짜
+              위반 날짜
               {order === 'asc' ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
             </Button>
           ) : (
@@ -81,7 +81,7 @@ function TableHeader() {
               }}
               color="inherit"
             >
-              안전사항 위반 날짜
+              위반 날짜
               <UnfoldMore />
             </Button>
           )}
