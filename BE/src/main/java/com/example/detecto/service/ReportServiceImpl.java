@@ -44,6 +44,9 @@ public class ReportServiceImpl implements ReportService {
 
         LocalDateTime startDateTime = null;
         LocalDateTime endDateTime = null;
+        Team t1 = teamRepository.findById(1).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+        Team t2 = teamRepository.findById(2).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+        Team t3 = teamRepository.findById(3).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
 
         if (reportSearchDto.getStartDate() != null) {
             LocalDate receivedDate = reportSearchDto.getStartDate();
@@ -97,11 +100,11 @@ public class ReportServiceImpl implements ReportService {
                     int hour = rd.getTime().getHour();
                     Team t = null;
                     if(hour >= 6 && hour < 14){
-                        t = teamRepository.findById(1).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+                        t = t1;
                     }else if(hour >= 14 && hour < 22){
-                        t = teamRepository.findById(2).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+                        t = t2;
                     }else{
-                        t = teamRepository.findById(3).orElseThrow(() -> new DoesNotExistData("아이디가 존재하지 않습니다."));
+                        t = t3;
                     }
 
                     ReportSearchResponseTeamDto rs_team = new ReportSearchResponseTeamDto(t);
