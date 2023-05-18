@@ -14,9 +14,10 @@ import { EquipmentType } from 'EquipmentTypes';
 function EquipmentManagePage() {
   const [isShowEditModal, setIsShowEditModal] = useState(false);
   const [equipments, setEquipments, fetchEquipments] = useEquipments();
-  const [willEditEquipment, setWillEditEquipment] = useState<EquipmentType | null>(null);
+  const [willEditEquipment, setWillEditEquipment] =
+    useState<EquipmentType | null>(null);
   const [data, isLoading, setRequestObj] = useAxios({
-    baseURL: 'https://k8d201.p.ssafy.io/api/',
+    baseURL: 'https://detecto.kr/api/',
   });
 
   // 장비 삭제 핸들러: 카드로부터 ID를 입력받아 삭제한다
