@@ -68,7 +68,7 @@ function DashboardDatePicker() {
         }}
       >
         <div>
-          {mobileOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
+          {mobileOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           <span>기간 선택</span>
         </div>
       </DateHeaderDiv>
@@ -141,7 +141,6 @@ const DatePaper = styled(Paper)`
 const DateHeaderDiv = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
 
   div {
     display: flex;
@@ -155,10 +154,11 @@ const DateHeaderDiv = styled.div`
   }
 
   ${mobileV} {
-    margin-bottom: 0;
+    margin-top: 0.5rem;
     div {
       span {
         display: block;
+        margin-left: 0.5rem;
       }
       svg {
         display: block;
