@@ -84,7 +84,7 @@ async def consume_message(websocket, consumer, topic, partition):
                 # start_offset = 0
                 new_offset = total_offsets
                 try:
-                    recv_data = await asyncio.wait_for(websocket.receive_text(), timeout=0.01)
+                    recv_data = await asyncio.wait_for(websocket.receive_text(), timeout=0.07)
                     
                     if recv_data:
                         msg = json.loads(recv_data)
