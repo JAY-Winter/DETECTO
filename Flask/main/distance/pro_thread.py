@@ -40,9 +40,14 @@ def doProcess():
             db.session.commit()
 
             # 위반 이미지 저장
-            if cls == -1:
-                filename = f"rh{id}.jpg"
-                cv2.imwrite(filename, cropped_image)
+            # if cls == -1:
+            filename = f"h{id}.jpg"
+            cv2.imwrite(filename, cropped_image)
+            local_file_path = os.path.abspath(filename)
+            path = "report/" + filename
+            object_storage.upload_file(local_file_path, "detec", path, ExtraArgs={
+                                        'ACL': 'public-read'})
+            os.remove(local_file_path)
 
             filename = f"{id}.jpg"
             cv2.imwrite(filename, yolo_image)
@@ -55,15 +60,15 @@ def doProcess():
             cv2.imwrite(filename, real_image)
 
             # print(human_detect[human])
-            filename = f"h{id}.jpg"
+            # filename = f"h{id}.jpg"
             
-            cropped_image = yolo_image[y1:y2, x1:x2]
-            cv2.imwrite(filename, cropped_image)
-            local_file_path = os.path.abspath(filename)
-            path = "report/" + filename
-            object_storage.upload_file(local_file_path, "detec", path, ExtraArgs={
-                                        'ACL': 'public-read'})
-            os.remove(local_file_path)
+            # cropped_image = yolo_image[y1:y2, x1:x2]
+            # cv2.imwrite(filename, cropped_image)
+            # local_file_path = os.path.abspath(filename)
+            # path = "report/" + filename
+            # object_storage.upload_file(local_file_path, "detec", path, ExtraArgs={
+            #                             'ACL': 'public-read'})
+            # os.remove(local_file_path)
             # os.remove(local_file_path)
             # 미착용 클래스 저장
             for i in range(len(non_wearing_class)):
