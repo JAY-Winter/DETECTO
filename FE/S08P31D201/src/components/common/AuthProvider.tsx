@@ -102,7 +102,6 @@ function AuthProvider({ children }: AuthProviderProps) {
       sendSubscription();
       navigate(location.pathname);
     } else {
-      sendSubscription();
       navigate('/', { replace: true });
     }
   }, [isAuthenticated]);
