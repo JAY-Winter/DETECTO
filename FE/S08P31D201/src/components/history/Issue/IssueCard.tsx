@@ -18,10 +18,12 @@ import { UserInfo } from '@/store/userInfoStroe';
 import { HistoryIssue } from '@/store/HistoryIssue';
 import axios from 'axios';
 import { Button, Paper } from '@mui/material';
+import { EquipmentsAtom } from '@/store/EquipmentStore';
 
 function IssueCard(issue: ReportType) {
   const { bottomSheetHandler, isOpen, open } = useBottomSheet();
   const userInfo = useRecoilValue(UserInfo);
+  const equipmentList = useRecoilValue(EquipmentsAtom);
   const [reportList, setReportList] = useRecoilState(HistoryIssue);
 
   const removeHandler = () => {
@@ -86,7 +88,18 @@ function IssueCard(issue: ReportType) {
                 {issue.user.name} ({issue.team.teamName})
               </p>
               <h4>위반 사항</h4>
-              <p>{stringListFormatter(issue.reportItems)}</p>
+              <p>
+                {stringListFormatter(
+                  issue.reportItems.map(item => {
+                    if (equipmentList) {
+                      const foundItem = equipmentList.find(
+                        eq => eq.name === item
+                      );
+                      return foundItem ? foundItem.description : '';
+                    } else return '';
+                  })
+                )}
+              </p>
               <h4>위반 지역</h4>
               <p>{issue.cctvArea}번 구역</p>
             </MobileCard>
