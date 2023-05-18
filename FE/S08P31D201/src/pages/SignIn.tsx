@@ -37,7 +37,6 @@ function SignIn() {
           theme: responseUserInfo.theme,
         };
 
-        console.log('[DEBUG] newUserInfo:', newUserInfo);
         setUserInfo(newUserInfo);
       }
 

@@ -108,8 +108,6 @@ function EditEquipment({
   // 장비 등록 여부 감지하여 모달창 닫히도록 하는 effect hook
   useEffect(() => {
     if (isLoading === false && data !== null) {
-      console.log('업로드 완료!', data);
-
       // 보호구 목록 비동기 요청하기
       fetchEquipments();
       onClose();

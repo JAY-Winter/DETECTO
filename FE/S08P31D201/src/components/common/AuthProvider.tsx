@@ -65,15 +65,6 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
     try {
       const [endpoint, p256dh, auth] = await getSubscription();
-      if (endpoint && p256dh && auth) {
-        // 서버에게 구독 객체 전송
-        console.log("------------전송할 구독 객체 정보------------");
-        console.log("id:", userInfo.id);
-        console.log("endpoint:", endpoint);
-        console.log("p256dh:", p256dh);
-        console.log("auth:", auth);
-        console.log("----------------------------------------");
-      }
       const requestObj: RequestObj = {
         url: '/user/token',
         method: 'post',

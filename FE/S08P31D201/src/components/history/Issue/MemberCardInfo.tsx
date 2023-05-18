@@ -10,7 +10,6 @@ type MemberCardInfoType = {
 };
 
 function MemberCardInfo({ member, teamList, isTop }: MemberCardInfoType) {
-  console.log(member)
 
   return (
     <>

@@ -73,12 +73,6 @@ function DragAndDrop({
     }
   };
 
-  useEffect(() => {
-    if (selectedFile) {
-      console.log('선택한 파일명:', selectedFile.name);
-    }
-  }, [selectedFile]);
-
   return (
     <div
       css={isDragging ? dragOverStyle : uploadBoxStyle}

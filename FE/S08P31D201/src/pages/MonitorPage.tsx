@@ -75,7 +75,6 @@ function MonitorPage() {
     }, 2000);
   };
 
-  console.log(navOpen);
 
   return (
     <MonitorContainer>

@@ -24,7 +24,6 @@ function CardCollapse({ objectionIssue }: { objectionIssue: IssueType }) {
   const rejectHandler = () => {
     const reject = window.confirm('정말 이의를 거절 하시겠습니까?');
     if (reject) {
-      console.log('거절 눌렸습니다!');
       axios({
         method: 'post',
         url: 'https://detecto.kr/api/objection/admin',
@@ -42,7 +41,6 @@ function CardCollapse({ objectionIssue }: { objectionIssue: IssueType }) {
   const removeHandler = () => {
     const remove = window.confirm('정말 리포트를 삭제 하시겠습니까?');
     if (remove) {
-      console.log('삭제 눌렸습니다!');
       axios({
         method: 'delete',
         url: `https://detecto.kr/api/report/${objectionIssue.reportId}`,
@@ -59,7 +57,6 @@ function CardCollapse({ objectionIssue }: { objectionIssue: IssueType }) {
   const applyHandler = () => {
     const apply = window.confirm('정말 이의를 수정 하시겠습니까?');
     if (apply) {
-      console.log('수정 눌렸습니다!');
       axios({
         method: 'post',
         url: 'https://detecto.kr/api/objection/admin',

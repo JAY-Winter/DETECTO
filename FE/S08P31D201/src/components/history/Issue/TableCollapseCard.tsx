@@ -37,7 +37,6 @@ function TableCollapseCard({
   const removeHandler = () => {
     const remove = window.confirm('정말 리포트를 삭제 하시겠습니까?');
     if (remove) {
-      console.log('삭제 눌렸습니다!');
       axios({
         method: 'delete',
         url: `https://detecto.kr/api/report/${reportid}`,

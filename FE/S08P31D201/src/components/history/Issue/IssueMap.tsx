@@ -224,11 +224,6 @@ function IssueMap({
     }
   }, [size, data, coordinate]);
 
-  console.log({
-    id: -1,
-    x: Math.ceil(coordinate.x),
-    y: Math.ceil(coordinate.y),
-  });
   const coordinateHandler = () => {
     if (data)
       axios({

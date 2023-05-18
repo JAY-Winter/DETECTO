@@ -13,7 +13,6 @@ function IssueList() {
   const [issueList, setIssueList] = useState<IssueType[]>();
 
   const removeItem = (id: number) => {
-    console.log(id);
     setIssueList(prev => prev?.filter(issue => issue.id !== id));
   };
 

@@ -97,7 +97,6 @@ function EquipmentCard({
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 setInterval 시작
-    console.log(equipment);
     if (equipment.epoch >= 0 && equipment.training == false) {
       const id = setInterval(() => {
         fetchProgress();

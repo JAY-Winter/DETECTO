@@ -21,8 +21,6 @@ function HistoryDatepicker({ datetypes }: { datetypes: TdatepickerType[] }) {
       if (DateType.length === 1) {
         // DateType가 ["startDay"] 또는 ["endDay"]일 경우
         const key = DateType[0]; // DateType의 첫 번째 요소를 key로 사용
-        console.log(key);
-        console.log({ ...prev });
         return { ...prev, [key]: newValue || dayjs() };
       } else {
         // DateType가 ["startDay", "endDay"]일 경우
