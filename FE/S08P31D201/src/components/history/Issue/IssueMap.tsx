@@ -233,7 +233,7 @@ function IssueMap({
     if (data)
       axios({
         method: 'post',
-        url: 'https://k8d201.p.ssafy.io/api/report/coord',
+        url: 'https://detecto.kr/api/report/coord',
         data: {
           id: data.id,
           x: Math.ceil(coordinate.x),

@@ -46,7 +46,7 @@ function RaiseIssueButton({ report }: { report: ReportType }) {
   };
 
   const [data, isLoading, setRequestObj] = useAxios({
-    baseURL: 'https://k8d201.p.ssafy.io/api/',
+    baseURL: 'https://detecto.kr/api/',
     tryHandler: successHandler,
     catchHandler: errorHandler,
     finallyHandler: finalHandler,
