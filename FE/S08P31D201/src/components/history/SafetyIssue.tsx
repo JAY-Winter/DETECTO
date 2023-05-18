@@ -64,21 +64,13 @@ function HistorySafetyIssue({
       url = `report?equipments=`;
     }
 
-    let body = {};
     if (userInfo.type === 'WORKER') {
-      body = {
-        id: userInfo.id,
-      };
-    } else {
-      body = {
-        id: null,
-      };
+      url += `&id=${userInfo.id}`;
     }
 
     setRequestObj({
       method: 'get',
       url: url,
-      body: body,
     });
   }, [historyDate, historyEq]);
 
