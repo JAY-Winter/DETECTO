@@ -60,7 +60,7 @@ const scaleUp = keyframes`
   }
 `;
 
-const DropdownNav = styled.div`
+const DropdownNav = styled.nav`
   position: absolute;
   right: 10px;
   width: 8rem;

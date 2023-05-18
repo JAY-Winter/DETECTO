@@ -22,8 +22,7 @@ function useSignOut() {
         method: 'post',
         body: {
           id: userInfo.id,
-          password: null,
-          fcmToken: null
+          password: null
         }
       }
       setRequestObj(requestObj);

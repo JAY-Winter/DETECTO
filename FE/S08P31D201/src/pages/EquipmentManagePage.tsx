@@ -149,4 +149,7 @@ const EquipmentAddButton = styled.button`
   &:hover {
     background-color: ${props => props.theme.palette.neutral.card};
   }
+  ${mobileV} {
+    display: none;
+  }
 `;

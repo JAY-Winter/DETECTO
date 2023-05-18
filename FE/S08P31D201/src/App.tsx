@@ -1,4 +1,4 @@
-import { createTheme, PaletteMode } from '@mui/material';
+import { createTheme, css, PaletteMode } from '@mui/material';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import React, { useEffect, useMemo, useState } from 'react';
 import getDesignTokens from './styles/themes';
@@ -23,6 +23,7 @@ import NotFound from './pages/NotFound';
 import usePush from './hooks/usePush';
 import NavProvider from '@components/navbar/NavProvider';
 import WorkerNavProvider from '@components/navbar/WorkerNavProvider';
+import NotificationBell from '@components/notification/NotificationBell';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
@@ -49,6 +50,7 @@ function App() {
         {userInfo.type === 'ADMIN' ? (
           <>
             <RouterContainerDiv>
+              <NotificationBell />
               <Routes>
                 <Route path="/" element={<Navigate replace to="/history" />} />
                 <Route path="/history" element={
@@ -83,6 +85,7 @@ function App() {
         ) : (
           <>
             <RouterContainerDiv>
+              <NotificationBell />
               <Routes>
                 <Route path="/" element={<Navigate replace to="/foul" />} />
                 <Route path="/foul" element={
@@ -111,6 +114,7 @@ function App() {
 }
 
 const RouterContainerDiv = styled.div`
+  position: relative;
   margin-left: 300px;
   overflow-y: auto;
   height: 100%;
