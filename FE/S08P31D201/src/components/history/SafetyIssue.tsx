@@ -120,6 +120,12 @@ function HistorySafetyIssue({
     }`;
   };
 
+  // 페이지 초기화
+  useEffect(() => {
+    setPage(0)
+    setMobliePage(0)
+  }, [reportData])
+
   return (
     <>
       <IssueTableContainer elevation={1}>
