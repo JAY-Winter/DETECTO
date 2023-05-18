@@ -43,6 +43,7 @@ function HistorySafetyIssue({
     const sortData = response.data.data.sort((a: ReportType, b: ReportType) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
+    console.log(response.data.data)
     setReportData(sortData);
   };
 
@@ -57,18 +58,18 @@ function HistorySafetyIssue({
     const startDate = historyDate.startDay.toISOString().slice(0, 10);
     const endDate = historyDate.endDay.toISOString().slice(0, 10);
     const eq = historyEq.toString();
-
+    
     let url = '';
     if (tabState === 0) {
       url = `report?startDate=${startDate}&endDate=${endDate}&equipments=${eq}`;
     } else if (tabState === 1) {
-      url = `report?equipments=`;
+      url = `report?id=-1`;
     }
 
     if (userInfo.type === 'WORKER') {
       url += `&id=${userInfo.id}`;
     }
-
+    console.log(url)
     setRequestObj({
       method: 'get',
       url: url,

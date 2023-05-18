@@ -39,6 +39,8 @@ function Monitor({ monitorId, date }: { monitorId: number; date: Dayjs }) {
     // );
 
     websocket.onmessage = async event => {
+      const time = new Date()
+      console.log(time.getSeconds())
       const frameData = event.data;
       const data = JSON.parse(frameData);
 
