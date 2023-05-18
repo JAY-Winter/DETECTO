@@ -26,6 +26,7 @@ import SamLogoLight from '@/assets/img/samlogoLight.svg';
 import SamLogoDark from '@/assets/img/samlogoDark.svg';
 import { css, useTheme } from '@emotion/react';
 import MonitorLoading from '@components/monitor/MonitorLoading';
+import { EquipmentsAtom } from '@/store/EquipmentStore';
 
 function DashboardContent() {
   const [timedata, settimeData] = useState<CountTimeData[]>();
@@ -33,6 +34,7 @@ function DashboardContent() {
   const [ctidata, setCtiData] = useState<CountTimeItemData[]>();
   const [teamdata, setTeamData] = useState<CountTimeTeamData[]>();
   const [teamIndex, setTeamIndex] = useState(0);
+  const equipmentList = useRecoilValue(EquipmentsAtom);
 
   const theme = useTheme();
 
@@ -43,7 +45,14 @@ function DashboardContent() {
     return data.map(d => {
       return {
         id: d.id,
-        reportItems: d.reportItems,
+        reportItems: d.reportItems.map(item => {
+          if (equipmentList) {
+            const foundItem = equipmentList.find(
+              eq => eq.name === item
+            );
+            return foundItem ? foundItem.description.replace(/\s/g, "") : '';
+          } else return '';
+        }),
         team: d.team,
         time: d3.timeParse('%Y-%m-%d')(d.time.slice(0, 10)) as Date,
         cctvArea: d.cctvArea,
@@ -118,8 +127,20 @@ function DashboardContent() {
       countTimeTeamData.set(key, countByTime(values));
     });
 
+    console.log(Array.from(countTimeTeamData, ([key, value]) => {
+      return { teamName: key, value };
+    }))
+
     return Array.from(countTimeTeamData, ([key, value]) => {
       return { teamName: key, value };
+    }).sort((a, b) => {
+      if (a.teamName > b.teamName) {
+        return 1
+      } else if (a.teamName < b.teamName) {
+        return -1
+      } else {
+        return 0
+      }
     });
   }
 
