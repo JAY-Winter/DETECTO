@@ -8,6 +8,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import authState from '@/store/authState';
 import { UserInfo } from '@/store/userInfoStroe';
 import DefaultProfile from '@/assets/img/default-profile.svg';
+import useSignOut from '@/hooks/useSignOut';
 
 type MorePageProps = {
   setMode: React.Dispatch<React.SetStateAction<'dark' | 'light'>>;
@@ -17,12 +18,13 @@ function MorePage({ setMode }: MorePageProps) {
   const theme = useTheme();
   const userInfo = useRecoilValue(UserInfo);
   const setIsAuthenticated = useSetRecoilState(authState);
+  const setIsFire = useSignOut();
 
   // 로그아웃 핸들러
   const handleClickLogout = () => {
     const isConfirmToLogout = confirm('로그아웃 하시겠습니까??');
     if (isConfirmToLogout) {
-      setIsAuthenticated(false);
+      setIsFire(true);
     }
   };
 

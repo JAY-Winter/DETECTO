@@ -50,7 +50,7 @@ function App() {
         {userInfo.type === 'ADMIN' ? (
           <>
             <RouterContainerDiv>
-              <NotificationBell />
+              {/* <NotificationBell /> */}
               <Routes>
                 <Route path="/" element={<Navigate replace to="/history" />} />
                 <Route path="/history" element={
