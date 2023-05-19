@@ -114,7 +114,7 @@ async def consume_message(websocket, consumer, topic, partition):
             await websocket.send_text(context)
             
             try:
-                recv_data = await asyncio.wait_for(websocket.receive_text(), timeout=0.05)
+                recv_data = await asyncio.wait_for(websocket.receive_text(), timeout=0.01)
                 if recv_data:
                     msg = json.loads(recv_data)
                     type = int(msg.get('type'))
