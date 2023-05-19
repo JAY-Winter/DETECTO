@@ -1,103 +1,100 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import { Box, Collapse, TableCell, TableRow } from '@mui/material';
+import { Collapse, TableCell, TableRow } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import { TtableData, TteamMember } from '@/store/HistoryIssue';
-import MemberCard from './MemberCard';
-import IssueImage from './IssueImage';
+import { ReportType } from 'ReportTypes';
+import TableCollapseCard from './TableCollapseCard';
+import { stringListFormatter, timeFormatter } from '@/utils/Formatter';
+import { useRecoilValue } from 'recoil';
+import { UserInfo } from '@/store/userInfoStroe';
+import WorkerTableCollapseCard from '@components/foul/WorkerTableCollapseCard';
+import { EquipmentsAtom } from '@/store/EquipmentStore';
 
-const nullMember: TteamMember = {
-  memberId: 0,
-  memberImg: '',
-  memberName: '미지정',
-  memberTeam: '팀 미지정',
-};
-
-const TableCollapseCard = ({
-  violate_img,
-  teamList,
-  violate_member,
-}: {
-  violate_img: string;
-  teamList: TteamMember[];
-  violate_member?: TteamMember;
-}) => {
-  return (
-    <Box
-      sx={{
-        margin: 1,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-    >
-      <div
-        style={{
-          width: '50%',
-          height: '300px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <IssueImage violate_img={violate_img} />
-      </div>
-      <div
-        style={{
-          width: '50%',
-        }}
-      >
-        <MemberCard teamList={teamList} violate_member={violate_member} />
-      </div>
-    </Box>
-  );
-};
-
-function Row(props: { row: TtableData }) {
+function Row(props: { row: ReportType }) {
   const { row } = props;
   const [open, setOpen] = useState(false);
+  const userInfo = useRecoilValue(UserInfo);
+
+  const equipmentList = useRecoilValue(EquipmentsAtom);
 
   return (
     <>
       <IssueTableRow
         sx={{ '& > *': { borderBottom: 'unset' } }}
         onClick={() => setOpen(!open)}
+        open={open}
       >
-        <TableCell component="th" scope="row">
-          {row.date}
+        <TableCell align="left">
+          <span style={{ fontWeight: 'bold' }}>{row.user.name}</span> (
+          {row.team.teamName})
         </TableCell>
-        <TableCell align="left">{row.issue.toString()}</TableCell>
-        <TableCell align="left">{row.team}팀</TableCell>
-        <TableCell align="right" padding='checkbox'>
+        <TableCell align="left">
+          {stringListFormatter(
+            row.reportItems.map(item => {
+              if (equipmentList) {
+                const foundItem = equipmentList.find(eq => eq.name === item);
+                return foundItem ? foundItem.description : '';
+              } else return '';
+            })
+          )}
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {timeFormatter(row.time)}
+        </TableCell>
+        <TableCell align="right" padding="checkbox">
           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
         </TableCell>
       </IssueTableRow>
-      <TableRow>
+      <CollapseTableRow open={open}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <TableCollapseCard
-              violate_img={row.violate_img}
-              violate_member={row.violate_member}
-              teamList={row.teamList}
-            />
+            {userInfo.type === 'ADMIN' ? (
+              <TableCollapseCard
+                x={row.x}
+                y={row.y}
+                reportid={row.id}
+                area={row.cctvArea}
+                violate_member={row.user}
+                teamList={row.team}
+                report={row}
+              />
+            ) : (
+              <WorkerTableCollapseCard reportid={row.id} report={row} />
+            )}
           </Collapse>
         </TableCell>
-      </TableRow>
+      </CollapseTableRow>
     </>
   );
 }
 
 export default Row;
 
-const PendingTableCell = styled(TableCell)`
-  width: 1rem;
-`;
+const IssueTableRow = styled(TableRow)<{ open: boolean }>`
+  th,
+  td {
+    padding: 0.8rem 1rem;
+    padding-left: 1.5rem;
+    border: none;
+    background-color: ${props =>
+      props.open ? props.theme.palette.neutral.card : ''};
+  }
 
-const IssueTableRow = styled(TableRow)`
   @media (hover: hover) {
     &:hover {
-      background-color: ${props => props.theme.palette.neutral.card};
+      th,
+      td {
+        background-color: ${props => props.theme.palette.neutral.card};
+      }
+      cursor: pointer;
     }
+  }
+`;
+
+const CollapseTableRow = styled(TableRow)<{ open: boolean }>`
+  th,
+  td {
+    padding: 0.8rem 1.5rem;
+    background-color: ${props => props.theme.palette.neutral.card};
   }
 `;

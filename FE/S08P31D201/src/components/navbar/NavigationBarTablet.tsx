@@ -6,6 +6,7 @@ import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlin
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -17,6 +18,7 @@ import LeftModal from '@components/common/LeftModal';
 import NavigationBar from './NavigationBar';
 import { useSetRecoilState } from 'recoil';
 import authState from '@/store/authState';
+import useSignOut from '@/hooks/useSignOut';
 
 
 type NavigationBarTabletProps = {
@@ -29,6 +31,7 @@ function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
   const [currentPathName, setCurrentPathName] = useState("");
   const [isShowLeftModal, setIsShowLeftModal] = useState(false);
   const setIsAuthenticated = useSetRecoilState(authState);
+  const setIsFire = useSignOut();
 
   const handleClickMenu = () => {
     // portal로 네비게이션 바 띄우기
@@ -43,7 +46,7 @@ function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
   const handleClickLogout = () => {
     const isConfirmToLogout = confirm("로그아웃 하시겠습니까??");
     if (isConfirmToLogout) {
-      setIsAuthenticated(false);
+      setIsFire(true);
     }
   }
 
@@ -89,8 +92,9 @@ function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
           {/* 네비게이션 아이템들 */}
           <ul css={listContainer}>
             <ListItem renderMode='tablet' icon={<SpaceDashboardOutlinedIcon fontSize='medium'/>} pathName="/history" currentPathName={currentPathName} />
-            <ListItem renderMode='tablet' icon={<EngineeringOutlinedIcon  fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
-            <ListItem renderMode='tablet' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
+            <ListItem renderMode='tablet' icon={<VideocamOutlinedIcon fontSize='medium'/>}pathName="/monitor" currentPathName={currentPathName} />
+            <ListItem renderMode='tablet' icon={<ArticleOutlinedIcon fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
+            <ListItem renderMode='tablet' icon={<EngineeringOutlinedIcon fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
           </ul>
           
           <div css={footerContainer}>
@@ -114,6 +118,7 @@ function NavigationBarTablet({ setMode }: NavigationBarTabletProps) {
 }
 
 const StyledNav = styled.nav`
+  z-index: 999;
   position: fixed;
   top: 0px;
   left: 0px;

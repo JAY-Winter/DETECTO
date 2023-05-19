@@ -1,28 +1,34 @@
 import { css } from '@emotion/react';
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react';
 import { Button } from '@mui/material';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 
 type DragAndDropProps = {
-  isDragging: boolean,
+  isDragging: boolean;
   setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedFile: File | null,
-  setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>,
-  type: 'zip' | 'image'
-}
+  selectedFile: File | null;
+  setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>;
+  type: 'zip' | 'image';
+};
 
-function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile, type }: DragAndDropProps) {
+function DragAndDrop({
+  isDragging,
+  setIsDragging,
+  selectedFile,
+  setSelectedFile,
+  type,
+}: DragAndDropProps) {
   const countRef = useRef(0);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     countRef.current += 1;
-    
+
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
-  }
+  };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     countRef.current -= 1;
@@ -31,12 +37,12 @@ function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile,
       e.stopPropagation();
       setIsDragging(false);
     }
-  }
+  };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-  }
+  };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -49,7 +55,7 @@ function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile,
       const file = files[0];
       setSelectedFile(file);
     }
-  }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
@@ -65,13 +71,7 @@ function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile,
     if (inputFileRef.current) {
       inputFileRef.current.click();
     }
-  }
-
-  useEffect(() => {
-    if (selectedFile) {
-      console.log("선택한 파일명:", selectedFile.name);
-    }
-  }, [selectedFile])
+  };
 
   return (
     <div
@@ -81,18 +81,33 @@ function DragAndDrop({ isDragging, setIsDragging, selectedFile, setSelectedFile,
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <input type='file' accept={type === 'zip' ? '.zip' : 'image/png, image/gif, image/jpeg'} ref={inputFileRef} style={{display: 'none'}} onChange={handleFileChange}/>
-      {selectedFile === null ? 
+      <input
+        type="file"
+        accept={type === 'zip' ? '.zip' : 'image/png, image/gif, image/jpeg'}
+        ref={inputFileRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
+      {selectedFile === null ? (
         <>
-          {type === 'zip' ? <FileUploadOutlinedIcon color="disabled"/> : <AddPhotoAlternateOutlinedIcon color="disabled" /> }
-          <Button onClick={openBrowser}>파일 선택</Button>
-        </> :
-        <>
-          {selectedFile !== null ? selectedFile.name : "올바르지 못한 파일입니다"}
+          {type === 'zip' ? (
+            <FileUploadOutlinedIcon color="disabled" />
+          ) : (
+            <AddPhotoAlternateOutlinedIcon color="disabled" />
+          )}
+          <Button onClick={openBrowser}>
+            {type === 'zip' ? '학습 파일 선택' : '미리보기 이미지 선택'}
+          </Button>
         </>
-      }
+      ) : (
+        <>
+          {selectedFile !== null
+            ? selectedFile.name
+            : '올바르지 못한 파일입니다'}
+        </>
+      )}
     </div>
-  )
+  );
 }
 
 const uploadBoxStyle = css`
@@ -104,13 +119,13 @@ const uploadBoxStyle = css`
   height: 250px;
   border-radius: 10px;
   border: 2px dashed gray;
-`
+`;
 
 const dragOverStyle = css`
   width: 100%;
   height: 250px;
   border-radius: 10px;
   border: 2px dashed black;
-`
+`;
 
-export default DragAndDrop
+export default DragAndDrop;

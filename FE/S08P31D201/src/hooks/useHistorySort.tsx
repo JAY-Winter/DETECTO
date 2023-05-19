@@ -22,16 +22,6 @@ function useHistorySort(): [
   const [sortField, setSortField] = useRecoilState(HistorySortField);
   const [order, setOrder] = useRecoilState(HistorySortOrder);
 
-  useEffect(() => {
-    setData(prev => {
-      const clonedPrev = Array.from(prev);
-      clonedPrev.sort((a, b) => {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      });
-      return clonedPrev;
-    });
-  }, []);
-
   const changeSortHandler = (accessor: THistorySortField) => {
     const sortOrder =
       accessor === sortField && order === 'desc' ? 'asc' : 'desc';
@@ -53,33 +43,49 @@ function useHistorySort(): [
         case 'Date':
           if (sortOrder === 'asc') {
             clonedPrev.sort((a, b) => {
-              return new Date(a.date).getTime() - new Date(b.date).getTime();
+              return new Date(a.time).getTime() - new Date(b.time).getTime();
             });
           } else {
             clonedPrev.sort((a, b) => {
-              return new Date(b.date).getTime() - new Date(a.date).getTime();
+              return new Date(b.time).getTime() - new Date(a.time).getTime();
             });
           }
           break;
         case 'Equipment':
           if (sortOrder === 'asc') {
             clonedPrev.sort((a, b) => {
-              return a.issue.length - b.issue.length;
+              return a.reportItems.length - b.reportItems.length;
             });
           } else {
             clonedPrev.sort((a, b) => {
-              return b.issue.length - a.issue.length;
+              return b.reportItems.length - a.reportItems.length;
             });
           }
           break;
         case 'Team':
           if (sortOrder === 'asc') {
             clonedPrev.sort((a, b) => {
-              return a.team - b.team;
+              const nameA = a.user.name.toUpperCase();
+              const nameB = b.user.name.toUpperCase();
+              if (nameA < nameB) {
+                return -1;
+              }
+              if (nameA > nameB) {
+                return 1;
+              }
+              return 0;
             });
           } else {
             clonedPrev.sort((a, b) => {
-              return b.team - a.team;
+              const nameA = a.user.name.toUpperCase();
+              const nameB = b.user.name.toUpperCase();
+              if (nameA < nameB) {
+                return 1;
+              }
+              if (nameA > nameB) {
+                return -1;
+              }
+              return 0;
             });
           }
           break;

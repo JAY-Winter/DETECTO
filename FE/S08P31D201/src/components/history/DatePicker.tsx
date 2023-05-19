@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { Button, Tabs, Tab, Box, Paper, css } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { koKR } from '@mui/x-date-pickers/locales';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useRecoilState } from 'recoil';
 import { HistoryDayAtom } from '@/store/HistoryFilter';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import {
   RestartAlt,
   KeyboardArrowDown,
@@ -36,7 +32,7 @@ function HistoryDatePicker() {
   };
 
   return (
-    <DatePaper>
+    <DatePaper elevation={1}>
       {/* 모바일에서 클릭 시 드롭다운 open/close */}
       <DateHeaderDiv
         onClick={() => {
@@ -44,7 +40,7 @@ function HistoryDatePicker() {
         }}
       >
         <div>
-          {mobileOpen ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
+          {mobileOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           날짜 선택
         </div>
         <Button
@@ -60,23 +56,7 @@ function HistoryDatePicker() {
       {/* mobileopen props를 통해 모바일에서 드롭다운 표시 */}
       {/* 모바일이 아닐 경우 항상 표시 됨 */}
       <DateContentDiv mobileopen={mobileOpen}>
-        <TabBox>
-          <Tabs value={tabValue} onChange={tabChange}>
-            <Tab label="기간 선택" value={0} />
-            <Tab label="날짜 선택" value={1} />
-          </Tabs>
-          {/* 탭 패널 */}
-          <div hidden={tabValue !== 0}>
-            <TabPanelDiv>
-              <HistoryDatepicker datetypes={[["startDay"], ["endDay"]]} />
-            </TabPanelDiv>
-          </div>
-          <div hidden={tabValue !== 1}>
-            <TabPanelDiv>
-            <HistoryDatepicker datetypes={[["startDay", "endDay"]]} />
-            </TabPanelDiv>
-          </div>
-        </TabBox>
+        <HistoryDatepicker datetypes={[['startDay'], ['endDay']]} />
       </DateContentDiv>
     </DatePaper>
   );
@@ -85,11 +65,18 @@ function HistoryDatePicker() {
 export default HistoryDatePicker;
 
 const DatePaper = styled(Paper)`
-  width: 100%;
-  padding: 1rem;
-  margin: 1rem;
-
+  width: 60%;
+  padding: 1.3rem 1.5rem;
+  margin-right: 1rem;
   transition: 0.2s all ease;
+  background-color: ${props => props.theme.palette.neutral.section};
+  border-radius: 10px;
+
+  ${mobileV} {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const DateHeaderDiv = styled.div`
@@ -100,9 +87,14 @@ const DateHeaderDiv = styled.div`
   div {
     display: flex;
     align-items: center;
+    font-weight: 500;
     svg {
       display: none;
     }
+  }
+
+  button {
+    padding: 0;
   }
 
   ${mobileV} {
@@ -113,6 +105,8 @@ const DateHeaderDiv = styled.div`
       }
     }
     button {
+      display: flex;
+      justify-content: flex-end;
       span {
         display: none;
       }
@@ -126,17 +120,4 @@ const DateContentDiv = styled.div<{ mobileopen: boolean }>`
   ${mobileV} {
     display: ${props => (props.mobileopen ? 'block' : 'none')};
   }
-`;
-
-const TabBox = styled(Box)`
-  width: '100%';
-  margin-bottom: '1rem';
-`;
-
-const TabPanelDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
 `;

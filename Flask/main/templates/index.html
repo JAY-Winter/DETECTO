@@ -2,8 +2,22 @@
 <html>
   <head>
     <title>YOLO</title>
+    <link rel="icon" href="#" />
   </head>
   <body>
-    <img id="image_feed" src="{{ url_for('stream', cctv_id=cctv_id) }}" />
+    <img id="image" src="{{ url_for('stream', cctv_id=cctv_id) }}" />
+    <script>
+      function updateImage() {
+        // timestamp -> 랜덤값을 붙여주지 않으면 캐시 때문에 이미지 업데이트 안됨.
+        const now = new Date();
+        const timestamp = Math.floor(now.getTime() / 1000);
+
+        const image = document.getElementById("image");
+        image.src =
+          "{{ url_for('stream', cctv_id=cctv_id) }}" + "?time=" + timestamp;
+      }
+
+      setInterval(updateImage, 1000);
+    </script>
   </body>
 </html>

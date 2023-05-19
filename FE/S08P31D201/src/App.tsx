@@ -1,4 +1,4 @@
-import { createTheme, PaletteMode } from '@mui/material';
+import { createTheme, css, PaletteMode } from '@mui/material';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import React, { useEffect, useMemo, useState } from 'react';
 import getDesignTokens from './styles/themes';
@@ -14,19 +14,22 @@ import NavigationBarMobile from '@components/navbar/NavigationBarMobile';
 import DashboardPage from './pages/DashboardPage';
 import MorePage from './pages/MorePage';
 import AuthProvider from '@components/common/AuthProvider';
-
+import MonitorPage from './pages/MonitorPage';
+import { useRecoilValue } from 'recoil';
+import { UserInfo } from './store/userInfoStroe';
+import FoulPage from './pages/FoulPage';
+import IssuePage from './pages/IssuePage';
+import NotFound from './pages/NotFound';
+import usePush from './hooks/usePush';
+import NavProvider from '@components/navbar/NavProvider';
+import WorkerNavProvider from '@components/navbar/WorkerNavProvider';
+import NotificationBell from '@components/notification/NotificationBell';
 
 function App() {
   const [mode, setMode] = useState<PaletteMode>('light');
-
-  // useMemo(() => {
-  //   // The dark mode switch would invoke this method
-  //   toggleColorMode: () => {
-  //     setMode((prevMode: PaletteMode) => prevMode === 'light' ? 'dark' : 'light');
-  //   }
-  // }, []);
-
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+  const getSubscription = usePush();
+  const userInfo = useRecoilValue(UserInfo);
 
   // 테마 따라 body 태그의 백그라운드 색상 결정
   useEffect(() => {
@@ -37,27 +40,81 @@ function App() {
     }
   }, [mode]);
 
+  useEffect(() => {
+    // getSubscription();
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        <NavigationBar setMode={setMode} />
-        <NavigationBarTablet setMode={setMode} />
-        <RouterContainerDiv>
-          <Routes>
-            <Route path="/" element={<Navigate replace to="/history" />} />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/manage" element={<EquipmentManagePage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/more" element={<MorePage setMode={setMode} />} />
-          </Routes>
-        </RouterContainerDiv>
-        <NavigationBarMobile />
+        {userInfo.type === 'ADMIN' ? (
+          <>
+            <RouterContainerDiv>
+              {/* <NotificationBell /> */}
+              <Routes>
+                <Route path="/" element={<Navigate replace to="/history" />} />
+                <Route path="/history" element={
+                  <NavProvider setMode={setMode}>
+                    <HistoryPage />
+                  </NavProvider>
+                } />
+                <Route path="/manage" element={
+                  <NavProvider setMode={setMode}>
+                    <EquipmentManagePage />
+                  </NavProvider>
+                } />
+                <Route path="/dashboard" element={
+                  <NavProvider setMode={setMode}>
+                    <DashboardPage />
+                  </NavProvider>
+                } />
+                <Route path="/monitor" element={
+                  <NavProvider setMode={setMode}>
+                    <MonitorPage />
+                  </NavProvider>
+                } />
+                <Route path="/more" element={
+                  <NavProvider setMode={setMode}>
+                    <MorePage setMode={setMode} />
+                  </NavProvider>
+                } />
+                <Route path="/*" element={<NotFound />}/>
+              </Routes>
+            </RouterContainerDiv>
+          </>
+        ) : (
+          <>
+            <RouterContainerDiv>
+              <NotificationBell />
+              <Routes>
+                <Route path="/" element={<Navigate replace to="/foul" />} />
+                <Route path="/foul" element={
+                  <WorkerNavProvider setMode={setMode}>
+                    <FoulPage />
+                  </WorkerNavProvider>
+                } />
+                <Route path="/issue" element={
+                  <WorkerNavProvider setMode={setMode}>
+                    <IssuePage />
+                  </WorkerNavProvider>
+                } />
+                <Route path="/more" element={
+                  <WorkerNavProvider setMode={setMode}>
+                    <MorePage setMode={setMode} />
+                  </WorkerNavProvider>
+                } />
+                <Route path="/*" element={<NotFound />}/>
+              </Routes>
+            </RouterContainerDiv>
+          </>
+        )}
       </AuthProvider>
     </ThemeProvider>
   );
 }
 
 const RouterContainerDiv = styled.div`
+  position: relative;
   margin-left: 300px;
   overflow-y: auto;
   height: 100%;
@@ -66,6 +123,7 @@ const RouterContainerDiv = styled.div`
     margin-left: 70px;
   }
   ${mobileV} {
+    height: fit-content;
     margin-left: 0px;
     padding-bottom: 70px;
   }

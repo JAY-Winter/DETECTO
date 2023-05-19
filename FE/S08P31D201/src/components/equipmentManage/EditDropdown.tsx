@@ -1,33 +1,49 @@
-import { keyframes } from '@emotion/react'
-import styled from '@emotion/styled'
-import React, { useRef } from 'react'
+import { keyframes } from '@emotion/react';
+import styled from '@emotion/styled';
+import { EquipmentType } from 'EquipmentTypes';
+import React, { useRef } from 'react';
 
 type EditDropdown = {
-  id: number,
-  onDelete: (willDeleteID: number) => void,
-  setIsShowDropdown: React.Dispatch<React.SetStateAction<boolean>>
-}
+  equipment: EquipmentType;
+  onDelete: (willDeleteName: string) => void;
+  setIsShowDropdown: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsShowEditModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setWillEditEquipment: React.Dispatch<
+    React.SetStateAction<EquipmentType | null>
+  >;
+};
 
-function EditDropdown({ id, onDelete, setIsShowDropdown }: EditDropdown) {
+function EditDropdown({
+  equipment,
+  onDelete,
+  setIsShowDropdown,
+  setIsShowEditModal,
+  setWillEditEquipment,
+}: EditDropdown) {
   const ref = useRef<HTMLDivElement>(null);
 
   const clickDeleteItem = () => {
     setIsShowDropdown(false);
-    onDelete(id)
-  }
+    onDelete(equipment.name);
+  };
+  const clickUpdateItem = () => {
+    setWillEditEquipment(equipment);
+    setIsShowDropdown(false);
+    setIsShowEditModal(true);
+  };
 
   return (
     <DropdownNav ref={ref}>
       <ul>
         <li onClick={clickDeleteItem}>
-          <p style={{color: "red"}}>삭제</p>
+          <p style={{ color: 'red' }}>삭제</p>
         </li>
-        <li>
+        <li onClick={clickUpdateItem}>
           <p>수정</p>
         </li>
       </ul>
     </DropdownNav>
-  )
+  );
 }
 
 const scaleUp = keyframes`
@@ -42,13 +58,14 @@ const scaleUp = keyframes`
   100% {
     transform: scale(1);
   }
-`
+`;
 
-const DropdownNav = styled.div`
+const DropdownNav = styled.nav`
   position: absolute;
   right: 10px;
   width: 8rem;
   background-color: ${props => props.theme.palette.neutral.card};
+  border: 1px solid ${props => props.theme.palette.neutral.cardHover};
   border-radius: 10px;
   padding: 7px;
   animation: ${scaleUp} 0.2s ease;
@@ -64,6 +81,6 @@ const DropdownNav = styled.div`
       background-color: ${props => props.theme.palette.neutral.cardHover};
     }
   }
-`
+`;
 
-export default EditDropdown
+export default EditDropdown;

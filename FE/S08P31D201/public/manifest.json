@@ -1,0 +1,27 @@
+{
+  "name": "디텍토",
+  "short_name": "디텍토",
+  "description": "디텍토의 보호구 미착용자 감지, 실시간 알림 서비스, 위반자 관리 패널, 실시간 모니터링를 통해 근무지의 안전 상황을 실시간 점검하고 관리하여 더 나은 근무 환경을 제공하세요.",
+  "start_url": "https://detecto.kr",
+  "scope": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": [
+    "business",
+    "security",
+    "productivity"
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
+}

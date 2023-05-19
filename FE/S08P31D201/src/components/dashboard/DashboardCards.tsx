@@ -1,74 +1,124 @@
+import { mobileV, tabletV } from '@/utils/Mixin';
 import styled from '@emotion/styled';
 import { Card } from '@mui/material';
-import React from 'react'
+import { CountItemData, CountTimeTeamData } from 'ChartTypes';
+import React, { useEffect, useState } from 'react';
 
-function HistoryCards() {
+function HistoryCards({
+  eqData,
+  teamData,
+}: {
+  eqData: CountItemData[] | undefined;
+  teamData: CountTimeTeamData[] | undefined;
+}) {
+  const [topEq, setTopEq] = useState<string>();
+  const [topTeam, setTopTeam] = useState<string>();
+
+  useEffect(() => {
+    if (eqData) {
+      const highestValueKey = eqData.reduce(
+        (
+          maxItem: {
+            reportItem: string;
+            count: number;
+          },
+          currentItem: {
+            reportItem: string;
+            count: number;
+          }
+        ) => {
+          return currentItem.count > maxItem.count ? currentItem : maxItem;
+        }
+      ).reportItem;
+
+      setTopEq(highestValueKey);
+    } else {
+      setTopEq(undefined);
+    }
+  }, [eqData]);
+
+  useEffect(() => {
+    if (teamData) {
+      const highestValueKey = teamData.reduce(
+        (
+          maxItem: {
+            teamName: any;
+            value: any;
+          },
+          currentItem: {
+            teamName: any;
+            value: any;
+          }
+        ) => {
+          return currentItem.value.length > maxItem.value.length
+            ? currentItem
+            : maxItem;
+        }
+      ).teamName;
+
+      setTopTeam(highestValueKey);
+    } else {
+      setTopTeam(undefined);
+    }
+  }, [teamData]);
+
   return (
     <HistoryCardDiv>
-          <HistoryCard linearcolor="primary">
-            <div className="content-main">
-              <div>안전모</div>
-            </div>
-            <div className="content-sub">
-              <h1>안전모</h1>
-              <h4>위반 보호구 1위</h4>
-            </div>
-          </HistoryCard>
-          <HistoryCard linearcolor="error">
-            <div className="content-main">
-              <div>1팀</div>
-            </div>
-            <div className="content-sub">
-              <h1>1팀</h1>
-              <h4>위반 팀 1위</h4>
-            </div>
-          </HistoryCard>
-          <HistoryCard linearcolor="secondary">
-            <div className="content-main">
-              <div>+20%</div>
-            </div>
-            <div className="content-sub">
-            <h1>이전달 대비 증가폭</h1>
-            </div>
-          </HistoryCard>
-          <HistoryCard linearcolor="success">
-            <div className="content-main">
-              <div>헴헴헴</div>
-            </div>
-            <div className="content-sub">
-              <h1>뭐넣을지 모르겠네요</h1>
-            </div>
-          </HistoryCard>
-        </HistoryCardDiv>
-  )
+      <HistoryCard linearcolor="primary" elevation={1}>
+        <div className="content-main">
+          <div>{topEq}</div>
+        </div>
+        <div className="content-sub">
+          <h1>{topEq}</h1>
+          <h4>위반 보호구 1위</h4>
+        </div>
+      </HistoryCard>
+      <HistoryCard linearcolor="error" elevation={1}>
+        <div className="content-main">
+          <div>{topTeam}</div>
+        </div>
+        <div className="content-sub">
+          <h1>{topTeam}</h1>
+          <h4>위반 팀 1위</h4>
+        </div>
+      </HistoryCard>
+    </HistoryCardDiv>
+  );
 }
 
-export default HistoryCards
-
+export default HistoryCards;
 
 const HistoryCardDiv = styled.div`
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
-  place-items: center;
-  grid-template-rows: repeat(1, calc(20vh + 1rem));
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
-  column-gap: 1rem;
-  row-gap: 1rem;
-  margin-top: 1.5rem;
 `;
 
-const HistoryCard = styled(Card)<{linearcolor: 'primary' | 'secondary' | 'error' | 'success'}>`
+const HistoryCard = styled(Card)<{
+  linearcolor: 'primary' | 'secondary' | 'error' | 'success';
+}>`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: start;
-
 
   position: relative;
   height: 20vh;
   width: 100%;
 
   padding: 1rem;
+  margin: 1rem;
+
+  ${mobileV} {
+    margin: 0;
+    margin-bottom: 1rem;
+  }
+
+  flex-basis: calc(50% - 2rem);
+
+  ${tabletV} {
+    flex-basis: 100%;
+  }
 
   color: ${props => props.theme.palette.primary.contrastText};
 
@@ -90,8 +140,8 @@ const HistoryCard = styled(Card)<{linearcolor: 'primary' | 'secondary' | 'error'
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 150px;
-      width: 150px;
+      height: 10rem;
+      width: 10rem;
       border-radius: 100%;
       background: ${props =>
         `linear-gradient(to bottom right, ${
@@ -99,6 +149,11 @@ const HistoryCard = styled(Card)<{linearcolor: 'primary' | 'secondary' | 'error'
         }, ${props.theme.palette[props.linearcolor].main})`};
 
       font-size: 1.5rem;
+
+      ${mobileV} {
+        height: 7rem;
+        width: 7rem;
+      }
     }
   }
 

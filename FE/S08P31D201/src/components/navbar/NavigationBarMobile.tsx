@@ -6,6 +6,7 @@ import ListItem from './ListItem'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useLocation } from 'react-router-dom';
 import { mobileV } from '@/utils/Mixin';
@@ -30,8 +31,9 @@ function NavigationBarMobile() {
       {/* 네비게이션 아이템들 */}
       <ul css={listContainer}>
         <ListItem renderMode='mobile' icon={<HomeOutlinedIcon fontSize='medium'/>} pathName="/history" currentPathName={currentPathName} />
-        <ListItem renderMode='mobile' icon={<EngineeringOutlinedIcon  fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
-        <ListItem renderMode='mobile' icon={<ArticleOutlinedIcon  fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
+        <ListItem renderMode='mobile' icon={<VideocamOutlinedIcon fontSize='medium'/>} pathName="/monitor" currentPathName={currentPathName} />
+        <ListItem renderMode='mobile' icon={<ArticleOutlinedIcon fontSize='medium'/>} pathName="/dashboard" currentPathName={currentPathName} />
+        <ListItem renderMode='mobile' icon={<EngineeringOutlinedIcon fontSize='medium'/>} pathName="/manage" currentPathName={currentPathName} />
         <ListItem renderMode='mobile' icon={<MenuIcon  fontSize='medium'/>} pathName="/more" currentPathName={currentPathName} />
       </ul>
     </MobileNav>
@@ -39,6 +41,7 @@ function NavigationBarMobile() {
 }
 
 const MobileNav = styled.nav`
+  z-index: 999;
   display: none;
   position: fixed;
   bottom: 0;

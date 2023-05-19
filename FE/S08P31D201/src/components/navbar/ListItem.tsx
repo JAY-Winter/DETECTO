@@ -6,7 +6,7 @@
 
 import styled from '@emotion/styled'
 import { useNavigate } from "react-router-dom";
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 
 type ListItemProps = {
   renderMode: 'desktop' | 'tablet' | 'mobile',
@@ -14,11 +14,13 @@ type ListItemProps = {
   label?: string,
   pathName: string,  // 이동할 경로
   currentPathName: string,  // 현재 머무르고 있는 경로
-  clickHandler?: (e: React.MouseEvent<HTMLLIElement>) => void
+  clickHandler?: (e: React.MouseEvent<HTMLLIElement>) => void,
+  onSetOffset?: React.Dispatch<React.SetStateAction<number>>
 }
 
-function ListItem({renderMode, icon, label, pathName, currentPathName, clickHandler}: ListItemProps) {
+function ListItem({renderMode, icon, label, pathName, currentPathName, clickHandler, onSetOffset}: ListItemProps) {
   const navigate = useNavigate();
+  const itemRef = useRef<HTMLLIElement>(null);
 
   const handleClickItem = (e: React.MouseEvent<HTMLLIElement>) => {
     if (clickHandler) {
@@ -27,9 +29,16 @@ function ListItem({renderMode, icon, label, pathName, currentPathName, clickHand
     navigate(pathName);  // 이동할 경로를 향해 라우팅한다
   }
 
+  // 내가 선택되었다면, 나의 위치로 offset을 설정한다
+  useEffect(() => {
+    if (onSetOffset && pathName === currentPathName && itemRef.current) {
+      onSetOffset(itemRef.current.offsetTop);
+    }
+  }, [pathName, currentPathName])
+
   if (renderMode === 'desktop') {
     return (
-      <StyledDesktopLi currentPathName={currentPathName} pathName={pathName} onClick={(e) => handleClickItem(e)}>
+      <StyledDesktopLi currentPathName={currentPathName} pathName={pathName} onClick={(e) => handleClickItem(e)} ref={itemRef}>
         {/* MUI 아이콘 */}
         {icon}
 
@@ -74,6 +83,8 @@ const StyledDesktopLi = styled.li<{currentPathName: string, pathName: string}>`
 `
 
 const StyledTabletLi = styled.li<{currentPathName: string, pathName: string}>`
+  display: flex;
+  align-items: center;
   background-color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.neutral.card};
   color: ${props => props.currentPathName === props.pathName ? props.theme.palette.neutral.main : props.theme.palette.text.secondary};
   @media(hover: hover) {
@@ -84,6 +95,8 @@ const StyledTabletLi = styled.li<{currentPathName: string, pathName: string}>`
 `
 
 const StyledMobileLi = styled.li<{currentPathName: string, pathName: string}>`
+  display: flex;
+  align-items: center;
   color: ${props => props.currentPathName === props.pathName ? props.theme.palette.primary.main : props.theme.palette.text.secondary};
 `
 

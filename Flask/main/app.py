@@ -1,26 +1,53 @@
 from flask import Flask, render_template, request
+from .stream.receive_image import upload_image
+from .stream.send_to_client import video_feed
+from .connect.check_cctv_connection import check_connection
 from ultralytics import YOLO
-from .stream.receive import upload_image
-from .stream.send import video_feed
+from main.tools.database  import db
+from kafka import KafkaProducer
+import json
 
+app = Flask(__name__)
+# model = YOLO(MODEL_PATH)
+# face_model = YOLO(MODEL_FACE_PATH)
+
+
+kafka_producer = KafkaProducer(
+            bootstrap_servers='k8d201.p.ssafy.io:9092',
+            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+            acks='all', 
+            retries=5,
+        )
+cctv_images = {}
 def create_app():
-  app = Flask(__name__)
-  cctv_list = {}
-  model = YOLO('model/best.pt')
+    global app
+    cctv_list = set()  # 연결된 cctv 목록
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://wogus:wogus@k8d201.p.ssafy.io/detecto'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-  @app.route('/', defaults={'cctv_id': '0'})
-  @app.route('/<cctv_id>')
-  def index(cctv_id):
-    return render_template('index.html', cctv_id=cctv_id)
+    db.init_app(app)
+    
+    @app.route('/cctv/<cctv_id>')
+    def image(cctv_id):
+        return render_template('index.html', cctv_id=cctv_id)
 
-  # CCTV로부터 영상(이미지)를 받아오기
-  @app.route('/upload', methods=['POST'])
-  def upload():
-    return upload_image(request, model, cctv_list)
+    @app.route('/')
+    def index():
+        return render_template("init.html")
 
-  # html로 detecting된 영상 전송
-  @app.route('/stream/<int:cctv_id>')
-  def stream(cctv_id):  
-    return video_feed(cctv_id, cctv_list)
+    @app.route('/connect', methods=['POST'])
+    def connect():
+        return check_connection(request, cctv_list)
 
-  return app
+    # CCTV로부터 영상(이미지)를 받아오기
+    @app.route('/upload', methods=['POST'])
+    def upload():
+        upload_image(request.files['file'],int(request.form['id']))
+        return {"result": "이미지 업로드 성공"}
+
+    # html로 detecting된 영상 전송
+    @app.route('/stream/<int:cctv_id>')
+    def stream(cctv_id):
+        return video_feed(cctv_id, cctv_images)
+
+    return app
