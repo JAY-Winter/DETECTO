@@ -332,10 +332,10 @@ Detecto는 OpenCV를 활용하여 보호구 미착용을 실시간으로 감지�
 <table>
 <tr>
   <td>
-      <img src="./exec/assets/보호구 관리.gif" alt="보호구 관리.gif"/>
+      <img src="./exec/assets/boho.gif" alt="보호구 관리.gif"/>
   </td>
   <td>
-      <img src="./exec/assets/보호구관리-모바일.gif" alt="보호구관리-모바일.gif"/>
+      <img src="./exec/assets/bogom.gif" alt="보호구관리-모바일.gif"/>
   </td>
 </tr>
 </table>
