@@ -148,6 +148,7 @@ def calculate(cctv_id):
                 if len(human_detect) != 0:
                     save_non_wear(cctv_id,human_detect, yolo_image, img, face_model[cctv_id])
                 list[cctv_id] = queue.Queue()
-        except Exception as e:
+        except:
             model[cctv_id] = YOLO(MODEL_PATH)
+            face_model[cctv_id] = YOLO(MODEL_FACE_PATH)
             continue
