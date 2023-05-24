@@ -301,10 +301,10 @@ Detecto는 OpenCV를 활용하여 보호구 미착용을 실시간으로 감지�
 <table>
 <tr>
   <td>
-      <img src="./exec/assets/대시보드.gif" alt="cctv"/>
+      <img src="./exec/assets/dash.gif" alt="cctv"/>
   </td>
   <td>
-      <img src="./exec/assets/대시보드-모바일.gif" alt="cctv_mobile"/>
+      <img src="./exec/assets/dashm.gif" alt="cctv_mobile"/>
   </td>
 </tr>
 </table>
@@ -316,10 +316,10 @@ Detecto는 OpenCV를 활용하여 보호구 미착용을 실시간으로 감지�
 <table>
 <tr>
   <td>
-      <img src="./exec/assets/좌표대시.gif" alt="좌표대시 관리.gif"/>
+      <img src="./exec/assets/coor.gif" alt="좌표대시 관리.gif"/>
   </td>
   <td>
-      <img src="./exec/assets/좌표설정.gif" alt="좌표설정.gif"/>
+      <img src="./exec/assets/coorset.gif" alt="좌표설정.gif"/>
   </td>
 </tr>
 </table>
@@ -345,7 +345,7 @@ Detecto는 OpenCV를 활용하여 보호구 미착용을 실시간으로 감지�
 
 ### 6. 실시간 알림
 
-![알림.gif](./exec/assets/알림.gif)
+![알림.gif](./exec/assets/noti.gif)
 
 - Push API, Notification API, PWA를 이용해 백그라운드 service worker에서 작동하도록 구현
 
